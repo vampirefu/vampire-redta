@@ -13,7 +13,7 @@
     <InformationalVersion>2.8.0.0</InformationalVersion>
     <AssemblyName>DXMainClient</AssemblyName>
     <RootNamespace>DTAClient</RootNamespace>
-    <ApplicationIcon>bin\Debug\Ares\Resources\clienticon.ico</ApplicationIcon>
+    <ApplicationIcon>clienticon.ico</ApplicationIcon>
     <ApplicationHighDpiMode Condition="'$(Engine)' != 'UniversalGL'">PerMonitorV2</ApplicationHighDpiMode>
     <AssemblyName Condition="'$(Engine)' == 'WindowsDX'">clientdx</AssemblyName>
     <AssemblyName Condition="'$(Engine)' == 'UniversalGL' Or '$(Engine)' == 'WindowsGL'">clientogl</AssemblyName>
@@ -23,12 +23,12 @@
     <UseAppHost>false</UseAppHost>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="bin\**" />
     <Compile Remove="Resources\**" />
+    <EmbeddedResource Remove="bin\**" />
     <EmbeddedResource Remove="Resources\**" />
+    <None Remove="bin\**" />
     <None Remove="Resources\**" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="bin\Debug\Ares\Resources\clienticon.ico" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="DiscordRichPresence" Version="1.1.3.18" />
