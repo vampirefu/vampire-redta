@@ -78,9 +78,15 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
 
         private void RefreshTunnelsAsync()
         {
+            List<CnCNetTunnel> tunnels = new List<CnCNetTunnel>()
+            {
+                //CnCNetTunnel.Parse("101.33.75.60:40086;China;CN;Vampire_Server;0;0;30;0;0;0;2;0"),
+                //CnCNetTunnel.Parse("60.247.152.72:50000;China;CN;[CN]Alliance and Hegemony;1;0;100;0;0;0;2;0")
+            };
+
             Task.Factory.StartNew(() =>
             {
-                List<CnCNetTunnel> tunnels = RefreshTunnels();
+                tunnels.AddRange(RefreshTunnels());
                 wm.AddCallback(new Action<List<CnCNetTunnel>>(HandleRefreshedTunnels), tunnels);
             });
         }

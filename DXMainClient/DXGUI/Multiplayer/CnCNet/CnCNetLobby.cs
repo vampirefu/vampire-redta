@@ -416,6 +416,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             lbGameList.ViewTop = 0;
         }
 
+
         private bool HostedGameMatches(GenericHostedGame hg)
         {
             // friends list takes priority over other filters below

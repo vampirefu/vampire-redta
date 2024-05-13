@@ -1,17 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-#if !DEBUG
 using System.IO;
 using System.Reflection;
 using System.Runtime.Loader;
-#endif
 using System.Threading;
+#if !(XNA||GL)
+using System.Windows.Forms;
+#endif
 /* !! We cannot use references to other projects or non-framework assemblies in this class, assembly loading events not hooked up yet !! */
 
 namespace DTAClient
 {
     static class Program
     {
+        private static string COMMON_LIBRARY_PATH;
+        private static string SPECIFIC_LIBRARY_PATH;
+
 #if !DEBUG
         static Program()
         {
@@ -39,11 +43,8 @@ namespace DTAClient
             // Set up DLL load paths as early as possible
             AssemblyLoadContext.Default.Resolving += DefaultAssemblyLoadContextOnResolving;
         }
-
-        private static string COMMON_LIBRARY_PATH;
-        private static string SPECIFIC_LIBRARY_PATH;
-
 #endif
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -52,6 +53,33 @@ namespace DTAClient
 #endif
         static void Main(string[] args)
         {
+            /* We have different binaries depending on build platform, but for simplicity
+             * the target projects (DTA, TI, MO, YR) supply them all in a single download.
+             * To avoid DLL hell, we load the binaries from different directories
+             * depending on the build platform. */
+
+            string startupPath = new FileInfo(Assembly.GetEntryAssembly().Location).Directory.Parent.Parent.FullName + Path.DirectorySeparatorChar;
+
+            COMMON_LIBRARY_PATH = Path.Combine(startupPath, "Binaries") + Path.DirectorySeparatorChar;
+
+#if XNA
+            SPECIFIC_LIBRARY_PATH = Path.Combine(startupPath, "Binaries", "XNA") + Path.DirectorySeparatorChar;
+#elif GL && ISWINDOWS
+            SPECIFIC_LIBRARY_PATH = Path.Combine(startupPath, "Binaries", "OpenGL") + Path.DirectorySeparatorChar;
+#elif GL && !ISWINDOWS
+            SPECIFIC_LIBRARY_PATH = Path.Combine(startupPath, "Binaries", "UniversalGL") + Path.DirectorySeparatorChar;
+#elif DX
+            SPECIFIC_LIBRARY_PATH = Path.Combine(startupPath, "Binaries", "Windows") + Path.DirectorySeparatorChar;
+#else
+            Yuri has won
+#endif
+
+            // Set up DLL load paths as early as possible
+            AssemblyLoadContext.Default.Resolving += DefaultAssemblyLoadContextOnResolving;
+
+#if !(XNA||GL) && DEBUG
+            MessageBox.Show("233");
+#endif
             bool noAudio = false;
             bool multipleInstanceMode = false;
             List<string> unknownStartupParams = new List<string>();
@@ -116,7 +144,6 @@ namespace DTAClient
                     mutex.ReleaseMutex();
             }
         }
-#if !DEBUG
 
         private static Assembly DefaultAssemblyLoadContextOnResolving(AssemblyLoadContext assemblyLoadContext, AssemblyName assemblyName)
         {
@@ -135,6 +162,5 @@ namespace DTAClient
 
             return null;
         }
-#endif
     }
 }

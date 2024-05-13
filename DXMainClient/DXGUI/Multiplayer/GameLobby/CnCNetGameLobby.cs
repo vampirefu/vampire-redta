@@ -1918,6 +1918,8 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             sb.Append(0); // LoadedGameId
 
             broadcastChannel.SendCTCPMessage(sb.ToString(), QueuedMessageType.SYSTEM_MESSAGE, 20);
+            //调试联机广播
+            Logger.Log($"/***************[CncNetGameLobby]BroadcastGame:{sb}***************/");
         }
 
         #endregion

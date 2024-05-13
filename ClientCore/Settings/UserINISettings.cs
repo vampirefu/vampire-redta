@@ -65,7 +65,7 @@ namespace ClientCore
             ClientTheme = new StringSetting(iniFile, MULTIPLAYER, "Theme", string.Empty);
             Language = new StringSetting(iniFile, MULTIPLAYER, "Language", string.Empty);
             Voice = new StringSetting(iniFile, MULTIPLAYER, "Voice", string.Empty);
-            
+
             DetailLevel = new IntSetting(iniFile, OPTIONS, "DetailLevel", 2);
             Game = new StringSetting(iniFile, OPTIONS, "Game", "SkirmishLobby");
 
@@ -75,7 +75,7 @@ namespace ClientCore
             BorderlessWindowedClient = new BoolSetting(iniFile, VIDEO, "BorderlessWindowedClient", true);
             ClientFPS = new IntSetting(iniFile, VIDEO, "ClientFPS", 60);
             DisplayToggleableExtraTextures = new BoolSetting(iniFile, VIDEO, "DisplayToggleableExtraTextures", true);
-            CampaignDefaultGameSpeed = new IntSetting(iniFile, PHOBOS, "CampaignDefaultGameSpeed",4);
+            CampaignDefaultGameSpeed = new IntSetting(iniFile, PHOBOS, "CampaignDefaultGameSpeed", 4);
 
             ScoreVolume = new DoubleSetting(iniFile, AUDIO, "ScoreVolume", 0.7);
             SoundVolume = new DoubleSetting(iniFile, AUDIO, "SoundVolume", 0.7);
@@ -136,8 +136,8 @@ namespace ClientCore
 
             FavoriteMaps = new StringListSetting(iniFile, OPTIONS, "FavoriteMaps", new List<string>());
 
-           //皮肤
-           Skin = new StringListSetting(iniFile, SKIN, "Skin", new List<string>());
+            //皮肤
+            Skin = new StringListSetting(iniFile, SKIN, "Skin", new List<string>());
 
             GameModSelect = new IntSetting(iniFile, GAMEMOD, "Select", 0);
             GameModName = new StringSetting(iniFile, GAMEMOD, "items", string.Empty);
@@ -280,7 +280,7 @@ namespace ClientCore
         public StringSetting GameModName { get; private set; }
 
         public StringSetting GameModPath { get; private set; }
-        
+
         public void SetValue(string section, string key, string value)
                => SettingsIni.SetStringValue(section, key, value);
 

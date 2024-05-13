@@ -97,7 +97,7 @@ namespace DTAClient.DXGUI.Multiplayer
 
         bool initSuccess = false;
 
-        //public  string GetSwitchName() => "Game Lobby".L10N("UI:Main:GameLobby");
+        //public string GetSwitchName() => "Game Lobby".L10N("UI:Main:GameLobby");
         public override void Initialize()
         {
             Name = "LANLobby";

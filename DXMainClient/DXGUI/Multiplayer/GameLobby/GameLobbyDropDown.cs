@@ -8,6 +8,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Localization;
 using System.Linq;
 using System.Collections.Generic;
+using ClientCore;
+using System.IO;
 
 namespace DTAClient.DXGUI.Multiplayer.GameLobby
 {
@@ -34,8 +36,11 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         public string[] RandomSelectors;
         string[] RandomSides;
         string[] RandomSidesIndex;
-    
+
         public string[] Mod;
+        private List<string> modIni = new List<string>();
+        private List<string> modName = new List<string>();
+        private List<string> main = new List<string>();
         public string[] DisallowedSideIndiex;
         public string[] DisallowedSide;
 
@@ -67,7 +72,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
         public override void ParseAttributeFromINI(IniFile iniFile, string key, string value)
         {
-           
+
             switch (key)
             {
                 case "Items":
@@ -93,10 +98,10 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
                     if (iniFile.GetStringValue(Name, "Sides", "") != "")
                     {
-                        
+
                         Sides = iniFile.GetStringValue(Name, "Sides", "").Split('|');
                     }
-                
+
 
 
                     if (iniFile.GetStringValue(Name, "RandomSides", "") != "")
@@ -109,15 +114,98 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                         XNADropDownItem item = new XNADropDownItem();
                         if (itemlabels.Length > i && !String.IsNullOrEmpty(itemlabels[i]))
                         {
-                            item.Text = itemlabels[i].L10N("UI:GameOption:"+ itemlabels[i]);
+                            item.Text = itemlabels[i].L10N("UI:GameOption:" + itemlabels[i]);
 
-                            if (items.Length==Mod.Length)
+                            if (items.Length == Mod.Length)
                                 item.Tag = new string[2] { items[i], Mod[i] };
                             else
                                 item.Tag = new string[2] { items[i], "" };
                         }
                         else item.Text = items[i];
                         AddItem(item);
+                    }
+                    return;
+                case "Mod":
+                    List<string> mods = new List<string>();
+                    List<string> randomSidesIndexs = new List<string>();
+                    string section = "";
+                    string fileName = "";
+                    if (Name == "cmbGame")
+                    {
+                        section = "Game";
+                        fileName = "Mod.ini";
+                        return;
+                    }
+                    if (Name == "cmbAI")
+                    {
+                        section = "AI";
+                        fileName = "AI.ini";
+                    }
+                    string iniDir = SafePath.CombineDirectoryPath(ProgramConstants.GamePath, "INI");
+                    IniFile modIIni = new IniFile(SafePath.CombineFilePath(iniDir, fileName));
+                    if (modIIni.GetSection(section) != null)
+                    {
+                        foreach (KeyValuePair<string, string> keyValuePair in modIIni.GetSection(section).Keys)
+                        {
+                            if (modIIni.GetBooleanValue(keyValuePair.Value, "Visible", true))
+                            {
+                                if (string.IsNullOrEmpty(modIIni.GetStringValue(keyValuePair.Value, "File", string.Empty)))
+                                {
+                                    mods.Add($"INI/Game Options/{section}/{keyValuePair.Value}");
+                                }
+                                else
+                                {
+                                    mods.Add(modIIni.GetStringValue(keyValuePair.Value, "File", string.Empty));
+                                }
+                                modName.Add(modIIni.GetStringValue(keyValuePair.Value, "Text", keyValuePair.Value));
+                                modIni.Add(modIIni.GetStringValue(keyValuePair.Value, "INI", string.Empty));
+                                main.Add(modIIni.GetStringValue(keyValuePair.Value, "Main", string.Empty));
+                                //if (Name == "cmbGame")
+                                //{
+                                //    Sides.Add(modIIni.GetStringValue(keyValuePair.Value, "Sides", string.Empty));
+                                //    RandomSelectors.Add(modIIni.GetStringValue(keyValuePair.Value, "RandomSides", string.Empty));
+                                //    List<string> list = new List<string>();
+                                //    for (int j = 1; j <= modIIni.GetStringValue(keyValuePair.Value, "RandomSides", string.Empty).Split(',', StringSplitOptions.None).Length; j++)
+                                //    {
+                                //        list.Add(modIIni.GetStringValue(keyValuePair.Value, "RandomSidesIndex" + j.ToString(), string.Empty));
+                                //    }
+                                //    RandomSidesIndex.Add(list);
+                                //}
+                            }
+                        }
+                        Mod = mods.ToArray();
+                    }
+
+                    for (int k = 0; k < modIni.Count; k++)
+                    {
+                        XNADropDownItem xnadropDownItem = new XNADropDownItem();
+                        if (modName.Count > k && !string.IsNullOrEmpty(modName[k]))
+                        {
+                            xnadropDownItem.Text = StringTranslationLabelExtensions.L10N(modName[k], "UI:GameOption:" + modName[k]);
+                            if (modIni.Count == Mod.Length)
+                            {
+                                xnadropDownItem.Tag = new string[]
+                                {
+                                        modIni[k],
+                                        Mod[k],
+                                        main[k]
+                                };
+                            }
+                            else
+                            {
+                                xnadropDownItem.Tag = new string[]
+                                {
+                                        modIni[k],
+                                        string.Empty,
+                                        string.Empty
+                                };
+                            }
+                        }
+                        else
+                        {
+                            xnadropDownItem.Text = modIni[k];
+                        }
+                        base.AddItem(xnadropDownItem);
                     }
                     return;
                 case "DataWriteMode":
@@ -190,21 +278,21 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             }
 
         }
-            /// <summary>
-            /// Applies the drop down's associated code to the map INI file.
-            /// </summary>
-            /// <param name="mapIni">The map INI file.</param>
-            /// <param name="gameMode">Currently selected gamemode, if set.</param>
-            public void ApplyMapCode(IniFile mapIni, GameMode gameMode)
-            {
-                if (dataWriteMode != DropDownDataWriteMode.MAPCODE || SelectedIndex < 0 || SelectedIndex >= Items.Count) return;
+        /// <summary>
+        /// Applies the drop down's associated code to the map INI file.
+        /// </summary>
+        /// <param name="mapIni">The map INI file.</param>
+        /// <param name="gameMode">Currently selected gamemode, if set.</param>
+        public void ApplyMapCode(IniFile mapIni, GameMode gameMode)
+        {
+            if (dataWriteMode != DropDownDataWriteMode.MAPCODE || SelectedIndex < 0 || SelectedIndex >= Items.Count) return;
 
-                string customIniPath;
-                if (Items[SelectedIndex].Tag != null) customIniPath = ((string[])Items[SelectedIndex].Tag)[0];
-                else customIniPath = Items[SelectedIndex].Text;
+            string customIniPath;
+            if (Items[SelectedIndex].Tag != null) customIniPath = ((string[])Items[SelectedIndex].Tag)[0];
+            else customIniPath = Items[SelectedIndex].Text;
 
-                MapCodeHelper.ApplyMapCode(mapIni, customIniPath, gameMode);
-            }
+            MapCodeHelper.ApplyMapCode(mapIni, customIniPath, gameMode);
+        }
 
         public override void OnLeftClick()
         {
@@ -214,62 +302,62 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             base.OnLeftClick();
             UserSelectedIndex = SelectedIndex;
         }
-    
 
-    public void ApplyDisallowedSideIndex(bool[] disallowedArray)
-    {
 
-        if (DisallowedSideIndiex == null || DisallowedSideIndiex.Length == 0 || SelectedIndex >= DisallowedSideIndiex.Length)
-            return;
-        int[] sideNotAllowed;
-        DisallowedSide = DisallowedSideIndiex[SelectedIndex].Split('-');
-
-        if (DisallowedSide.Length != 0)
+        public void ApplyDisallowedSideIndex(bool[] disallowedArray)
         {
 
-            sideNotAllowed = Array.ConvertAll(DisallowedSide, int.Parse);
-            for (int j = 0; j < DisallowedSide.Length; j++)
-                disallowedArray[sideNotAllowed[j]] = true;
-        }
-    }
-    public string[] SetSides()
-    {
-        if (Sides != null && Sides.Length > SelectedIndex && Sides[SelectedIndex] != "")
-        {
-            return Sides[SelectedIndex].Split(',');
-        }
-        else
-            return null;
-    }
+            if (DisallowedSideIndiex == null || DisallowedSideIndiex.Length == 0 || SelectedIndex >= DisallowedSideIndiex.Length)
+                return;
+            int[] sideNotAllowed;
+            DisallowedSide = DisallowedSideIndiex[SelectedIndex].Split('-');
 
-    public string[,] SetRandomSelectors()
-    {
-        if (RandomSelectors != null && RandomSelectors.Length > SelectedIndex)
-        {
-
-            RandomSides = RandomSelectors[SelectedIndex].Split(',');
-
-        }
-        if (RandomSides != null && RandomSelectors.Length > SelectedIndex)
-        {
-
-            string[,] list = new string[RandomSides.Length, 2];
-            for (int i = 0; i < RandomSides.Length; i++)
+            if (DisallowedSide.Length != 0)
             {
-                list[i, 0] = RandomSides[i];
 
-                if (RandomSidesIndex != null && RandomSidesIndex.Length > SelectedIndex)
-                    list[i, 1] = RandomSidesIndex[SelectedIndex].Split('&')[i];
-                else
-                    list[i, 1] = "";
+                sideNotAllowed = Array.ConvertAll(DisallowedSide, int.Parse);
+                for (int j = 0; j < DisallowedSide.Length; j++)
+                    disallowedArray[sideNotAllowed[j]] = true;
+            }
+        }
+        public string[] SetSides()
+        {
+            if (Sides != null && Sides.Length > SelectedIndex && Sides[SelectedIndex] != "")
+            {
+                return Sides[SelectedIndex].Split(',');
+            }
+            else
+                return null;
+        }
+
+        public string[,] SetRandomSelectors()
+        {
+            if (RandomSelectors != null && RandomSelectors.Length > SelectedIndex)
+            {
+
+                RandomSides = RandomSelectors[SelectedIndex].Split(',');
 
             }
-            return list;
-        }
-        else return null;
-    }
+            if (RandomSides != null && RandomSelectors.Length > SelectedIndex)
+            {
 
-   
-}
+                string[,] list = new string[RandomSides.Length, 2];
+                for (int i = 0; i < RandomSides.Length; i++)
+                {
+                    list[i, 0] = RandomSides[i];
+
+                    if (RandomSidesIndex != null && RandomSidesIndex.Length > SelectedIndex)
+                        list[i, 1] = RandomSidesIndex[SelectedIndex].Split('&')[i];
+                    else
+                        list[i, 1] = "";
+
+                }
+                return list;
+            }
+            else return null;
+        }
+
+
+    }
 
 }
