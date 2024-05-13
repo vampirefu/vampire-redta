@@ -36,7 +36,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         public string[] RandomSelectors;
         string[] RandomSides;
         string[] RandomSidesIndex;
-
+    
         public string[] Mod;
         private List<string> modIni = new List<string>();
         private List<string> modName = new List<string>();
@@ -72,7 +72,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
         public override void ParseAttributeFromINI(IniFile iniFile, string key, string value)
         {
-
+           
             switch (key)
             {
                 case "Items":
@@ -98,10 +98,10 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
                     if (iniFile.GetStringValue(Name, "Sides", "") != "")
                     {
-
+                        
                         Sides = iniFile.GetStringValue(Name, "Sides", "").Split('|');
                     }
-
+                
 
 
                     if (iniFile.GetStringValue(Name, "RandomSides", "") != "")
@@ -278,21 +278,21 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             }
 
         }
-        /// <summary>
-        /// Applies the drop down's associated code to the map INI file.
-        /// </summary>
-        /// <param name="mapIni">The map INI file.</param>
-        /// <param name="gameMode">Currently selected gamemode, if set.</param>
-        public void ApplyMapCode(IniFile mapIni, GameMode gameMode)
-        {
-            if (dataWriteMode != DropDownDataWriteMode.MAPCODE || SelectedIndex < 0 || SelectedIndex >= Items.Count) return;
+            /// <summary>
+            /// Applies the drop down's associated code to the map INI file.
+            /// </summary>
+            /// <param name="mapIni">The map INI file.</param>
+            /// <param name="gameMode">Currently selected gamemode, if set.</param>
+            public void ApplyMapCode(IniFile mapIni, GameMode gameMode)
+            {
+                if (dataWriteMode != DropDownDataWriteMode.MAPCODE || SelectedIndex < 0 || SelectedIndex >= Items.Count) return;
 
-            string customIniPath;
-            if (Items[SelectedIndex].Tag != null) customIniPath = ((string[])Items[SelectedIndex].Tag)[0];
-            else customIniPath = Items[SelectedIndex].Text;
+                string customIniPath;
+                if (Items[SelectedIndex].Tag != null) customIniPath = ((string[])Items[SelectedIndex].Tag)[0];
+                else customIniPath = Items[SelectedIndex].Text;
 
-            MapCodeHelper.ApplyMapCode(mapIni, customIniPath, gameMode);
-        }
+                MapCodeHelper.ApplyMapCode(mapIni, customIniPath, gameMode);
+            }
 
         public override void OnLeftClick()
         {
@@ -302,62 +302,62 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             base.OnLeftClick();
             UserSelectedIndex = SelectedIndex;
         }
+    
 
+    public void ApplyDisallowedSideIndex(bool[] disallowedArray)
+    {
 
-        public void ApplyDisallowedSideIndex(bool[] disallowedArray)
+        if (DisallowedSideIndiex == null || DisallowedSideIndiex.Length == 0 || SelectedIndex >= DisallowedSideIndiex.Length)
+            return;
+        int[] sideNotAllowed;
+        DisallowedSide = DisallowedSideIndiex[SelectedIndex].Split('-');
+
+        if (DisallowedSide.Length != 0)
         {
 
-            if (DisallowedSideIndiex == null || DisallowedSideIndiex.Length == 0 || SelectedIndex >= DisallowedSideIndiex.Length)
-                return;
-            int[] sideNotAllowed;
-            DisallowedSide = DisallowedSideIndiex[SelectedIndex].Split('-');
-
-            if (DisallowedSide.Length != 0)
-            {
-
-                sideNotAllowed = Array.ConvertAll(DisallowedSide, int.Parse);
-                for (int j = 0; j < DisallowedSide.Length; j++)
-                    disallowedArray[sideNotAllowed[j]] = true;
-            }
+            sideNotAllowed = Array.ConvertAll(DisallowedSide, int.Parse);
+            for (int j = 0; j < DisallowedSide.Length; j++)
+                disallowedArray[sideNotAllowed[j]] = true;
         }
-        public string[] SetSides()
-        {
-            if (Sides != null && Sides.Length > SelectedIndex && Sides[SelectedIndex] != "")
-            {
-                return Sides[SelectedIndex].Split(',');
-            }
-            else
-                return null;
-        }
-
-        public string[,] SetRandomSelectors()
-        {
-            if (RandomSelectors != null && RandomSelectors.Length > SelectedIndex)
-            {
-
-                RandomSides = RandomSelectors[SelectedIndex].Split(',');
-
-            }
-            if (RandomSides != null && RandomSelectors.Length > SelectedIndex)
-            {
-
-                string[,] list = new string[RandomSides.Length, 2];
-                for (int i = 0; i < RandomSides.Length; i++)
-                {
-                    list[i, 0] = RandomSides[i];
-
-                    if (RandomSidesIndex != null && RandomSidesIndex.Length > SelectedIndex)
-                        list[i, 1] = RandomSidesIndex[SelectedIndex].Split('&')[i];
-                    else
-                        list[i, 1] = "";
-
-                }
-                return list;
-            }
-            else return null;
-        }
-
-
     }
+    public string[] SetSides()
+    {
+        if (Sides != null && Sides.Length > SelectedIndex && Sides[SelectedIndex] != "")
+        {
+            return Sides[SelectedIndex].Split(',');
+        }
+        else
+            return null;
+    }
+
+    public string[,] SetRandomSelectors()
+    {
+        if (RandomSelectors != null && RandomSelectors.Length > SelectedIndex)
+        {
+
+            RandomSides = RandomSelectors[SelectedIndex].Split(',');
+
+        }
+        if (RandomSides != null && RandomSelectors.Length > SelectedIndex)
+        {
+
+            string[,] list = new string[RandomSides.Length, 2];
+            for (int i = 0; i < RandomSides.Length; i++)
+            {
+                list[i, 0] = RandomSides[i];
+
+                if (RandomSidesIndex != null && RandomSidesIndex.Length > SelectedIndex)
+                    list[i, 1] = RandomSidesIndex[SelectedIndex].Split('&')[i];
+                else
+                    list[i, 1] = "";
+
+            }
+            return list;
+        }
+        else return null;
+    }
+
+   
+}
 
 }

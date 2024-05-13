@@ -54,7 +54,7 @@ namespace DTAClient.Domain
 
                 GUIDescription = description;
             }
-            GUIDescription = GUIDescription.Replace("@", Environment.NewLine);
+                GUIDescription = GUIDescription.Replace("@", Environment.NewLine);
         }
 
         public bool HasChinese(string str)

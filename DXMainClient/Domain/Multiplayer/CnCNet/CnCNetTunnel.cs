@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rampastring.Tools;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net;
@@ -34,7 +35,7 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
 
                 string address = parts[0];
                 string[] detailedAddress = address.Split(new char[] { ':' });
-
+                
                 tunnel.Address = detailedAddress[0];
                 tunnel.Port = int.Parse(detailedAddress[1]);
                 tunnel.Country = parts[1];
@@ -69,20 +70,20 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
             }
         }
 
-        public string Address { get; set; }
-        public int Port { get; set; }
-        public string Country { get; set; }
-        public string CountryCode { get; set; }
-        public string Name { get; set; }
-        public bool RequiresPassword { get; set; }
-        public int Clients { get; set; }
-        public int MaxClients { get; set; }
-        public bool Official { get; set; }
-        public bool Recommended { get; set; }
-        public double Latitude { get; set; }
-        public double Longitude { get; set; }
-        public int Version { get; set; }
-        public double Distance { get; set; }
+        public string Address { get; private set; }
+        public int Port { get; private set; }
+        public string Country { get; private set; }
+        public string CountryCode { get; private set; }
+        public string Name { get; private set; }
+        public bool RequiresPassword { get; private set; }
+        public int Clients { get; private set; }
+        public int MaxClients { get; private set; }
+        public bool Official { get; private set; }
+        public bool Recommended { get; private set; }
+        public double Latitude { get; private set; }
+        public double Longitude { get; private set; }
+        public int Version { get; private set; }
+        public double Distance { get; private set; }
         public int PingInMs { get; set; } = -1;
 
         /// <summary>

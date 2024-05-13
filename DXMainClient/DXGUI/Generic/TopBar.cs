@@ -90,7 +90,7 @@ namespace DTAClient.DXGUI.Generic
             primarySwitches.Add(switchable);
             btnMainButton.Text = switchable.GetSwitchName() + " (F2)";
             if (switchable.GetSwitchName() == "Game Lobby".L10N("UI:Main:GameLobby"))
-                optionsWindow.tabControl.MakeUnselectable(4);
+              optionsWindow.tabControl.MakeUnselectable(4);
         }
 
         public void RemovePrimarySwitchable(ISwitchable switchable)
@@ -122,7 +122,7 @@ namespace DTAClient.DXGUI.Generic
                 optionsWindow.ToggleMainMenuOnlyOptions(primarySwitches.Count == 1 && !lanMode);
         }
 
-
+       
 
         public void Clean()
         {
@@ -141,7 +141,7 @@ namespace DTAClient.DXGUI.Generic
             btnMainButton = new XNAClientButton(WindowManager);
             btnMainButton.Name = "btnMainButton";
             btnMainButton.ClientRectangle = new Rectangle(12, 9, UIDesignConstants.BUTTON_WIDTH_160, UIDesignConstants.BUTTON_HEIGHT);
-            btnMainButton.Text = "Main Menu (F2)".L10N("UI:Main:MainMenuF2"); 
+            btnMainButton.Text = "Main Menu (F2)".L10N("UI:Main:MainMenuF2");
             btnMainButton.LeftClick += BtnMainButton_LeftClick;
 
             btnCnCNetLobby = new XNAClientButton(WindowManager);
@@ -355,7 +355,7 @@ namespace DTAClient.DXGUI.Generic
         private void BtnOptions_LeftClick(object sender, EventArgs e)
         {
             privateMessageSwitch.SwitchOff();
-
+            
             //optionsWindow.tabControl.MakeUnselectable(4);
             optionsWindow.Open();
             optionsWindow.tabControl.SelectedTab = 0;
@@ -425,10 +425,10 @@ namespace DTAClient.DXGUI.Generic
             this.lanMode = lanMode;
             SetSwitchButtonsClickable(!lanMode);
             if (lanMode)
-
-
+            
+                
                 ConnectionEvent("LAN MODE".L10N("UI:Main:StatusLanMode"));
-
+            
             else
                 ConnectionEvent("OFFLINE".L10N("UI:Main:StatusOffline"));
         }

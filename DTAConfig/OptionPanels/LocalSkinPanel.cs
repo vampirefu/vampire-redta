@@ -12,7 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
+using System.Linq; 
 using System.Text;
 
 
@@ -38,7 +38,7 @@ namespace DTAConfig.OptionPanels
         private XNALabel lblselect;
         private XNALabel lblScreen;
         private XNAClientButton btnDefault;
-
+        
         private List<XNAClientDropDown> DropDown = new List<XNAClientDropDown>();
         private XNALabel lblAllText;
         private bool disableSkinOptionUpdateBroadcast = false;
@@ -56,7 +56,7 @@ namespace DTAConfig.OptionPanels
         public override void Initialize()
         {
             base.Initialize();
-
+            
 
             btnImage = new XNAButton(WindowManager);
             btnImage.ClientRectangle = new Rectangle(250, 80, 400, 250);
@@ -155,7 +155,7 @@ namespace DTAConfig.OptionPanels
             BtnSaveLoadSkinOptions.IdleTexture = AssetLoader.LoadTexture("optionsButton.png");
             BtnSaveLoadSkinOptions.HoverTexture = AssetLoader.LoadTexture("optionsButton_c.png");
             BtnSaveLoadSkinOptions.ClientRectangle = new Rectangle(600, 15, 30, 30);
-
+            
 
             if (BtnSaveLoadSkinOptions != null)
             {
@@ -209,7 +209,7 @@ namespace DTAConfig.OptionPanels
             }
 
             disableSkinOptionUpdateBroadcast = false;
-
+            
             return true;
         }
 
@@ -421,7 +421,7 @@ namespace DTAConfig.OptionPanels
         {
             if (NameBox.SelectedItem == null)
             {
-
+                
                 return;
             }
             //  List<string> file = new List<string>();
