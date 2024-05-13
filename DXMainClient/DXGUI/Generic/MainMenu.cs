@@ -23,6 +23,7 @@ using System.Threading;
 using ClientUpdater;
 using System.Drawing.Design;
 using System.Text;
+using System.Globalization;
 
 namespace DTAClient.DXGUI.Generic
 {
@@ -39,13 +40,13 @@ namespace DTAClient.DXGUI.Generic
         /// Creates a new instance of the main menu.
         /// </summary>
         public MainMenu(
-            WindowManager windowManager, 
+            WindowManager windowManager,
             SkirmishLobby skirmishLobby,
-            LANLobby lanLobby, 
-            TopBar topBar, 
+            LANLobby lanLobby,
+            TopBar topBar,
             OptionsWindow optionsWindow,
             CnCNetLobby cncnetLobby,
-            CnCNetManager connectionManager, 
+            CnCNetManager connectionManager,
             DiscordHandler discordHandler,
             CnCNetGameLoadingLobby cnCNetGameLoadingLobby,
             CnCNetGameLobby cnCNetGameLobby,
@@ -75,6 +76,10 @@ namespace DTAClient.DXGUI.Generic
         private XNALabel lblCnCNetPlayerCount;
         private XNALinkLabel lblUpdateStatus;
         private XNALinkLabel lblVersion;
+        /// <summary>
+        /// 平台声明
+        /// </summary>
+        private XNALinkLabel lblSoftState;
 
         private CnCNetLobby cncnetLobby;
 
@@ -141,7 +146,7 @@ namespace DTAClient.DXGUI.Generic
         /// </summary>
         public override void Initialize()
         {
-            
+
             topBar.SetSecondarySwitch(cncnetLobby);
             GameProcessLogic.GameProcessExited += SharedUILogic_GameProcessExited;
 
@@ -197,7 +202,7 @@ namespace DTAClient.DXGUI.Generic
             btnOptions.HoverTexture = AssetLoader.LoadTexture("MainMenu/options_c.png");
             btnOptions.HoverSoundEffect = new EnhancedSoundEffect("MainMenu/button.wav");
             btnOptions.LeftClick += BtnOptions_LeftClick;
-            btnOptions.Text =  "Options".L10N("UI:Main:Options");
+            btnOptions.Text = "Options".L10N("UI:Main:Options");
 
             btnMapEditor = new XNAClientButton(WindowManager);
             btnMapEditor.Name = nameof(btnMapEditor);
@@ -250,7 +255,10 @@ namespace DTAClient.DXGUI.Generic
             lblVersion = new XNALinkLabel(WindowManager);
             lblVersion.Name = nameof(lblVersion);
             lblVersion.LeftClick += LblVersion_LeftClick;
-            
+
+            //软件声明
+            lblSoftState = new XNALinkLabel(WindowManager);
+            lblSoftState.Name = nameof(lblSoftState);
 
             lblUpdateStatus = new XNALinkLabel(WindowManager);
             lblUpdateStatus.Name = nameof(lblUpdateStatus);
@@ -270,11 +278,12 @@ namespace DTAClient.DXGUI.Generic
             AddChild(btnExit);
             AddChild(lblCnCNetStatus);
             AddChild(lblCnCNetPlayerCount);
-        
+            AddChild(lblSoftState);
+
             if (!ClientConfiguration.Instance.ModMode)
             {
                 // ModMode disables version tracking and the updater if it's enabled
-                
+
                 AddChild(lblVersion);
                 AddChild(lblUpdateStatus);
 
@@ -295,20 +304,20 @@ namespace DTAClient.DXGUI.Generic
                 ini.WriteIniFile();
             }
 
-            
+
             base.Initialize(); // Read control attributes from INI
-            
+            lblSoftState.Text = "本平台及Mod均不收费";
+            lblSoftState.ClientRectangle = new Rectangle(1000, 740, lblSoftState.Width, lblSoftState.Height);
+
             innerPanel = new MainMenuDarkeningPanel(WindowManager, discordHandler);
-            innerPanel.ClientRectangle = new Rectangle(0, 0,
-                Width,
-                Height);
+            innerPanel.ClientRectangle = new Rectangle(0, 0, Width, Height);
             innerPanel.DrawOrder = int.MaxValue;
             innerPanel.UpdateOrder = int.MaxValue;
             AddChild(innerPanel);
             innerPanel.Hide();
 
             lblVersion.Text = Updater.GameVersion;
-           
+
 
             innerPanel.UpdateQueryWindow.UpdateDeclined += UpdateQueryWindow_UpdateDeclined;
             innerPanel.UpdateQueryWindow.UpdateAccepted += UpdateQueryWindow_UpdateAccepted;
@@ -346,7 +355,7 @@ namespace DTAClient.DXGUI.Generic
 
             SetButtonHotkeys(true);
 
-            
+
         }
 
         private void SetButtonHotkeys(bool enableHotkeys)
@@ -870,8 +879,8 @@ namespace DTAClient.DXGUI.Generic
             optionsWindow.tabControl.MakeSelectable(4);
         }
 
-            private void BtnLoadGame_LeftClick(object sender, EventArgs e)
-            => innerPanel.Show(innerPanel.GameLoadingWindow);
+        private void BtnLoadGame_LeftClick(object sender, EventArgs e)
+        => innerPanel.Show(innerPanel.GameLoadingWindow);
 
         private void BtnLan_LeftClick(object sender, EventArgs e)
         {
