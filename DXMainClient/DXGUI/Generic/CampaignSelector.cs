@@ -11,10 +11,6 @@ using Rampastring.Tools;
 using ClientUpdater;
 using Localization;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.Versioning;
-
-//using static System.Windows.Forms.VisualStyles.VisualStyleElement.Menu;
 
 namespace DTAClient.DXGUI.Generic
 {
@@ -50,8 +46,6 @@ namespace DTAClient.DXGUI.Generic
 
         private XNALabel lbGameSpeed;
         private XNADropDown ddGameSpeed;
-        private XNALabel lbGameMod;
-        private XNADropDown ddGameMod;
 
 
 
@@ -59,8 +53,6 @@ namespace DTAClient.DXGUI.Generic
 
         List<string> difficultyList = new List<string>();
         List<string> sideList = new List<string>();
-        Dictionary<string, string[]> Mod = new Dictionary<string, string[]>();
-        Dictionary<string, List<string[]>> ModParent = new Dictionary<string, List<string[]>>();
 
         private string[] filesToCheck = new string[]
         {
@@ -105,15 +97,15 @@ namespace DTAClient.DXGUI.Generic
             lblScreen.Text = "Screen:".L10N("UI:Campaign:Screen");
             lblScreen.ClientRectangle = new Rectangle(10, 35, 0, 0);
 
-            dddifficulty = new XNADropDown(WindowManager); 
+            dddifficulty = new XNADropDown(WindowManager);
             dddifficulty.Name = nameof(dddifficulty);
             dddifficulty.ClientRectangle = new Rectangle(10, 55, 100, 25);
-            
+
 
             ddside = new XNADropDown(WindowManager);
             ddside.Name = nameof(ddside);
             ddside.ClientRectangle = new Rectangle(dddifficulty.X + dddifficulty.Width + 5, dddifficulty.Y, dddifficulty.Width, dddifficulty.Height);
-            
+
             var lblMissionDescriptionHeader = new XNALabel(WindowManager);
             lblMissionDescriptionHeader.Name = "lblMissionDescriptionHeader";
             lblMissionDescriptionHeader.FontIndex = 1;
@@ -155,26 +147,10 @@ namespace DTAClient.DXGUI.Generic
             trbDifficultySelector.ButtonTexture = AssetLoader.LoadTextureUncached(
                 "trackbarButton_difficulty.png");
 
-            lbGameSpeed = new XNALabel(WindowManager);
-            lbGameSpeed.Name = "lbGameSpeed";
-            lbGameSpeed.Text = "Game Speed".L10N("UI:Main:GameSpeed");
-            lbGameSpeed.FontIndex = 1;
-            lbGameSpeed.ClientRectangle = new Rectangle();
-
-            lbGameMod = new XNALabel(WindowManager);
-            lbGameMod.Name = "lbGameMod";
-            lbGameMod.Text = "Mod：".L10N("UI:Main:GameMod");
-            lbGameMod.FontIndex = 1;
-            lbGameMod.ClientRectangle = new Rectangle(trbDifficultySelector.X + 220, trbDifficultySelector.Y - 15, 0, 0);
-
-            ddGameMod = new XNADropDown(WindowManager);
-            ddGameMod.Name = "ddGameMod";
-            ddGameMod.ClientRectangle = new Rectangle(lbGameMod.X + 60, lbGameMod.Y, 160, 40);
-
             ddGameSpeed = new XNADropDown(WindowManager);
             ddGameSpeed.Name = "ddGameSpeed";
-            ddGameSpeed.ClientRectangle = new Rectangle(lbGameMod.X - 100, lbGameMod.Y, 80, 40);
-            
+            ddGameSpeed.ClientRectangle = new Rectangle(trbDifficultySelector.X + 120, trbDifficultySelector.Y - 15, 80, 40);
+
             for (int i = 6; i >= 0; i--)
             {
                 ddGameSpeed.AddItem(i.ToString());
@@ -186,7 +162,7 @@ namespace DTAClient.DXGUI.Generic
             lbGameSpeed.Name = "lbGameSpeed";
             lbGameSpeed.Text = "Game Speed:".L10N("UI:Main:GameSpeed");
             lbGameSpeed.FontIndex = 1;
-            lbGameSpeed.ClientRectangle = new Rectangle(ddGameSpeed.X - 100, lbGameMod.Y, 0, 0);
+            lbGameSpeed.ClientRectangle = new Rectangle(ddGameSpeed.X - 100, trbDifficultySelector.Y - 15, 0, 0);
 
 
             var lblEasy = new XNALabel(WindowManager);
@@ -241,8 +217,6 @@ namespace DTAClient.DXGUI.Generic
             AddChild(lblEasy);
             AddChild(lblNormal);
             AddChild(lblHard);
-            AddChild(lbGameMod);
-            AddChild(ddGameMod);
             AddChild(lbGameSpeed);
             AddChild(ddGameSpeed);
             // Set control attributes from INI file
@@ -280,7 +254,7 @@ namespace DTAClient.DXGUI.Generic
                 ddside.AddItem(item);
             }
 
-            
+
 
             ddside.SelectedIndexChanged += Dddifficulty_SelectedIndexChanged;
             dddifficulty.SelectedIndexChanged += Dddifficulty_SelectedIndexChanged;
@@ -293,7 +267,7 @@ namespace DTAClient.DXGUI.Generic
             cheaterWindow.CenterOnParent();
             cheaterWindow.YesClicked += CheaterWindow_YesClicked;
             cheaterWindow.Disable();
-            
+
         }
 
         private void Dddifficulty_SelectedIndexChanged(object sender, EventArgs e)
@@ -342,47 +316,8 @@ namespace DTAClient.DXGUI.Generic
                 btnLaunch.AllowClick = false;
                 return;
             }
-           
-            //改变
 
             Mission mission = Missions[lbCampaignList.SelectedIndex];
-
-
-            ddGameMod.Items.Clear();
-
-            foreach (string s in mission.Mod)
-            {
-                //XNADropDownItem item = new XNADropDownItem();
-                //item.Text = Mod[s][0];
-                //item.Tag = Mod[s][1];
-                //ddGameMod.AddItem(item);
-                //ddGameMod.SelectedIndex = mission.defaultMod;
-                if (s != "")
-                {
-                XNADropDownItem item = new XNADropDownItem();
-                    item.Text = Mod[s][1];
-                    item.Tag = new string[] { Mod[s][0], Mod[s][2], Mod[s][3] };
-
-                    if (ddGameMod.Items.Find(i => i.Text == item.Text && i.Tag == item.Tag) == null)
-                ddGameMod.AddItem(item);
-                ddGameMod.SelectedIndex = mission.defaultMod;
-            }
-            
-                    if (ModParent.ContainsKey(s) && ModParent[s].Count != 0)
-                    {
-                        for (int i = 0; i < ModParent[s].Count; i++)
-                        {
-                            XNADropDownItem item1 = new XNADropDownItem();
-                            item1.Text = ModParent[s][i][1];
-                            item1.Tag = new string[] { ModParent[s][i][0], ModParent[s][i][2], ModParent[s][i][3] };
-
-                            if (ddGameMod.Items.Find(i => i.Text == item1.Text) == null)
-                                ddGameMod.AddItem(item1);
-                        }
-                    }
-                }
-            }
-            ddGameMod.SelectedIndex = ddGameMod.Items.FindIndex(i => ((object[])i.Tag)[0].ToString() == mission.defaultMod);
 
             if (string.IsNullOrEmpty(mission.Scenario))
             {
@@ -423,7 +358,6 @@ namespace DTAClient.DXGUI.Generic
                 return;
             }
 
-
             LaunchMission(mission);
         }
 
@@ -446,9 +380,9 @@ namespace DTAClient.DXGUI.Generic
                 }
             }
         }
+
         public void CopyDirectory(string sourceDirPath, string saveDirPath)
         {
-
             if (sourceDirPath != null && sourceDirPath != "")
             {
 
@@ -468,7 +402,10 @@ namespace DTAClient.DXGUI.Generic
 
         protected List<string> GetDeleteFile(string oldGame)
         {
-            if (oldGame == null || oldGame == "")
+            if (string.IsNullOrEmpty(oldGame))
+                return null;
+
+            if (!Directory.Exists(oldGame))
                 return null;
 
             List<string> deleteFile = new List<string>();
@@ -476,13 +413,13 @@ namespace DTAClient.DXGUI.Generic
             foreach (string file in Directory.GetFiles(oldGame))
             {
                 deleteFile.Add(Path.GetFileName(file));
-               
+
             }
 
             return deleteFile;
         }
 
-      
+
         private bool AreFilesModified()
         {
             foreach (string filePath in filesToCheck)
@@ -513,22 +450,8 @@ namespace DTAClient.DXGUI.Generic
             Logger.Log("About to write spawn.ini.");
 
             IniFile spawnReader = new IniFile(SafePath.CombineFilePath(ProgramConstants.GamePath, "spawn.ini"));
-
-            string oldGame = spawnReader.GetStringValue("Settings", "Game", "INI\\Game Options\\Game\\YR");
-            string newGame = (string)ddGameMod.SelectedItem?.Tag;
-            string oldAttached = spawnReader.GetStringValue("Settings", "Attached", string.Empty);
-            string newAttached = mission.Attached;
             string oldAi = spawnReader.GetStringValue("Settings", "AI", "INI\\Game Options\\AI\\Other");
             string newAi = "INI\\Game Options\\AI\\Other";
-
-            
-
-            //如果和前一次使用的游戏不一样
-            if (oldGame != newGame)
-            {
-                DelFile(GetDeleteFile(oldGame));
-                CopyDirectory(newGame, "./");
-            }
 
             if (oldAi != newAi)
             {
@@ -536,15 +459,8 @@ namespace DTAClient.DXGUI.Generic
                 CopyDirectory(newAi, "./");
             }
 
-            if (oldAttached != newAttached)
-            {
-                //Logger.Log("111");
-                DelFile(GetDeleteFile(oldAttached));
-                CopyDirectory(newAttached, "./");
-            }
-
             using var spawnStreamWriter = new StreamWriter(SafePath.CombineFilePath(ProgramConstants.GamePath, "spawn.ini"));
-            
+
             spawnStreamWriter.WriteLine("; Generated by DTA Client");
             //spawnStreamWriter.WriteLine("[Actions]");
             //spawnStreamWriter.WriteLine("01000022=1,16,0,0,0,0,0,0,A");
@@ -565,13 +481,7 @@ namespace DTAClient.DXGUI.Generic
             if (UserINISettings.Instance.GameSpeed == 0)
                 UserINISettings.Instance.GameSpeed.Value = 1;
 
-            //写入当前游戏
-            spawnStreamWriter.WriteLine("Game=" + newGame);
-            //spawnStreamWriter.WriteLine($"Game=INI/Game Options/Game/YR_RA2");
             spawnStreamWriter.WriteLine("AI=" + newAi);
-            
-            spawnStreamWriter.WriteLine("Attached=" + newAttached);
-            Logger.Log(newAttached);
             spawnStreamWriter.WriteLine("CampaignID=" + mission.Index);
             //spawnStreamWriter.WriteLine("GameSpeed=" + UserINISettings.Instance.GameSpeed);
             spawnStreamWriter.WriteLine("GameSpeed=" + ddGameSpeed.SelectedItem?.Text);
@@ -637,14 +547,13 @@ namespace DTAClient.DXGUI.Generic
         {
             lbCampaignList.Clear();
             Missions.Clear();
-            Mod.Clear();
             string path = @"INI/";
 
             var files = Directory.GetFiles(path, "Battle*.ini");
 
             foreach (var file in files)
             {
-               // Logger.Log(file);
+                // Logger.Log(file);
                 ParseBattleIni(file);
             }
 
@@ -662,7 +571,7 @@ namespace DTAClient.DXGUI.Generic
         /// <returns>True if succesful, otherwise false.</returns>
         private bool ParseBattleIni(string path)
         {
-            
+
             Logger.Log("Attempting to parse " + path + " to populate mission list.");
 
             FileInfo battleIniFileInfo = SafePath.GetFile(ProgramConstants.GamePath, path);
@@ -676,60 +585,19 @@ namespace DTAClient.DXGUI.Generic
             //{
             //    throw new InvalidOperationException("Loading multiple Battle*.ini files is not supported anymore.");
             //}
-          
-
 
             var battleIni = new IniFile(battleIniFileInfo.FullName);
-
-            //List<string> modKeys = battleIni.GetSectionKeys("Mod");
-            //if (modKeys != null)
-            //for (int i = 0; i < modKeys.Count; i++)
-            //{
-            //    string modSection = battleIni.GetStringValue("Mod", modKeys[i], "NOT FOUND");
-
-            //    Mod.Add(modSection, new string[] { battleIni.GetStringValue(modSection, "Text", string.Empty).L10N("UI:ModName:"+ modSection), battleIni.GetStringValue(modSection, "Path", string.Empty) });
-
-            //}
-            string iniDir = SafePath.CombineDirectoryPath(ProgramConstants.GamePath, "INI");
-            IniFile modIni = new IniFile(SafePath.CombineFilePath(iniDir, "Mod.ini"));
-            List<string> modKeys = new List<string>();
-            foreach (var modkey in modIni.GetSectionKeys("Game"))
-            {
-                modKeys.Add(modkey);
-                string modSection = modIni.GetStringValue("Game", modkey, "NOT FOUND");
-                if (Mod.ContainsKey(modSection)) { continue; }
-                //键为mod注册名，值为数组:mod名，mod文件路径，mod继承自哪个
-                Mod.Add(modSection, new string[] {
-                        modSection,
-                        modIni.GetStringValue(modSection, "Text", modSection).L10N("UI:ModName:" + modSection),
-                        modIni.GetStringValue(modSection, "File", $"INI\\Game Options\\Game\\{modSection}"),
-                        modIni.GetStringValue(modSection,"Main",string.Empty)});
-
-                string p = modIni.GetStringValue(modSection, "Parent", string.Empty);
-                if (p != string.Empty)
-                {
-                    if (!ModParent.ContainsKey(p))
-                        ModParent[p] = new List<string[]>();
-                    ModParent[p].Add(new string[] {
-                            modSection,
-                            modIni.GetStringValue(modSection, "Text", modSection).L10N("UI:ModName:" + modSection),
-                            modIni.GetStringValue(modSection, "File", $"INI\\Game Options\\Game\\{modSection}"),
-                            modIni.GetStringValue(modSection,"Main",string.Empty)
-                        });
-                }
-            }
 
             List<string> battleKeys = battleIni.GetSectionKeys("Battles");
 
             if (battleKeys == null)
                 return false; // File exists but [Battles] doesn't
 
-          
-                for (int i = 0; i < battleKeys.Count; i++)
+            for (int i = 0; i < battleKeys.Count; i++)
             {
                 string battleEntry = battleKeys[i];
                 string battleSection = battleIni.GetStringValue("Battles", battleEntry, "NOT FOUND");
- 
+
                 if (!battleIni.SectionExists(battleSection))
                     continue;
 
@@ -748,7 +616,7 @@ namespace DTAClient.DXGUI.Generic
                     sideList.Add(mission.IconPath);
 
                 Missions.Add(mission);
-                
+
                 var item = new XNAListBoxItem();
                 item.Text = mission.GUIName.L10N("UI:MissionName:" + mission.sectionName);
                 item.Tag = mission.sectionName;
@@ -772,10 +640,8 @@ namespace DTAClient.DXGUI.Generic
                     item.Texture = AssetLoader.LoadTexture(mission.IconPath + "icon.png");
 
                 lbCampaignList.AddItem(item);
-                
-            }
 
-            
+            }
 
             Logger.Log("Finished parsing " + path + ".");
             return true;

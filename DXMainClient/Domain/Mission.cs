@@ -24,14 +24,17 @@ namespace DTAClient.Domain
             IconPath = iniFile.GetStringValue(sectionName, "SideName", string.Empty);
             GUIDescription = iniFile.GetStringValue(sectionName, "LongDescription", string.Empty).L10N("UI:MissionText:" + sectionName);
             FinalMovie = iniFile.GetStringValue(sectionName, nameof(FinalMovie), "none");
-            RequiredAddon = iniFile.GetBooleanValue(sectionName, nameof(RequiredAddon), false);
+            RequiredAddon = iniFile.GetBooleanValue(sectionName, nameof(RequiredAddon),
+#if YR || ARES
+                true  // In case of YR this toggles Ra2Mode instead which should not be default
+#else
+                false
+#endif
+            );
             Enabled = iniFile.GetBooleanValue(sectionName, nameof(Enabled), true);
             BuildOffAlly = iniFile.GetBooleanValue(sectionName, nameof(BuildOffAlly), false);
             PlayerAlwaysOnNormalDifficulty = iniFile.GetBooleanValue(sectionName, nameof(PlayerAlwaysOnNormalDifficulty), false);
-            Mod = iniFile.GetStringValue(sectionName, "Mod", string.Empty).Split(',').ToList();
-            //defaultMod = iniFile.GetIntValue(sectionName, "defaultMod", 0);
-            defaultMod = iniFile.GetStringValue(sectionName, "defaultMod", Mod[0]);
-            Attached = iniFile.GetStringValue(sectionName, "Attached", string.Empty);
+            
             difficulty = iniFile.GetStringValue(sectionName, "difficulty", "一般"); //难度筛选用
 
             // GUIDescription = GUIDescription.Replace("@", Environment.NewLine);
@@ -46,7 +49,6 @@ namespace DTAClient.Domain
                     s1 = s + '@';
                     if (s1.Length > 31)
                     {
-                        // Logger.Log(s1);
                         s1 = InsertFormat(s1, 31, "@");
                     }
                     description += s1;
@@ -74,11 +76,8 @@ namespace DTAClient.Domain
         public bool Enabled { get; }
         public bool BuildOffAlly { get; }
         public bool PlayerAlwaysOnNormalDifficulty { get; }
-        public List<string> Mod { get; }
-        public string defaultMod { get; }
+        
         public string sectionName { get; }
-
-        public string Attached { get; }
         public string difficulty { get; }
         private string InsertFormat(string input, int interval, string value)
         {
