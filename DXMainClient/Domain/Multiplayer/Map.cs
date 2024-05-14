@@ -215,9 +215,6 @@ namespace DTAClient.Domain.Multiplayer
         [JsonInclude]
         public List<string> waypoints = new List<string>();
 
-        [JsonInclude]
-        public string Attached="";
-
         /// <summary>
         /// The pixel coordinates of the map's player starting locations.
         /// </summary>
@@ -270,17 +267,13 @@ namespace DTAClient.Domain.Multiplayer
                 string baseSectionName = iniFile.GetStringValue(BaseFilePath, "BaseSection", string.Empty);
 
                 if (!string.IsNullOrEmpty(baseSectionName))
-                    iniFile.CombineSections(baseSectionName, BaseFilePath);
-
-                
+                    iniFile.CombineSections(baseSectionName, BaseFilePath);      
 
                 var section = iniFile.GetSection(BaseFilePath.Remove(BaseFilePath.Length-4));
 
                 Name = section.GetStringValue("Description", "Unnamed map");
                 Author = section.GetStringValue("Author", "Unknown author");
                 GameModes = section.GetStringValue("GameModes", "Default").Split(',');
-
-                Attached = section.GetStringValue("Attached", string.Empty);
 
                 MinPlayers = section.GetIntValue("MinPlayers", 0);
                 MaxPlayers = section.GetIntValue("MaxPlayers", 0);
