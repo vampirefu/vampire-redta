@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Diagnostics;
+using System.Linq;
+
 #if WINFORMS
 using System.Windows.Forms;
 #endif
@@ -233,7 +235,7 @@ namespace DTAConfig.OptionPanels
             chkRandom_wallpaper.Name = "chkRandom_wallpaper";
             chkRandom_wallpaper.ClientRectangle = new Rectangle(
                 lblClientResolution.X,
-                ddRenderer.Bottom + 16, 0, 0);
+                ddRenderer.Bottom + 16 + 24, 0, 0);//ddRenderer.Bottom + 16
             chkRandom_wallpaper.Text = "Random start cover".L10N("UI:Main:RanWall");
             chkRandom_wallpaper.Checked = false;
 
@@ -284,7 +286,7 @@ namespace DTAConfig.OptionPanels
 
             int languageCount = ClientConfiguration.Instance.LanguageCount;
 
-            
+
             for (int i = 0; i < languageCount; i++)
             {
                 XNADropDownItem item1 = new XNADropDownItem();
@@ -299,7 +301,7 @@ namespace DTAConfig.OptionPanels
                 ddLanguage.Visible = false;
             }
 
-                int VoiceCount = ClientConfiguration.Instance.VoiceCount;
+            int VoiceCount = ClientConfiguration.Instance.VoiceCount;
             for (int i = 0; i < VoiceCount; i++)
             {
                 XNADropDownItem item1 = new XNADropDownItem();
@@ -309,7 +311,8 @@ namespace DTAConfig.OptionPanels
             }
 
             int themeCount = ClientConfiguration.Instance.ThemeCount;
-            for (int i = 0; i < themeCount; i++) {
+            for (int i = 0; i < themeCount; i++)
+            {
                 XNADropDownItem item1 = new XNADropDownItem();
                 item1.Text = ClientConfiguration.Instance.GetThemeInfoFromIndex(i)[0].L10N("UI:Themes:" + ClientConfiguration.Instance.GetThemeInfoFromIndex(i)[0]);
                 item1.Tag = ClientConfiguration.Instance.GetThemeInfoFromIndex(i)[0];
@@ -384,7 +387,7 @@ namespace DTAConfig.OptionPanels
             AddChild(ddDetailLevel);
             AddChild(lblIngameResolution);
             AddChild(ddIngameResolution);
-            AddChild(lblLanguage); 
+            AddChild(lblLanguage);
             AddChild(ddLanguage);
             AddChild(lblVoice);
             AddChild(ddVoice);
@@ -823,12 +826,12 @@ namespace DTAConfig.OptionPanels
                     File.Copy(file, pFilePath, true);
                 }
                 string[] folders = System.IO.Directory.GetDirectories(sourceDirPath);
-                                foreach (string folder in folders)
-                                     {
-                                       string name = System.IO.Path.GetFileName(folder);
-                                        string dest = System.IO.Path.Combine(saveDirPath, name);
-                                    CopyDirectory(folder, dest);//构建目标路径,递归复制文件
-                                    }
+                foreach (string folder in folders)
+                {
+                    string name = System.IO.Path.GetFileName(folder);
+                    string dest = System.IO.Path.Combine(saveDirPath, name);
+                    CopyDirectory(folder, dest);//构建目标路径,递归复制文件
+                }
             }
         }
 
@@ -911,26 +914,26 @@ namespace DTAConfig.OptionPanels
 
             if (IniSettings.Voice != (string)ddVoice.SelectedItem.Tag)
             {
-              
+
                 File.Delete(ProgramConstants.GamePath + "audiomd.mix");
                 File.Delete(ProgramConstants.GamePath + "audio.mix");
                 File.Delete(ProgramConstants.GamePath + "expandmd51.mix");
                 File.Delete(ProgramConstants.GamePath + "expandmd50.mix");
                 CopyDirectory(voice, "./");
-              
+
             }
 
             if (IniSettings.ClientTheme != (string)ddClientTheme.SelectedItem.Tag)
             {
-         
+
                 restartRequired = true;
             }
-            
 
-            
+
+
             IniSettings.Voice.Value = (string)ddVoice.SelectedItem.Tag;
             IniSettings.ClientTheme.Value = (string)ddClientTheme.SelectedItem.Tag;
-    
+
             //随机壁纸
             IniSettings.Random_wallpaper.Value = chkRandom_wallpaper.Checked;
 
@@ -1016,6 +1019,10 @@ namespace DTAConfig.OptionPanels
                 screenResolutions.Add(resolution);
             }
 
+            //新增1000*600分辨率支持
+            var subResolution = new ScreenResolution(1000, 600);
+            if (!screenResolutions.Any(res => res.Equals(subResolution)))
+                screenResolutions.Add(subResolution);
             return screenResolutions;
         }
 
