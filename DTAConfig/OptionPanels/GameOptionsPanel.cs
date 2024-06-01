@@ -92,7 +92,7 @@ namespace DTAConfig.OptionPanels
             //选择游戏
             var lblGameMod = new XNALabel(WindowManager);
             lblGameMod.Name = "lblGameMod";
-            lblGameMod.ClientRectangle = new Rectangle(400,chkScrollCoasting.Y,0,0);
+            lblGameMod.ClientRectangle = new Rectangle(400, chkScrollCoasting.Y, 0, 0);
             lblGameMod.Text = "Mod:".L10N("UI:DTAConfig:Mod");
 
             ddGameMod = new XNAClientDropDown(WindowManager);
@@ -200,6 +200,10 @@ namespace DTAConfig.OptionPanels
             AddChild(btnConfigureHotkeys);
             AddChild(lblGameMod);
             AddChild(ddGameMod);
+
+            //屏蔽设置界面的mod选项
+            lblGameMod.Visible = false;
+            ddGameMod.Visible = false;
         }
 
         private void BtnConfigureHotkeys_LeftClick(object sender, EventArgs e)
@@ -227,7 +231,7 @@ namespace DTAConfig.OptionPanels
         public override void Load()
         {
             base.Load();
-            
+
             int scrollRate = ReverseScrollRate(IniSettings.ScrollRate);
 
             if (scrollRate >= trbScrollRate.MinValue && scrollRate <= trbScrollRate.MaxValue)
@@ -235,7 +239,7 @@ namespace DTAConfig.OptionPanels
                 trbScrollRate.Value = scrollRate;
                 lblScrollRateValue.Text = scrollRate.ToString();
             }
-            
+
             ddGameMod.SelectedIndex = UserINISettings.Instance.GameModSelect;
 
 
@@ -265,7 +269,8 @@ namespace DTAConfig.OptionPanels
             if (playerName.Length > 0)
                 IniSettings.PlayerName.Value = playerName;
 
-            if (ddGameMod.SelectedIndex != IniSettings.GameModSelect) {
+            if (ddGameMod.SelectedIndex != IniSettings.GameModSelect)
+            {
                 restartRequired = true;
 
                 List<string> deleteFile = new List<string>();
@@ -273,10 +278,10 @@ namespace DTAConfig.OptionPanels
                     deleteFile.Add(Path.GetFileName(file));
 
                 DelFile(deleteFile);
-                CopyDirectory(UserINISettings.Instance.GameModPath.Value.Split(',')[ddGameMod.SelectedIndex],"./");
+                CopyDirectory(UserINISettings.Instance.GameModPath.Value.Split(',')[ddGameMod.SelectedIndex], "./");
 
                 IniSettings.GameModSelect.Value = ddGameMod.SelectedIndex;
-        }
+            }
             return restartRequired;
         }
 
