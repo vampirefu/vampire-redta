@@ -26,7 +26,7 @@ namespace DTAClient.Domain.Multiplayer
         /// <summary>
         /// List of game modes.
         /// </summary>
-        public List<GameMode> GameModes = new List<GameMode>();
+        public List<GameMode> GameModes { get; set; } = new List<GameMode>();
 
         public GameModeMapCollection GameModeMaps;
 
@@ -110,7 +110,7 @@ namespace DTAClient.Domain.Multiplayer
 
                 //Logger.Log(mapFilePathValue);
 
-               // mapFilePathValue = mapFilePathValue + ".map";
+                // mapFilePathValue = mapFilePathValue + ".map";
 
                 Map map = new Map(mapFilePathValue + ".map");
 
@@ -137,7 +137,7 @@ namespace DTAClient.Domain.Multiplayer
                     if (!string.IsNullOrEmpty(gameModeName))
                     {
                         GameMode gm = new GameMode(gameModeName);
-                        
+
                         GameModes.Add(gm);
                     }
                 }
@@ -157,15 +157,15 @@ namespace DTAClient.Domain.Multiplayer
                     GameModeAliases.Add(key, mpMapsIni.GetStringValue(GameModeAliasesSection, key, string.Empty).Split(
                         new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries));
                 }
-                
+
             }
         }
 
         private void LoadCustomMaps()
         {
-           // DirectoryInfo customMapsDirectory = SafePath.GetDirectory(ProgramConstants.GamePath, CUSTOM_MAPS_DIRECTORY);
+            // DirectoryInfo customMapsDirectory = SafePath.GetDirectory(ProgramConstants.GamePath, CUSTOM_MAPS_DIRECTORY);
 
-            foreach(DirectoryInfo customMapsDirectory in new DirectoryInfo[] {SafePath.GetDirectory(ProgramConstants.GamePath, CUSTOM_MAPS_DIRECTORY), SafePath.GetDirectory(ProgramConstants.GamePath, "")})
+            foreach (DirectoryInfo customMapsDirectory in new DirectoryInfo[] { SafePath.GetDirectory(ProgramConstants.GamePath, CUSTOM_MAPS_DIRECTORY), SafePath.GetDirectory(ProgramConstants.GamePath, "") })
             {
                 if (!customMapsDirectory.Exists)
                 {
@@ -174,44 +174,44 @@ namespace DTAClient.Domain.Multiplayer
                 }
 
                 //IEnumerable<FileInfo> mapFiles = customMapsDirectory.EnumerateFiles($"*{MAP_FILE_EXTENSION}");
-               
+
                 ConcurrentDictionary<string, Map> customMapCache = LoadCustomMapCache();
                 var localMapSHAs = new List<string>();
 
                 var tasks = new List<Task>();
 
-                foreach(IEnumerable<FileInfo> mapFiles in new List<IEnumerable<FileInfo>> { customMapsDirectory.EnumerateFiles($"*{MAP_FILE_EXTENSION}"), customMapsDirectory.EnumerateFiles($"*{"yrm"}"), customMapsDirectory.EnumerateFiles($"*{"mpr"}") })
+                foreach (IEnumerable<FileInfo> mapFiles in new List<IEnumerable<FileInfo>> { customMapsDirectory.EnumerateFiles($"*{MAP_FILE_EXTENSION}"), customMapsDirectory.EnumerateFiles($"*{"yrm"}"), customMapsDirectory.EnumerateFiles($"*{"mpr"}") })
 
-                foreach (FileInfo mapFile in mapFiles)
-                {
-
-                    // this must be Task.Factory.StartNew for XNA/.Net 4.0 compatibility
-                    tasks.Add(Task.Factory.StartNew(() =>
+                    foreach (FileInfo mapFile in mapFiles)
                     {
-                        string baseFilePath = mapFile.FullName.Substring(ProgramConstants.GamePath.Length);
-                        // baseFilePath = baseFilePath.Substring(0, baseFilePath.Length - 4);
 
-
-
-                        Map map = new Map(baseFilePath
-                            .Replace(Path.DirectorySeparatorChar, '/')
-                            .Replace(Path.AltDirectorySeparatorChar, '/'), mapFile.FullName);
-
-
-
-                        map.CalculateSHA();
-
-                        localMapSHAs.Add(map.SHA1);
-
-                        // Logger.Loh(customMapCache.ContainsKey(map.SHA1).ToString() );
-                        if (map.SetInfoFromCustomMap() && !customMapCache.ContainsKey(map.SHA1))
+                        // this must be Task.Factory.StartNew for XNA/.Net 4.0 compatibility
+                        tasks.Add(Task.Factory.StartNew(() =>
                         {
-                            customMapCache.TryAdd(map.SHA1, map);
+                            string baseFilePath = mapFile.FullName.Substring(ProgramConstants.GamePath.Length);
+                            // baseFilePath = baseFilePath.Substring(0, baseFilePath.Length - 4);
 
-                        }
 
-                    }));
-                }
+
+                            Map map = new Map(baseFilePath
+                                .Replace(Path.DirectorySeparatorChar, '/')
+                                .Replace(Path.AltDirectorySeparatorChar, '/'), mapFile.FullName);
+
+
+
+                            map.CalculateSHA();
+
+                            localMapSHAs.Add(map.SHA1);
+
+                            // Logger.Loh(customMapCache.ContainsKey(map.SHA1).ToString() );
+                            if (map.SetInfoFromCustomMap() && !customMapCache.ContainsKey(map.SHA1))
+                            {
+                                customMapCache.TryAdd(map.SHA1, map);
+
+                            }
+
+                        }));
+                    }
 
                 Task.WaitAll(tasks.ToArray());
 
@@ -283,8 +283,8 @@ namespace DTAClient.Domain.Multiplayer
         {
             string customMapFilePath = SafePath.CombineFilePath(ProgramConstants.GamePath, FormattableString.Invariant($"{mapPath}{MAP_FILE_EXTENSION}"));
 
-           // Logger.Log(customMapFilePath);
-           
+            // Logger.Log(customMapFilePath);
+
             FileInfo customMapFile = SafePath.GetFile(customMapFilePath);
 
             if (!customMapFile.Exists)
@@ -348,35 +348,32 @@ namespace DTAClient.Domain.Multiplayer
         /// <param name="enableLogging">If set to true, a message for each game mode the map is added to is output to the log file.</param>
         private void AddMapToGameModes(Map map, bool enableLogging)
         {
-
-
-            
             foreach (string gameMode in map.GameModes)
             {
                 if (!GameModeAliases.TryGetValue(gameMode, out string[] gameModeAliases))
                     gameModeAliases = new string[] { gameMode };
-              
+
                 foreach (string gameModeAlias in gameModeAliases)
                 {
 
                     //这些代码会不读取没有指定游戏模式的地图,因此注释掉
 
-                  // if (!map.Official && !(AllowedGameModes.Contains(gameMode) || AllowedGameModes.Contains(gameModeAlias)))
-                  //  {
-                     //   continue;
-                   // }
+                    // if (!map.Official && !(AllowedGameModes.Contains(gameMode) || AllowedGameModes.Contains(gameModeAlias)))
+                    //  {
+                    //   continue;
+                    // }
 
-                   // Logger.Log(gameModeAlias.L10N("UI:GameMode:" + gameModeAlias));
-                    GameMode gm = GameModes.Find(g => g.Name == gameModeAlias.L10N("UI:GameMode:" + gameModeAlias));
-                    
+                    // Logger.Log(gameModeAlias.L10N("UI:GameMode:" + gameModeAlias));
+                    GameMode gm = GameModes.Find(g => g.Name == gameModeAlias.L10N("UI:GameMode:" + gameModeAlias) || g.UIName == gameModeAlias.L10N("UI:GameMode:" + gameModeAlias));
+
                     if (gm == null)
                     {
                         gm = new GameMode(gameModeAlias.L10N("UI:GameMode:" + gameModeAlias));
                         GameModes.Add(gm);
                         //Logger.Log(gm.Name);
                     }
-                  
-                        gm.Maps.Add(map);
+
+                    gm.Maps.Add(map);
                     if (enableLogging)
                         Logger.Log("AddMapToGameModes: Added map " + map.Name + " to game mode " + gm.Name);
                 }

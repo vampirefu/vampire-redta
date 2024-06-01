@@ -12,7 +12,6 @@ using SixLabors.ImageSharp;
 using Color = Microsoft.Xna.Framework.Color;
 using Point = Microsoft.Xna.Framework.Point;
 using Utilities = Rampastring.Tools.Utilities;
-using static System.Collections.Specialized.BitVector32;
 using Localization;
 
 namespace DTAClient.Domain.Multiplayer
@@ -267,9 +266,9 @@ namespace DTAClient.Domain.Multiplayer
                 string baseSectionName = iniFile.GetStringValue(BaseFilePath, "BaseSection", string.Empty);
 
                 if (!string.IsNullOrEmpty(baseSectionName))
-                    iniFile.CombineSections(baseSectionName, BaseFilePath);      
+                    iniFile.CombineSections(baseSectionName, BaseFilePath);
 
-                var section = iniFile.GetSection(BaseFilePath.Remove(BaseFilePath.Length-4));
+                var section = iniFile.GetSection(BaseFilePath.Remove(BaseFilePath.Length - 4));
 
                 Name = section.GetStringValue("Description", "Unnamed map");
                 Author = section.GetStringValue("Author", "Unknown author");
@@ -303,8 +302,8 @@ namespace DTAClient.Domain.Multiplayer
                 ForceNoTeams = section.GetBooleanValue("ForceNoTeams", false);
                 ExtraININame = section.GetStringValue("ExtraININame", string.Empty);
                 string bases = section.GetStringValue("Bases", string.Empty);
-                
-                
+
+
                 if (!string.IsNullOrEmpty(bases))
                 {
                     Bases = Convert.ToInt32(Conversions.BooleanFromString(bases, false));
@@ -511,12 +510,12 @@ namespace DTAClient.Domain.Multiplayer
         /// </summary>
         public bool SetInfoFromCustomMap()
         {
-          
+
 
             if (!File.Exists(customMapFilePath))
                 return false;
 
-            
+
 
             try
             {
@@ -524,35 +523,34 @@ namespace DTAClient.Domain.Multiplayer
 
                 IniSection basicSection = iniFile.GetSection("Basic");
 
-                if(!basicSection.GetBooleanValue("MultiplayerOnly", false))
+                if (!basicSection.GetBooleanValue("MultiplayerOnly", false))
                     return false;
 
                 Name = basicSection.GetStringValue("Name", "Unnamed map");
                 Author = basicSection.GetStringValue("Author", "Unknown author");
 
-                string gameModesString = basicSection.GetStringValue("GameModes", string.Empty);
-                if (string.IsNullOrEmpty(gameModesString))
-                {
-                    gameModesString = basicSection.GetStringValue("GameMode", "Standard");
-                }
+                //string gameModesString = basicSection.GetStringValue("GameModes", string.Empty);
+                //if (string.IsNullOrEmpty(gameModesString))
+                //{
+                //    gameModesString = basicSection.GetStringValue("GameMode", "Standard");
+                //}
 
-               
+                //GameModes = gameModesString.Split(',');
 
-                GameModes = gameModesString.Split(',');
+                //if (GameModes.Length == 0)
+                //{
+                //    Logger.Log("Custom map " + customMapFilePath + " has no game modes!");
+                //    return false;
+                //}
 
-                if (GameModes.Length == 0)
-                {
-                    Logger.Log("Custom map " + customMapFilePath + " has no game modes!");
-                    return false;
-                }
+                //for (int i = 0; i < GameModes.Length; i++)
+                //{
+                //    string gameMode = GameModes[i].Trim().L10N("UI:GameMode:" + GameModes[i].Trim());
+                //    GameModes[i] = gameMode.Substring(0, 1).ToUpperInvariant() + gameMode.Substring(1);
 
-                for (int i = 0; i < GameModes.Length; i++)
-                {
-                    string gameMode = GameModes[i].Trim().L10N("UI:GameMode:" + GameModes[i].Trim());
-                    GameModes[i] = gameMode.Substring(0, 1).ToUpperInvariant() + gameMode.Substring(1);
-
-                    
-                }
+                //}
+                //逻辑变更：加入的第三方地图另加GameMode，暂定第三方图
+                GameModes = new string[] { "第三方图" };
 
                 MinPlayers = 0;
                 if (basicSection.KeyExists("ClientMaxPlayer"))
@@ -617,7 +615,7 @@ namespace DTAClient.Domain.Multiplayer
 
                 for (int i = 0; i < MAX_PLAYERS; i++)
                 {
-                    
+
                     string waypoint = GetCustomMapIniFile().GetStringValue("Waypoints", i.ToString(CultureInfo.InvariantCulture), string.Empty);
 
                     if (string.IsNullOrEmpty(waypoint))
@@ -702,8 +700,8 @@ namespace DTAClient.Domain.Multiplayer
 
         public IniFile GetMapIni()
         {
-           
-            
+
+
             var mapIni = new IniFile(CompleteFilePath);
 
             if (!string.IsNullOrEmpty(ExtraININame))
