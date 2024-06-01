@@ -325,8 +325,13 @@ namespace DTAClient.DXGUI.Generic
                 btnLaunch.AllowClick = false;
                 return;
             }
-
             tbMissionDescription.Text = mission.GUIDescription;
+            //赋值的时候会在首个字符前产生/r/n(XNATextBlock在处理中文的时候有点问题)
+            //为了整齐，没加换行的都加换行处理
+            if (!tbMissionDescription.Text.StartsWith(Environment.NewLine))
+            {
+                tbMissionDescription.Text = Environment.NewLine + mission.GUIDescription;
+            }
 
             if (!mission.Enabled)
             {

@@ -34,10 +34,8 @@ namespace DTAClient.Domain
             Enabled = iniFile.GetBooleanValue(sectionName, nameof(Enabled), true);
             BuildOffAlly = iniFile.GetBooleanValue(sectionName, nameof(BuildOffAlly), false);
             PlayerAlwaysOnNormalDifficulty = iniFile.GetBooleanValue(sectionName, nameof(PlayerAlwaysOnNormalDifficulty), false);
-            
-            difficulty = iniFile.GetStringValue(sectionName, "difficulty", "一般"); //难度筛选用
 
-            // GUIDescription = GUIDescription.Replace("@", Environment.NewLine);
+            difficulty = iniFile.GetStringValue(sectionName, "difficulty", "一般"); //难度筛选用
 
             if (HasChinese(GUIDescription))
             {
@@ -56,7 +54,7 @@ namespace DTAClient.Domain
 
                 GUIDescription = description;
             }
-                GUIDescription = GUIDescription.Replace("@", Environment.NewLine);
+            GUIDescription = GUIDescription.Replace("@", Environment.NewLine);
         }
 
         public bool HasChinese(string str)
@@ -76,7 +74,7 @@ namespace DTAClient.Domain
         public bool Enabled { get; }
         public bool BuildOffAlly { get; }
         public bool PlayerAlwaysOnNormalDifficulty { get; }
-        
+
         public string sectionName { get; }
         public string difficulty { get; }
         private string InsertFormat(string input, int interval, string value)
