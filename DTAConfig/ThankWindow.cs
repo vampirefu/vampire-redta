@@ -21,7 +21,7 @@ namespace DTAClient.DXGUI.Generic
         {
             Name = "ThankWindow";
             ClientRectangle = new Rectangle(0, 0, 334, 453);
-            
+
             var lblCheater = new XNALabel(WindowManager);
             lblCheater.Name = "lblCheater";
             lblCheater.ClientRectangle = new Rectangle(0, 0, 0, 0);
@@ -33,24 +33,23 @@ namespace DTAClient.DXGUI.Generic
             lblThankList.ClientRectangle = new Rectangle(30, lblCheater.Y + 60, 280, 350);
             lblThankList.FontIndex = 1;
             lblThankList.LineHeight = 30;
- 
 
             //待翻译
             lblThankList.AddItem("CNC平台".L10N("UI:Thank:CNCNet") + "：CNCNet");
-            lblThankList.AddItem("游戏平台".L10N("UI:Thank:AP") +"：Ares，Phobos");
-            lblThankList.AddItem("随机地图".L10N("UI:Thank:RanMap")+"：韩方序");
-            lblThankList.AddItem("自动更新".L10N("UI:Thank:RanMap") + "：记录微笑");
-            lblThankList.AddItem("原版战役适配".L10N("UI:Thank:ButtonThanks")+"：双杀步枪");
-            lblThankList.AddItem("重置战役".L10N("UI:Thank:ButtonThanks")+"：MadHQ");
-            lblThankList.AddItem("地图".L10N("UI:Thank:ButtonThanks")+"：MadHQ");
-            
-            lblThankList.AddItem("地图：壕做友");
+            lblThankList.AddItem("游戏平台".L10N("UI:Thank:AP") + "：Ares，Phobos");
+            lblThankList.AddItem("随机地图".L10N("UI:Thank:RanMap") + "：韩方序");
+            //lblThankList.AddItem("自动更新".L10N("UI:Thank:RanMap") + "：记录微笑");
+            //lblThankList.AddItem("原版战役适配".L10N("UI:Thank:ButtonThanks") + "：双杀步枪");
+            //lblThankList.AddItem("重置战役".L10N("UI:Thank:ButtonThanks") + "：MadHQ");
+            //lblThankList.AddItem("地图".L10N("UI:Thank:ButtonThanks") + "：MadHQ");
+
+            //lblThankList.AddItem("地图：壕做友");
             //lblThankList.AddItem("地图：chen371287536");
-            lblThankList.AddItem("二次元主题".L10N("UI:Thank:ButtonThanks")+"：Blue623");
-            lblThankList.AddItem("原版模式".L10N("UI:Thank:ButtonThanks")+"：泳池里的潜艇");
-            lblThankList.AddItem("第三帝国模式".L10N("UI:Thank:ButtonThanks")+"：疾风丶Yy5871");
-            lblThankList.AddItem("地图编辑器".L10N("UI:Thank:ButtonThanks")+"：FA2SP制作组");
-            lblThankList.AddItem("中文语音包".L10N("UI:Thank:ButtonThanks")+"：蚂蚁制作组");
+            //lblThankList.AddItem("二次元主题".L10N("UI:Thank:ButtonThanks") + "：Blue623");
+            //lblThankList.AddItem("原版模式".L10N("UI:Thank:ButtonThanks") + "：泳池里的潜艇");
+            //lblThankList.AddItem("第三帝国模式".L10N("UI:Thank:ButtonThanks") + "：疾风丶Yy5871");
+            lblThankList.AddItem("地图编辑器".L10N("UI:Thank:ButtonThanks") + "：FA2SP制作组");
+            lblThankList.AddItem("中文语音包".L10N("UI:Thank:ButtonThanks") + "：蚂蚁制作组");
 
 
             lblThankList.AddItem("(皮肤)雷达样式2：=Star=");
@@ -95,17 +94,15 @@ namespace DTAClient.DXGUI.Generic
             lblThankList.AddItem("(皮肤)武装直升机样式2：167784");
             lblThankList.AddItem("(皮肤)雷鸣潜艇样式2：Enterprise-企业");
             lblThankList.AddItem("(皮肤)指针样式2：雷德克里莫");
-            lblThankList.AddItem("冷场AI：韩方序");
-            lblThankList.AddItem("liyupengAI：liyupeng");
-            lblThankList.AddItem("马王神AI：MammamiaMadman");
+            //lblThankList.AddItem("冷场AI：韩方序");
+            //lblThankList.AddItem("liyupengAI：liyupeng");
+            //lblThankList.AddItem("马王神AI：MammamiaMadman");
 
             lblThankList.AddItem("日语语音：高级复读兽响子");
-            lblThankList.AddItem("简体中文游戏：手柄");
-            lblThankList.AddItem("地图：达达利亚");
-            lblThankList.AddItem("bug修复：ruanhuhu,边缘星2020");
-            lblThankList.AddItem("汉化：黑色圣杯");
-
-            
+            //lblThankList.AddItem("简体中文游戏：手柄");
+            //lblThankList.AddItem("地图：达达利亚");
+            //lblThankList.AddItem("bug修复：ruanhuhu,边缘星2020");
+            //lblThankList.AddItem("汉化：黑色圣杯");
 
             // lblThankList.AddItem("注册机：伤心的笔");
             // lblThankList.AddItem("国旗：Mc孤狼君");
