@@ -16,8 +16,7 @@ using ClientCore.Enums;
 using DTAClient.DXGUI.Multiplayer.CnCNet;
 using DTAClient.Online.EventArguments;
 using Localization;
-
-
+using DTAClient.DXGUI.IniCotrolLogic;
 
 namespace DTAClient.DXGUI.Multiplayer.GameLobby
 {
@@ -42,8 +41,6 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         private const int RANK_EASY = 1;
         private const int RANK_MEDIUM = 2;
         private const int RANK_HARD = 3;
-
-
 
         /// <summary>
         /// Creates a new instance of the game lobby base.
@@ -124,7 +121,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         protected XNAClientButton btnRandomMap;
 
         protected XNALabel lblMapName;
-        //protected XNALabel lblMapAuthor;
+        protected XNALabel lblMapAuthor;
         protected XNALabel lblGameMode;
         protected XNALabel lblMapSize;
 
@@ -199,7 +196,6 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
         private LoadOrSaveGameOptionPresetWindow loadOrSaveGameOptionPresetWindow;
 
-
         public override void Initialize()
         {
             Name = _iniSectionName;
@@ -248,7 +244,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             btnLaunchGame.InitStarDisplay(RankTextures);
 
             lblMapName = FindChild<XNALabel>(nameof(lblMapName));
-            //lblMapAuthor = FindChild<XNALabel>(nameof(lblMapAuthor));
+            lblMapAuthor = FindChild<XNALabel>(nameof(lblMapAuthor));
             lblGameMode = FindChild<XNALabel>(nameof(lblGameMode));
             lblMapSize = FindChild<XNALabel>(nameof(lblMapSize));
 
@@ -361,6 +357,8 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             AddChild(MapPreviewBox);
             InitializeGameOptionPresetUI();
 
+            //屏蔽游戏说明
+            lblModeText.Visible = false;
         }
 
 
@@ -914,6 +912,12 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             GameModeMap = (GameModeMap)item.Tag;
 
             ChangeMap(GameModeMap);
+
+            //补充逻辑：判断当前地图是否为防守地图来确定chkDefenceAiTrigger是否显示
+            bool isShow = DefenceAiHelper.IsShowCKH(GameModeMap.Map.BaseFilePath);
+            var chkDefenceAiTrigger = CheckBoxes.FirstOrDefault(p => p.Name == "chkDefenceAiTrigger");
+            if (chkDefenceAiTrigger != null)
+                chkDefenceAiTrigger.Visible = isShow;
         }
 
         private void PickRandomMap()
@@ -964,6 +968,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             ddGameModeMapFilter.SelectedIndex = gameModeMapFilterIndex;
         }
 
+        bool SelectedIndexChangedFlag = false;
         /// <summary>
         /// Initializes the player option drop-down controls.
         /// </summary>
@@ -1058,6 +1063,67 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                     ddPlayerStart.AddItem(j.ToString());
                 ddPlayerStart.AllowDropDown = false;
                 ddPlayerStart.SelectedIndexChanged += CopyPlayerDataFromUI;
+                //新逻辑：避免重复选择位置
+                ddPlayerStart.SelectedIndexChanged += (sender, e) =>
+                {
+                    if (SelectedIndexChangedFlag)
+                        return;
+
+                    Dictionary<string, int> records = new Dictionary<string, int>();
+
+                    foreach (var subddPlayerStart in ddPlayerStarts)
+                    {
+                        int subddPlayerStartValue;
+                        if (int.TryParse(subddPlayerStart.SelectedItem?.Text, out subddPlayerStartValue))
+                        {
+                            records.Add(subddPlayerStart.Name, subddPlayerStartValue);
+                        }
+                    }
+
+                    XNAClientDropDown curddPlayerStart = (XNAClientDropDown)sender;
+                    string curddPlayerStartValue = curddPlayerStart.SelectedItem?.Text;
+
+                    foreach (var subddPlayerStart in ddPlayerStarts)
+                    {
+                        if (curddPlayerStart.Name == subddPlayerStart.Name)
+                        {
+                            for (int j = curddPlayerStart.Items.Count - 1; j >= 0; j--)
+                            {
+                                if (curddPlayerStart.Items[j].Text == curddPlayerStartValue)
+                                    continue;
+
+                                if (records.Values.Any(p => p.ToString() == curddPlayerStart.Items[j].Text))
+                                    curddPlayerStart.Items.RemoveAt(j);
+                            }
+                            continue;
+                        }
+
+                        subddPlayerStart.Items.Clear();
+                        subddPlayerStart.AddItem("???");
+                        for (int j = 1; j <= Map.MaxPlayers; j++)
+                        {
+
+                            if (records.Values.Any(p => p == j))
+                            {
+                                if (records.ContainsKey(subddPlayerStart.Name) && records[subddPlayerStart.Name] == j)
+                                    ;
+                                else
+                                    continue;
+                            }
+
+                            subddPlayerStart.AddItem(j.ToString());
+                        }
+
+                        if (records.ContainsKey(subddPlayerStart.Name))
+                        {
+                            //此处需要用个Flag来避免SelectedIndex赋值时再次进入该事件从而造成死循环
+                            SelectedIndexChangedFlag = true;
+                            subddPlayerStart.SelectedIndex = subddPlayerStart.Items.Select(p => p.Text).ToList().IndexOf(records[subddPlayerStart.Name].ToString());
+                            SelectedIndexChangedFlag = false;
+                        }
+                    }
+                };
+
                 ddPlayerStart.Visible = false;
                 ddPlayerStart.Enabled = false;
                 ddPlayerStart.Tag = true;
@@ -2113,6 +2179,18 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             InitializeMatchStatistics(houseInfos);
             WriteMap(houseInfos);
 
+            //补充逻辑：血量显示是否应用
+            var chkBloodDisplay = CheckBoxes.FirstOrDefault(p => p.Name == "chkBloodDisplay");
+            if (chkBloodDisplay != null)
+                ShowBloodHelper.ApplyBloodDisplay(chkBloodDisplay);
+            //补充逻辑：原生AI逻辑是否触发
+            var chkDefenceAiTrigger = CheckBoxes.FirstOrDefault(p => p.Name == "chkDefenceAiTrigger");
+            if (chkDefenceAiTrigger != null && chkDefenceAiTrigger.Visible && chkDefenceAiTrigger.Checked)
+            {
+                DefenceAiHelper.SetAITriggerEnable(Map?.BaseFilePath, chkDefenceAiTrigger);
+            }
+
+
             GameProcessLogic.GameProcessExited += GameProcessExited_Callback;
 
             GameProcessLogic.StartGameProcess(WindowManager);
@@ -2138,6 +2216,20 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             CopyPlayerDataToUI();
 
             UpdateDiscordPresence(true);
+
+            var needDeleteList = new string[] { "0.png", "1.png", "2.png", "3.png", "4.png" };
+            foreach (var item in needDeleteList)
+            {
+                try
+                {
+                    if (File.Exists(item))
+                        File.Delete(item);
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
         }
 
         /// <summary>
@@ -2395,7 +2487,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             if (GameMode == null || Map == null)
             {
                 lblMapName.Text = "Map: Unknown".L10N("UI:Main:MapUnknown");
-                //   lblMapAuthor.Text = "By Unknown Author".L10N("UI:Main:AuthorByUnknown");
+                lblMapAuthor.Text = "By Unknown Author".L10N("UI:Main:AuthorByUnknown");
                 lblGameMode.Text = "Game mode: Unknown".L10N("UI:Main:GameModeUnknown");
                 lblMapSize.Text = "Size: Not available".L10N("UI:Main:MapSizeUnknown");
 
@@ -2405,7 +2497,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             }
 
             lblMapName.Text = "Map:".L10N("UI:Main:Map") + " " + Renderer.GetSafeString(Map.Name, lblMapName.FontIndex);
-            //  lblMapAuthor.Text = "By".L10N("UI:Main:AuthorBy") + " " + Renderer.GetSafeString(Map.Author, lblMapAuthor.FontIndex);
+            lblMapAuthor.Text = "By".L10N("UI:Main:AuthorBy") + " " + Renderer.GetSafeString(Map.Author, lblMapAuthor.FontIndex);
             lblGameMode.Text = "Game mode:".L10N("UI:Main:GameModeLabel") + " " + GameMode.UIName;
             lblMapSize.Text = "Size:".L10N("UI:Main:MapSize") + " " + Map.GetSizeString();
 
