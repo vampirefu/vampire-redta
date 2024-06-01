@@ -24,6 +24,7 @@ using ClientUpdater;
 using System.Drawing.Design;
 using System.Text;
 using System.Globalization;
+using System.Xml.Linq;
 
 namespace DTAClient.DXGUI.Generic
 {
@@ -146,7 +147,6 @@ namespace DTAClient.DXGUI.Generic
         /// </summary>
         public override void Initialize()
         {
-
             topBar.SetSecondarySwitch(cncnetLobby);
             GameProcessLogic.GameProcessExited += SharedUILogic_GameProcessExited;
 

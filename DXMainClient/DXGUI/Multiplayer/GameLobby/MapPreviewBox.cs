@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using ClientGUI;
 using Localization;
+using DTAClient.DXGUI.Helpers;
 
 namespace DTAClient.DXGUI.Multiplayer.GameLobby
 {
@@ -163,7 +164,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         private List<ExtraMapPreviewTexture> extraTextures = new List<ExtraMapPreviewTexture>(0);
 
         public EventHandler ToggleFavorite;
-       
+
         public override void Initialize()
         {
             EnableStartLocationSelection = true;
@@ -205,7 +206,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             btnToggleFavoriteMap = new XNAClientButton(WindowManager);
             btnToggleFavoriteMap.IdleTexture = AssetLoader.LoadTexture("favInactive.png");
-            btnToggleFavoriteMap.ClientRectangle = new Rectangle(Width- 35, 8, 30, 30);
+            btnToggleFavoriteMap.ClientRectangle = new Rectangle(Width - 35, 8, 30, 30);
             btnToggleFavoriteMap.LeftClick += (sender, args) => ToggleFavorite?.Invoke(sender, args);
             btnToggleFavoriteMap.SetToolTipText("Toggle Favorite Map".L10N("UI:Main:ToggleFavoriteMap"));
 
@@ -406,6 +407,11 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             if (GameModeMap.Map.PreviewTexture == null)
             {
+                //补充逻辑：如果没有地图对应的png，则调用CNCMaps.Renderer.exe去生成
+                string mapPngPath = SafePath.CombineFilePath(Path.GetDirectoryName(GameModeMap.Map.CompleteFilePath), $"{Path.GetFileNameWithoutExtension(GameModeMap.Map.BaseFilePath)}.png");
+                if(!File.Exists(mapPngPath))
+                    CNCMapsRendererHelper.CreatePreviewPng(GameModeMap.Map.CompleteFilePath);
+
                 previewTexture = GameModeMap.Map.LoadPreviewTexture();
                 disposeTextures = true;
             }
@@ -632,8 +638,8 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 if (previewFileInfo.Exists)
                     ProcessLauncher.StartShellProcess(previewFileInfo.FullName);
             }
-            
-            
+
+
             base.OnLeftClick();
         }
 
