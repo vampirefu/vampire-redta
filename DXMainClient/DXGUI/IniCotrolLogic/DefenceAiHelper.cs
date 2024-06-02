@@ -38,6 +38,7 @@ internal class DefenceAiHelper
         return false;
     }
 
+    [Obsolete("已弃用，改为使用ini文件替换的逻辑")]
     public static void SetAITriggerEnable(string mapPath, GameLobbyCheckBox defenceAiTrigger)
     {
         if (defenceAiTrigger.Name != "DefenceAiTrigger")

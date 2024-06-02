@@ -11,12 +11,14 @@ using Rampastring.Tools;
 namespace DTAClient.DXGUI.Helpers;
 internal class CNCMapsRendererHelper
 {
+    private const int Resolution = 560;
+
     public static string CreatePreviewPng(string mapPath)
     {
         string mapName = Path.GetFileNameWithoutExtension(mapPath);
 
         //string cmdStr = $"/c cd /d \"{ProgramConstants.GamePath}Resources\\RandomMapGenerator_RA2\\Map Renderer\" && CNCMaps.Renderer.exe -i \"{mapPath}\" -o {mapName} -m \"{ProgramConstants.GamePath.TrimEnd('\\')}\" -Y -z +(1280,0) --thumb-png --bkp ";
-        string cmdStr = $"/c cd /d \"{ProgramConstants.GamePath}Resources\\RandomMapGenerator_RA2\\Map Renderer\" && CNCMaps.Renderer.exe -i \"{mapPath}\" -o {mapName} -m \"{ProgramConstants.GamePath.TrimEnd('\\')}\" -Y -z +(780,0) --thumb-png --bkp ";
+        string cmdStr = $"/c cd /d \"{ProgramConstants.GamePath}Resources\\RandomMapGenerator_RA2\\Map Renderer\" && CNCMaps.Renderer.exe -i \"{mapPath}\" -o {mapName} -m \"{ProgramConstants.GamePath.TrimEnd('\\')}\" -Y -z +({Resolution},0) --thumb-png --bkp ";
 
         Process process = new Process();
         process.StartInfo.FileName = "cmd.exe";

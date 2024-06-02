@@ -105,6 +105,12 @@ namespace DTAClient.Domain.Multiplayer
         public string Author { get; private set; }
 
         /// <summary>
+        /// 玩法描述
+        /// </summary>
+        [JsonInclude]
+        public string PlayDescription { get; private set; }
+
+        /// <summary>
         /// The calculated SHA1 of the map.
         /// </summary>
         [JsonIgnore]
@@ -272,6 +278,8 @@ namespace DTAClient.Domain.Multiplayer
 
                 Name = section.GetStringValue("Description", "Unnamed map");
                 Author = section.GetStringValue("Author", "Unknown author");
+                //新增玩法描述读取
+                PlayDescription = section.GetStringValue("PlayDescription", "");
                 GameModes = section.GetStringValue("GameModes", "Default").Split(',');
 
                 MinPlayers = section.GetIntValue("MinPlayers", 0);
@@ -528,7 +536,7 @@ namespace DTAClient.Domain.Multiplayer
 
                 Name = basicSection.GetStringValue("Name", "Unnamed map");
                 Author = basicSection.GetStringValue("Author", "Unknown author");
-
+                PlayDescription = basicSection.GetStringValue("PlayDescription", "");
                 //string gameModesString = basicSection.GetStringValue("GameModes", string.Empty);
                 //if (string.IsNullOrEmpty(gameModesString))
                 //{

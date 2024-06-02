@@ -17,6 +17,7 @@ using DTAClient.DXGUI.Multiplayer.CnCNet;
 using DTAClient.Online.EventArguments;
 using Localization;
 using DTAClient.DXGUI.IniCotrolLogic;
+using DTAConfig;
 
 namespace DTAClient.DXGUI.Multiplayer.GameLobby
 {
@@ -122,6 +123,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
         protected XNALabel lblMapName;
         protected XNALabel lblMapAuthor;
+        protected XNALabel lblPlayDescription;
         protected XNALabel lblGameMode;
         protected XNALabel lblMapSize;
 
@@ -245,6 +247,24 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             lblMapName = FindChild<XNALabel>(nameof(lblMapName));
             lblMapAuthor = FindChild<XNALabel>(nameof(lblMapAuthor));
+
+            //新增label:玩法介绍
+            lblPlayDescription = new XNALabel(WindowManager);
+            AddChild(lblPlayDescription);
+            lblPlayDescription.ClientRectangle = new Rectangle(lblMapName.ClientRectangle.X + MapPreviewBox.ClientRectangle.Width / 2, lblMapName.ClientRectangle.Y, lblMapAuthor.ClientRectangle.Width, lblMapAuthor.ClientRectangle.Height);
+            lblPlayDescription.Text = "玩法介绍";
+
+            //新增逻辑：增加玩法介绍交互界面
+            PlayDescriptionWindow playDescriptionwin = new PlayDescriptionWindow(WindowManager);
+            DarkeningPanel.AddAndInitializeWithControl(WindowManager, playDescriptionwin);
+            playDescriptionwin.Disable();
+            lblPlayDescription.LeftClick += (s, e) =>
+            {
+                playDescriptionwin.AddDescription(Map?.PlayDescription);
+                playDescriptionwin.CenterOnParent();
+                playDescriptionwin.Enable();
+            };
+
             lblGameMode = FindChild<XNALabel>(nameof(lblGameMode));
             lblMapSize = FindChild<XNALabel>(nameof(lblMapSize));
 
@@ -918,6 +938,12 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             var chkDefenceAiTrigger = CheckBoxes.FirstOrDefault(p => p.Name == "chkDefenceAiTrigger");
             if (chkDefenceAiTrigger != null)
                 chkDefenceAiTrigger.Visible = isShow;
+
+            //补充逻辑：判断是否显示地图玩法
+            if (string.IsNullOrEmpty(GameModeMap.Map?.PlayDescription))
+                lblPlayDescription.Visible = false;
+            else
+                lblPlayDescription.Visible = true;
         }
 
         private void PickRandomMap()
@@ -2183,12 +2209,12 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             var chkBloodDisplay = CheckBoxes.FirstOrDefault(p => p.Name == "chkBloodDisplay");
             if (chkBloodDisplay != null)
                 ShowBloodHelper.ApplyBloodDisplay(chkBloodDisplay);
-            //补充逻辑：原生AI逻辑是否触发
-            var chkDefenceAiTrigger = CheckBoxes.FirstOrDefault(p => p.Name == "chkDefenceAiTrigger");
-            if (chkDefenceAiTrigger != null && chkDefenceAiTrigger.Visible && chkDefenceAiTrigger.Checked)
-            {
-                DefenceAiHelper.SetAITriggerEnable(Map?.BaseFilePath, chkDefenceAiTrigger);
-            }
+            //补充逻辑：原生AI逻辑是否触发(已弃用，改为使用ini文件替换的逻辑)
+            //var chkDefenceAiTrigger = CheckBoxes.FirstOrDefault(p => p.Name == "chkDefenceAiTrigger");
+            //if (chkDefenceAiTrigger != null && chkDefenceAiTrigger.Visible && chkDefenceAiTrigger.Checked)
+            //{
+            //    DefenceAiHelper.SetAITriggerEnable(Map?.BaseFilePath, chkDefenceAiTrigger);
+            //}
 
 
             GameProcessLogic.GameProcessExited += GameProcessExited_Callback;
