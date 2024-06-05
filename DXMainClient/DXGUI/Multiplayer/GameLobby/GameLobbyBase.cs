@@ -18,6 +18,7 @@ using DTAClient.Online.EventArguments;
 using Localization;
 using DTAClient.DXGUI.IniCotrolLogic;
 using DTAConfig;
+using System.Security.Cryptography;
 
 namespace DTAClient.DXGUI.Multiplayer.GameLobby
 {
@@ -123,7 +124,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
         protected XNALabel lblMapName;
         protected XNALabel lblMapAuthor;
-        protected XNALabel lblPlayDescription;
+        protected XNALinkLabel lblPlayDescription;
         protected XNALabel lblGameMode;
         protected XNALabel lblMapSize;
 
@@ -249,7 +250,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             lblMapAuthor = FindChild<XNALabel>(nameof(lblMapAuthor));
 
             //新增label:玩法介绍
-            lblPlayDescription = new XNALabel(WindowManager);
+            lblPlayDescription = new XNALinkLabel(WindowManager);
             AddChild(lblPlayDescription);
             lblPlayDescription.ClientRectangle = new Rectangle(lblMapName.ClientRectangle.X + MapPreviewBox.ClientRectangle.Width / 2, lblMapName.ClientRectangle.Y, lblMapAuthor.ClientRectangle.Width, lblMapAuthor.ClientRectangle.Height);
             lblPlayDescription.Text = "玩法介绍";
@@ -919,6 +920,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             }
         }
 
+        private bool _lastchkDefenceAiTriggerChecked = false;
         private void LbGameModeMapList_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (lbGameModeMapList.SelectedIndex < 0 || lbGameModeMapList.SelectedIndex >= lbGameModeMapList.ItemCount)
@@ -937,7 +939,19 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             bool isShow = DefenceAiHelper.IsShowCKH(GameModeMap.Map.BaseFilePath);
             var chkDefenceAiTrigger = CheckBoxes.FirstOrDefault(p => p.Name == "chkDefenceAiTrigger");
             if (chkDefenceAiTrigger != null)
-                chkDefenceAiTrigger.Visible = isShow;
+            {
+                if (isShow)
+                {
+                    chkDefenceAiTrigger.Visible = true;
+                    chkDefenceAiTrigger.Checked = _lastchkDefenceAiTriggerChecked;
+                }
+                else
+                {
+                    chkDefenceAiTrigger.Visible = false;
+                    _lastchkDefenceAiTriggerChecked = chkDefenceAiTrigger.Checked;
+                    chkDefenceAiTrigger.Checked = false;
+                }
+            }
 
             //补充逻辑：判断是否显示地图玩法
             if (string.IsNullOrEmpty(GameModeMap.Map?.PlayDescription))
@@ -2175,6 +2189,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 }
             }
         }
+
         public void CopyDirectory(string sourceDirPath, string saveDirPath)
         {
 
@@ -2279,7 +2294,9 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
                 pInfo.ColorId = ddPlayerColors[pId].SelectedIndex;
                 pInfo.SideId = ddPlayerSides[pId].SelectedIndex;
-                pInfo.StartingLocation = ddPlayerStarts[pId].SelectedIndex;
+                int startingLocation;
+                bool isInt = int.TryParse(ddPlayerStarts[pId].SelectedItem.Text, out startingLocation);
+                pInfo.StartingLocation = isInt ? startingLocation : 0;
                 pInfo.TeamId = ddPlayerTeams[pId].SelectedIndex;
 
                 if (pInfo.SideId == SideCount + RandomSelectorCount)
@@ -2318,10 +2335,13 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                     AILevel = dd.SelectedIndex - 1,
                     SideId = Math.Max(ddPlayerSides[cmbId].SelectedIndex, 0),
                     ColorId = Math.Max(ddPlayerColors[cmbId].SelectedIndex, 0),
-                    StartingLocation = Math.Max(ddPlayerStarts[cmbId].SelectedIndex, 0),
                     TeamId = Map != null && Map.IsCoop ? 1 : Math.Max(ddPlayerTeams[cmbId].SelectedIndex, 0),
                     IsAI = true
                 };
+
+                int startingLocation;
+                bool isInt = int.TryParse(ddPlayerStarts[cmbId].SelectedItem?.Text, out startingLocation);
+                aiPlayer.StartingLocation = isInt ? startingLocation : 0;
 
                 AIPlayers.Add(aiPlayer);
             }
@@ -2400,8 +2420,11 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
                 ddPlayerColors[pId].SelectedIndex = pInfo.ColorId;
                 ddPlayerColors[pId].AllowDropDown = !playerExtraOptions.IsForceRandomColors && allowPlayerOptionsChange;
-
-                ddPlayerStarts[pId].SelectedIndex = pInfo.StartingLocation;
+                //由于集合改变了，index可能也改变了，所以需要重新找
+                if (pInfo.StartingLocation == 0)
+                    ddPlayerStarts[pId].SelectedIndex = 0;
+                else
+                    ddPlayerStarts[pId].SelectedIndex = ddPlayerStarts[pId].Items.FindIndex(p => p.Text == pInfo.StartingLocation.ToString());
 
                 ddPlayerTeams[pId].SelectedIndex = pInfo.TeamId;
                 if (GameModeMap != null)
@@ -2433,8 +2456,11 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
                 ddPlayerColors[index].SelectedIndex = aiInfo.ColorId;
                 ddPlayerColors[index].AllowDropDown = !playerExtraOptions.IsForceRandomColors && allowOptionsChange;
-
-                ddPlayerStarts[index].SelectedIndex = aiInfo.StartingLocation;
+                //由于集合改变了，index可能也改变了，所以需要重新找
+                if (aiInfo.StartingLocation == 0)
+                    ddPlayerStarts[index].SelectedIndex = 0;
+                else
+                    ddPlayerStarts[index].SelectedIndex = ddPlayerStarts[index].Items.FindIndex(p => p.Text == aiInfo.StartingLocation.ToString());
 
                 ddPlayerTeams[index].SelectedIndex = aiInfo.TeamId;
 
