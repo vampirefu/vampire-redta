@@ -7,7 +7,6 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using DTAClient.DXGUI.Multiplayer.GameLobby;
 using Rampastring.Tools;
-using SharpDX.Direct2D1;
 
 namespace DTAClient.DXGUI.IniCotrolLogic;
 internal class DefenceAiHelper
