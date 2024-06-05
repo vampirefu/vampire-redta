@@ -356,7 +356,7 @@ namespace DTAClient.DXGUI.Generic
         {
             privateMessageSwitch.SwitchOff();
             
-            //optionsWindow.tabControl.MakeUnselectable(4);
+            optionsWindow.tabControl.MakeUnselectable(4);
             optionsWindow.Open();
             optionsWindow.tabControl.SelectedTab = 0;
             //optionsWindow.ForbigSkin();

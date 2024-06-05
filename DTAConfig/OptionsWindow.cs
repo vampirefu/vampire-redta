@@ -24,9 +24,6 @@ namespace DTAConfig
 
         public XNAClientTabControl tabControl;
 
-        //鸣谢列表
-        private ThankWindow thankWindow;
-
         private XNAOptionsPanel[] optionsPanels;
         private ComponentsPanel componentsPanel;
 
@@ -35,18 +32,8 @@ namespace DTAConfig
 
         private GameCollection gameCollection;
 
-
-
-        public static void AddAndInitializeWithControl(WindowManager wm, XNAControl control)
-        {
-            var dp = new DarkeningPanel(wm);
-            wm.AddAndInitializeControl(dp);
-            dp.AddChild(control);
-        }
-
         public override void Initialize()
         {
-            //没加载
             Name = "OptionsWindow";
             ClientRectangle = new Rectangle(0, 0, 800, 475);
             BackgroundTexture = AssetLoader.LoadTextureUncached("optionsbg.png");
@@ -63,6 +50,7 @@ namespace DTAConfig
             tabControl.AddTab("Skin".L10N("UI:DTAConfig:Skin"), UIDesignConstants.BUTTON_WIDTH_92);
             tabControl.AddTab("Updater".L10N("UI:DTAConfig:TabUpdater"), UIDesignConstants.BUTTON_WIDTH_92);
             tabControl.AddTab("Components".L10N("UI:DTAConfig:TabComponents"), UIDesignConstants.BUTTON_WIDTH_92);
+            tabControl.AddTab("关于", UIDesignConstants.BUTTON_WIDTH_92);
             tabControl.SelectedIndexChanged += TabControl_SelectedIndexChanged;
 
             var btnCancel = new XNAClientButton(WindowManager);
@@ -78,17 +66,6 @@ namespace DTAConfig
             btnSave.Text = "Save".L10N("UI:DTAConfig:ButtonSave");
             btnSave.LeftClick += BtnSave_LeftClick;
 
-            //鸣谢列表
-            var btnThank = new XNAClientButton(WindowManager);
-            btnThank.Name = "btnThank";
-            btnThank.ClientRectangle = new Rectangle((btnSave.X + btnCancel.X) / 2, btnSave.Y, UIDesignConstants.BUTTON_WIDTH_92, UIDesignConstants.BUTTON_HEIGHT);
-            btnThank.Text = "Thanks".L10N("UI:DTAConfig:ButtonThanks"); 
-            btnThank.LeftClick += btnThank_LeftClick;
-
-            thankWindow = new ThankWindow(WindowManager);
-            AddAndInitializeWithControl(WindowManager, thankWindow);
-            thankWindow.Disable();
-
             displayOptionsPanel = new DisplayOptionsPanel(WindowManager, UserINISettings.Instance);
             componentsPanel = new ComponentsPanel(WindowManager, UserINISettings.Instance);
             var updaterOptionsPanel = new UpdaterOptionsPanel(WindowManager, UserINISettings.Instance);
@@ -102,18 +79,19 @@ namespace DTAConfig
                 new CnCNetOptionsPanel(WindowManager, UserINISettings.Instance, gameCollection),
                 new LocalSkinPanel(WindowManager, UserINISettings.Instance),
                 updaterOptionsPanel,
-                componentsPanel
+                componentsPanel,
+                new AboutOptionPanel(WindowManager, UserINISettings.Instance),
             };
 
-            
-
+            //屏蔽皮肤
+            tabControl.MakeUnselectable(4);
             if (ClientConfiguration.Instance.ModMode || Updater.UpdateMirrors == null || Updater.UpdateMirrors.Count < 1)
             {
                 tabControl.MakeUnselectable(5);
                 tabControl.MakeUnselectable(6);
             }
             else if (Updater.CustomComponents == null || Updater.CustomComponents.Count < 1)
-                 tabControl.MakeUnselectable(6);
+                tabControl.MakeUnselectable(6);
 
             foreach (var panel in optionsPanels)
             {
@@ -127,17 +105,10 @@ namespace DTAConfig
             AddChild(tabControl);
             AddChild(btnCancel);
             AddChild(btnSave);
-            AddChild(btnThank);
 
             base.Initialize();
 
             CenterOnParent();
-        }
-
-        private void btnThank_LeftClick(object sender, EventArgs e)
-        {
-            thankWindow.CenterOnParent();
-            thankWindow.Enable();
         }
 
         public void SetTopBar(XNAControl topBar) => this.topBar = topBar;
