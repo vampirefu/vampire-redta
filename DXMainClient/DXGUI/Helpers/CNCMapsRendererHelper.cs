@@ -11,7 +11,7 @@ using Rampastring.Tools;
 namespace DTAClient.DXGUI.Helpers;
 internal class CNCMapsRendererHelper
 {
-    private const int Resolution = 560;
+    private const int Resolution = 760;
 
     public static string CreatePreviewPng(string mapPath)
     {
