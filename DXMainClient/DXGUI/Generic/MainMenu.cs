@@ -80,7 +80,7 @@ namespace DTAClient.DXGUI.Generic
         /// <summary>
         /// 平台声明
         /// </summary>
-        private XNALinkLabel lblSoftState;
+        private XNALabel lblSoftState;
 
         private CnCNetLobby cncnetLobby;
 
@@ -257,7 +257,7 @@ namespace DTAClient.DXGUI.Generic
             lblVersion.LeftClick += LblVersion_LeftClick;
 
             //软件声明
-            lblSoftState = new XNALinkLabel(WindowManager);
+            lblSoftState = new XNALabel(WindowManager);
             lblSoftState.Name = nameof(lblSoftState);
 
             lblUpdateStatus = new XNALinkLabel(WindowManager);

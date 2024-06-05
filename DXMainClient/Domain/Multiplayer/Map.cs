@@ -280,6 +280,7 @@ namespace DTAClient.Domain.Multiplayer
                 Author = section.GetStringValue("Author", "Unknown author");
                 //新增玩法描述读取
                 PlayDescription = section.GetStringValue("PlayDescription", "");
+
                 GameModes = section.GetStringValue("GameModes", "Default").Split(',');
 
                 MinPlayers = section.GetIntValue("MinPlayers", 0);
