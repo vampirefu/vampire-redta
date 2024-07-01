@@ -299,7 +299,7 @@ namespace DTAClient.DXGUI.Generic
             }
             else
             {
-                IniFile ini = new IniFile(ProgramConstants.GamePath + "FinalAlert2SP/FinalAlert.ini", Encoding.GetEncoding("GBK"));
+                IniFile ini = new IniFile(ProgramConstants.GamePath + ClientConfiguration.Instance.FinalSunIniPath, Encoding.GetEncoding("GBK"));
                 ini.SetStringValue("TS", "Exe", (Encoding.GetEncoding("GBK").GetString(Encoding.Default.GetBytes(ProgramConstants.GamePath)) + "gamemd.exe").Replace('/', '\\')); //地编路径必须是\，这里写两个是因为有一个是转义符
                 ini.WriteIniFile();
             }
@@ -884,17 +884,6 @@ namespace DTAClient.DXGUI.Generic
 
         private void BtnLan_LeftClick(object sender, EventArgs e)
         {
-            foreach (string[] skin in UserINISettings.Instance.GetAIISkin())
-            {
-                if (skin[3] != "0")
-                {
-                    XNAMessageBox messageBox = new XNAMessageBox(WindowManager, "警告", "联机时禁止使用皮肤，请将皮肤还原成默认", XNAMessageBoxButtons.OK);
-                    messageBox.Show();
-                    return;
-                }
-            }
-
-            optionsWindow.tabControl.MakeUnselectable(4);
             lanLobby.Open();
 
             if (UserINISettings.Instance.StopMusicOnMenu)

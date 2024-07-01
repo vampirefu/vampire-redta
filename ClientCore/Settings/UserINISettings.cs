@@ -21,7 +21,6 @@ namespace ClientCore
         public const string GAME_FILTERS = "GameFilters";
         public const string GAMEMOD = "GameMod";
         private const string PHOBOS = "Phobos";
-        private const string SKIN = "Skin";
         private const bool DEFAULT_SHOW_FRIENDS_ONLY_GAMES = false;
         private const bool DEFAULT_HIDE_LOCKED_GAMES = false;
         private const bool DEFAULT_HIDE_PASSWORDED_GAMES = false;
@@ -136,9 +135,6 @@ namespace ClientCore
 
             FavoriteMaps = new StringListSetting(iniFile, OPTIONS, "FavoriteMaps", new List<string>());
 
-            //皮肤
-            Skin = new StringListSetting(iniFile, SKIN, "Skin", new List<string>());
-
             GameModSelect = new IntSetting(iniFile, GAMEMOD, "Select", 0);
             GameModName = new StringSetting(iniFile, GAMEMOD, "items", string.Empty);
             GameModPath = new StringSetting(iniFile, GAMEMOD, "Mod", string.Empty);
@@ -248,10 +244,10 @@ namespace ClientCore
         public BoolSetting PrivacyPolicyAccepted { get; private set; }
         public BoolSetting IsFirstRun { get; private set; }
 
-        //随机壁纸
+        /// <summary>
+        /// 随机壁纸
+        /// </summary>
         public BoolSetting Random_wallpaper { get; private set; }
-
-        public StringListSetting Skin { get; private set; }
         public BoolSetting CustomComponentsDenied { get; private set; }
 
         public IntSetting Difficulty { get; private set; }
@@ -302,84 +298,6 @@ namespace ClientCore
         public bool IsGameFollowed(string gameName)
         {
             return SettingsIni.GetBooleanValue("Channels", gameName, false);
-        }
-
-        public string[] GetTypes()
-        {
-            List<string> SkinList = Skin.Value;
-
-            List<string> Types = new List<string>();
-            for (int i = 0; i < SkinList.Count; i++)
-            {
-                foreach (string type in new StringSetting(SettingsIni, SkinList[i], "Type", "").Value.Split(','))
-                    Types.Add(type);
-            }
-            return Types.ToArray().GroupBy(p => p).Select(p => p.Key).ToArray();
-        }
-
-        public int GetSkinBy(string name, string m)
-        {
-
-            return new IntSetting(SettingsIni, name, m, 0).Value;
-        }
-
-        public List<string> GetSkinName(string Types)
-        {
-            List<string> SkinList = Skin.Value;
-
-            List<string> SkinName = new List<string>();
-
-            for (int i = 0; i < SkinList.Count; i++)
-            {
-
-                string s = new StringSetting(SettingsIni, SkinList[i], "Type", "").Value;
-                if (Types == "All" || s.IndexOf(Types) != -1)
-                    SkinName.Add(new StringSetting(SettingsIni, SkinList[i], "Text", "").Value);
-            }
-
-            return SkinName;
-        }
-
-
-        public List<string[]> GetAIISkin()
-        {
-            List<string> SkinList = Skin.Value;
-
-            List<string[]> AllSkin = new List<string[]>();
-
-            for (int i = 0; i < SkinList.Count; i++)
-            {
-                string[] skin = new string[11];
-                skin[0] = new StringSetting(SettingsIni, SkinList[i], "Text", "").Value.ToString();
-                skin[1] = new StringSetting(SettingsIni, SkinList[i], "Folder", "").Value.ToString();
-                skin[2] = new StringSetting(SettingsIni, SkinList[i], "Options", "").Value.ToString();
-                skin[3] = new StringSetting(SettingsIni, SkinList[i], "Select", "").Value.ToString();
-                skin[4] = new StringSetting(SettingsIni, SkinList[i], "Image", "").Value.ToString();
-                skin[5] = SkinList[i];
-                skin[6] = new StringSetting(SettingsIni, SkinList[i], "Delete", "").Value.ToString();
-                skin[7] = new StringSetting(SettingsIni, SkinList[i], "RulesIni", "").Value.ToString();
-                skin[8] = new StringSetting(SettingsIni, SkinList[i], "ArtIni", "").Value.ToString();
-                skin[9] = new StringSetting(SettingsIni, SkinList[i], "AllText", "").Value.ToString();
-                skin[10] = new StringSetting(SettingsIni, SkinList[i], "Index", "").Value.ToString();
-                AllSkin.Add(skin);
-            }
-            return AllSkin;
-        }
-
-        public List<string> GetSkinIni(string types)
-        {
-            List<string> SkinList = Skin.Value;
-            List<string> rules = new List<string>();
-            for (int i = 0; i < SkinList.Count; i++)
-            {
-                rules.Add(new StringSetting(SettingsIni, SkinList[i], types, "").Value);
-            }
-            return rules;
-        }
-
-        public void SetSkinIndex(string name, int value)
-        {
-            SettingsIni.SetIntValue(name, "Select", value);
         }
 
         public bool ToggleFavoriteMap(string mapName, string gameModeName, bool isFavorite)

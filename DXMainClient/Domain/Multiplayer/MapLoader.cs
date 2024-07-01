@@ -15,7 +15,7 @@ namespace DTAClient.Domain.Multiplayer
     public class MapLoader
     {
         public const string MAP_FILE_EXTENSION = ".map";
-        private const string CUSTOM_MAPS_DIRECTORY = "Maps/Custom";
+        private const string CUSTOM_MAPS_DIRECTORY = "Maps\\Custom";
         private static readonly string CUSTOM_MAPS_CACHE = SafePath.CombineFilePath(ProgramConstants.ClientUserFilesPath, "custom_map_cache");
         private const string MultiMapsSection = "MultiMaps";
         private const string GameModesSection = "GameModes";
@@ -179,8 +179,11 @@ namespace DTAClient.Domain.Multiplayer
                 var localMapSHAs = new List<string>();
 
                 var tasks = new List<Task>();
-
-                foreach (IEnumerable<FileInfo> mapFiles in new List<IEnumerable<FileInfo>> { customMapsDirectory.EnumerateFiles($"*{MAP_FILE_EXTENSION}"), customMapsDirectory.EnumerateFiles($"*{"yrm"}"), customMapsDirectory.EnumerateFiles($"*{"mpr"}") })
+                //新增逻辑：便利Custom的路径下.map会编译子文件夹
+#if DEBUG
+                var customMaps = customMapsDirectory.EnumerateFiles($"*{MAP_FILE_EXTENSION}", customMapsDirectory.FullName.Contains(CUSTOM_MAPS_DIRECTORY) ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly).ToList();
+#endif
+                foreach (IEnumerable<FileInfo> mapFiles in new List<IEnumerable<FileInfo>> { customMapsDirectory.EnumerateFiles($"*{MAP_FILE_EXTENSION}", customMapsDirectory.FullName.Contains(CUSTOM_MAPS_DIRECTORY) ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly), customMapsDirectory.EnumerateFiles($"*{"yrm"}"), customMapsDirectory.EnumerateFiles($"*{"mpr"}") })
 
                     foreach (FileInfo mapFile in mapFiles)
                     {

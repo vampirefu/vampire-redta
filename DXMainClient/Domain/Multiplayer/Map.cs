@@ -13,6 +13,7 @@ using Color = Microsoft.Xna.Framework.Color;
 using Point = Microsoft.Xna.Framework.Point;
 using Utilities = Rampastring.Tools.Utilities;
 using Localization;
+using Microsoft.Win32;
 
 namespace DTAClient.Domain.Multiplayer
 {
@@ -519,12 +520,8 @@ namespace DTAClient.Domain.Multiplayer
         /// </summary>
         public bool SetInfoFromCustomMap()
         {
-
-
             if (!File.Exists(customMapFilePath))
                 return false;
-
-
 
             try
             {
@@ -558,8 +555,32 @@ namespace DTAClient.Domain.Multiplayer
                 //    GameModes[i] = gameMode.Substring(0, 1).ToUpperInvariant() + gameMode.Substring(1);
 
                 //}
+
                 //逻辑变更：加入的第三方地图另加GameMode，暂定第三方图
                 GameModes = new string[] { "第三方图" };
+
+                //新增逻辑
+                List<string> existModes = new List<string>
+                {
+                    "Standard",
+                    "Team Alliance",
+                    "Unholy Alliance",
+                    "Megawealth",
+                    "Land Rush",
+                    "Meat Grinder",
+                    "Naval War",
+                    "Cooperative Easy",
+                    "Cooperative Normal",
+                    "Cooperative Hard",
+                    "DenfenseMode",
+                };
+                int index = existModes.FindIndex(p => CompleteFilePath.Contains(p));
+                if (index != -1)
+                {
+                    var tempGameModes = GameModes.ToList();
+                    tempGameModes.Add(existModes[index]);
+                    GameModes = tempGameModes.ToArray();
+                }
 
                 MinPlayers = 0;
                 if (basicSection.KeyExists("ClientMaxPlayer"))

@@ -15,6 +15,7 @@ using System.Text;
 using DTAClient.Domain;
 using Microsoft.Xna.Framework.Graphics;
 using Localization;
+using DTAClient.DXGUI.IniCotrolLogic;
 
 namespace DTAClient.DXGUI.Multiplayer.GameLobby
 {
@@ -668,6 +669,8 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             //隐藏人数控件
             lblscreen.Disable();
             ddPeople.Disable();
+
+            IniControlVisibleWhenChangeMap();
         }
 
         private void ShowMapList()
@@ -1093,6 +1096,29 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             //if (IsHost)
             //    OnGameOptionChanged();
+
+            IniControlVisibleWhenChangeMap();
+        }
+
+        /// <summary>
+        /// 房主切换地图时，控件的显隐性设置
+        /// </summary>
+        public void IniControlVisibleWhenChangeMap()
+        {
+            if (!IsHost)
+            {
+                //补充逻辑：判断是否显示地图玩法
+                if (string.IsNullOrEmpty(GameModeMap.Map?.PlayDescription))
+                    lblPlayDescription.Visible = false;
+                else
+                    lblPlayDescription.Visible = true;
+
+                //补充逻辑：判断当前地图是否为防守地图来确定chkDefenceAiTrigger是否显示
+                bool isShow = DefenceAiHelper.IsShowCKH(GameModeMap.Map.BaseFilePath);
+                var chkDefenceAiTrigger = CheckBoxes.FirstOrDefault(p => p.Name == "chkDefenceAiTrigger");
+                chkDefenceAiTrigger.Visible = isShow;
+            }
+
         }
 
         protected override void ToggleFavoriteMap()

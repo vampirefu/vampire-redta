@@ -15,6 +15,16 @@ namespace DTAConfig
 {
     public class OptionsWindow : XNAWindow
     {
+        public const int AboutIndex = 6;
+        /// <summary>
+        /// 可选扩展索引
+        /// </summary>
+        public const int ExtensionIndex = 5;
+        /// <summary>
+        /// 更新器Panel索引
+        /// </summary>
+        public const int UpdaterIndex = 4;
+
         public OptionsWindow(WindowManager windowManager, GameCollection gameCollection) : base(windowManager)
         {
             this.gameCollection = gameCollection;
@@ -47,7 +57,6 @@ namespace DTAConfig
             tabControl.AddTab("Audio".L10N("UI:DTAConfig:TabAudio"), UIDesignConstants.BUTTON_WIDTH_92);
             tabControl.AddTab("Game".L10N("UI:DTAConfig:TabGame"), UIDesignConstants.BUTTON_WIDTH_92);
             tabControl.AddTab("CnCNet".L10N("UI:DTAConfig:TabCnCNet"), UIDesignConstants.BUTTON_WIDTH_92);
-            tabControl.AddTab("Skin".L10N("UI:DTAConfig:Skin"), UIDesignConstants.BUTTON_WIDTH_92);
             tabControl.AddTab("Updater".L10N("UI:DTAConfig:TabUpdater"), UIDesignConstants.BUTTON_WIDTH_92);
             tabControl.AddTab("Components".L10N("UI:DTAConfig:TabComponents"), UIDesignConstants.BUTTON_WIDTH_92);
             tabControl.AddTab("关于", UIDesignConstants.BUTTON_WIDTH_92);
@@ -77,21 +86,18 @@ namespace DTAConfig
                 new AudioOptionsPanel(WindowManager, UserINISettings.Instance),
                 new GameOptionsPanel(WindowManager, UserINISettings.Instance, topBar),
                 new CnCNetOptionsPanel(WindowManager, UserINISettings.Instance, gameCollection),
-                new LocalSkinPanel(WindowManager, UserINISettings.Instance),
                 updaterOptionsPanel,
                 componentsPanel,
                 new AboutOptionPanel(WindowManager, UserINISettings.Instance),
             };
 
-            //屏蔽皮肤
-            tabControl.MakeUnselectable(4);
             if (ClientConfiguration.Instance.ModMode || Updater.UpdateMirrors == null || Updater.UpdateMirrors.Count < 1)
             {
-                tabControl.MakeUnselectable(5);
-                tabControl.MakeUnselectable(6);
+                tabControl.MakeUnselectable(UpdaterIndex);
+                tabControl.MakeUnselectable(ExtensionIndex);
             }
             else if (Updater.CustomComponents == null || Updater.CustomComponents.Count < 1)
-                tabControl.MakeUnselectable(6);
+                tabControl.MakeUnselectable(ExtensionIndex);
 
             foreach (var panel in optionsPanels)
             {

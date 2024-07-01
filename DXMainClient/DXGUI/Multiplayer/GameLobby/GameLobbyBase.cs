@@ -143,7 +143,10 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         protected XNAClientDropDown ddGameModeMapFilter;
         protected XNALabel lblGameModeSelect;
 
-        //游戏模式介绍
+        /// <summary>
+        /// 游戏模式介绍
+        /// 已隐藏
+        /// </summary>
         protected XNALabel lblModeText;
 
         private GetRandomMap randomMap;

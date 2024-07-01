@@ -1020,9 +1020,16 @@ namespace DTAConfig.OptionPanels
             }
 
             //新增1000*600分辨率支持
-            var subResolution = new ScreenResolution(1000, 600);
-            if (!screenResolutions.Any(res => res.Equals(subResolution)))
-                screenResolutions.Add(subResolution);
+            var subResolutions = new List<ScreenResolution>
+            { 
+                new ScreenResolution(1000, 600),
+                new ScreenResolution(1100, 600) 
+            };
+            foreach (var subResolution in subResolutions)
+            {
+                if (!screenResolutions.Any(res => res.Equals(subResolution)))
+                    screenResolutions.Add(subResolution);
+            }
             return screenResolutions;
         }
 
