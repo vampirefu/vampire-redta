@@ -390,17 +390,20 @@ namespace DTAClient.DXGUI.Generic
         {
             if (sourceDirPath != null && sourceDirPath != "")
             {
-
                 if (!Directory.Exists(saveDirPath))
                 {
                     Directory.CreateDirectory(saveDirPath);
                 }
-                string[] files = Directory.GetFiles(sourceDirPath);
-                foreach (string file in files)
-                {
-                    string pFilePath = saveDirPath + "\\" + Path.GetFileName(file);
 
-                    File.Copy(file, pFilePath, true);
+                if (Directory.Exists(sourceDirPath))
+                {
+                    string[] files = Directory.GetFiles(sourceDirPath);
+                    foreach (string file in files)
+                    {
+                        string pFilePath = saveDirPath + "\\" + Path.GetFileName(file);
+
+                        File.Copy(file, pFilePath, true);
+                    }
                 }
             }
         }

@@ -16,9 +16,10 @@ using ClientCore.Enums;
 using DTAClient.DXGUI.Multiplayer.CnCNet;
 using DTAClient.Online.EventArguments;
 using Localization;
-using DTAClient.DXGUI.IniCotrolLogic;
 using DTAConfig;
 using System.Security.Cryptography;
+using DTAClient.DXGUI.Helpers;
+using DTAClient.Domain.AI;
 
 namespace DTAClient.DXGUI.Multiplayer.GameLobby
 {
@@ -2234,6 +2235,13 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             //    DefenceAiHelper.SetAITriggerEnable(Map?.BaseFilePath, chkDefenceAiTrigger);
             //}
 
+            //应用新AI
+            var cmbAI = DropDowns.FirstOrDefault(p => p.Name == "cmbAI");
+            if (cmbAI != null)
+            {
+                AI ai = cmbAI.Tag as AI;
+                ai.Backup();
+            }
 
             GameProcessLogic.GameProcessExited += GameProcessExited_Callback;
 
@@ -2273,6 +2281,13 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 {
 
                 }
+            }
+            //还原老AI
+            var cmbAI = DropDowns.FirstOrDefault(p => p.Name == "cmbAI");
+            if (cmbAI != null)
+            {
+                AI ai = cmbAI.Tag as AI;
+                ai.Recovery();
             }
         }
 

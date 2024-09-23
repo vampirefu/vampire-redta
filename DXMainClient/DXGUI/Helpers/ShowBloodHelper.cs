@@ -8,7 +8,7 @@ using ClientCore;
 using DTAClient.DXGUI.Multiplayer.GameLobby;
 using Rampastring.Tools;
 
-namespace DTAClient.DXGUI.IniCotrolLogic;
+namespace DTAClient.DXGUI.Helpers;
 internal class ShowBloodHelper
 {
     private const string BloodDisplay = "Phobos_ShowBlood.dll";
@@ -35,10 +35,8 @@ internal class ShowBloodHelper
 
 
         string newPhobosPath = Path.Combine(bloodDisplaySettingDir, bloodDisplay.Checked ? BloodDisplay : UnBloodDisplay);
-        FileInfo file = new FileInfo(newPhobosPath);
+        var file = new FileInfo(newPhobosPath);
         if (file.Exists)
-        {
             file.CopyTo(originPhobosPath);
-        }
     }
 }

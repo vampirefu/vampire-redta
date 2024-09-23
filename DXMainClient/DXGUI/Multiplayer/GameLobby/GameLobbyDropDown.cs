@@ -10,7 +10,7 @@ using System.Linq;
 using System.Collections.Generic;
 using ClientCore;
 using System.IO;
-using DTAClient.Domain;
+using DTAClient.Domain.AI;
 
 namespace DTAClient.DXGUI.Multiplayer.GameLobby
 {
@@ -95,7 +95,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                     {
                         XNADropDownItem xnadropDownItem = new XNADropDownItem();
                         xnadropDownItem.Text = StringTranslationLabelExtensions.L10N(ai.DisplayName, "UI:GameOption:" + ai.Name);
-                        xnadropDownItem.Tag = new string[] { ai.Dir };
+                        xnadropDownItem.Tag = ai;
                         AddItem(xnadropDownItem);
                     }
                     return;

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using DTAClient.DXGUI.Multiplayer.GameLobby;
 using Rampastring.Tools;
 
-namespace DTAClient.DXGUI.IniCotrolLogic;
+namespace DTAClient.DXGUI.Helpers;
 internal class DefenceAiHelper
 {
     private const string AITaskSection = "TaskForces";
@@ -17,7 +17,7 @@ internal class DefenceAiHelper
 
     public static bool IsShowCKH(string mapPath)
     {
-        IniFile ini = new IniFile(mapPath);
+        var ini = new IniFile(mapPath);
         List<string> keys = ini.GetSectionKeys(AITaskSection);
 
         if (keys?.Count > 0)
@@ -26,7 +26,7 @@ internal class DefenceAiHelper
             if (keys == null)
                 return false;
 
-            Regex regex = new Regex(@"14,0,\d+,0,0,0,0,A");
+            var regex = new Regex(@"14,0,\d+,0,0,0,0,A");
             foreach (var key in keys)
             {
                 string value = ini.GetStringValue(AIActionsSection, key, "");
@@ -46,7 +46,7 @@ internal class DefenceAiHelper
         if (!File.Exists(mapPath))
             return;
 
-        IniFile ini = new IniFile(mapPath);
+        var ini = new IniFile(mapPath);
         List<string> keys = ini.GetSectionKeys(AITaskSection);
         foreach (string key in keys)
         {
