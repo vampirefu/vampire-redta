@@ -11,6 +11,7 @@ using Rampastring.Tools;
 using ClientUpdater;
 using Localization;
 using System.Linq;
+using DTAClient.Domain.AI;
 
 namespace DTAClient.DXGUI.Generic
 {
@@ -366,48 +367,6 @@ namespace DTAClient.DXGUI.Generic
             LaunchMission(mission);
         }
 
-        public void DelFile(List<string> deleteFile)
-        {
-            //  string resultDirectory = Environment.CurrentDirectory;//目录
-
-            if (deleteFile != null)
-            {
-                for (int i = 0; i < deleteFile.Count; i++)
-                {
-                    try
-                    {
-                        File.Delete(deleteFile[i]);
-                    }
-                    catch
-                    {
-                        continue;
-                    }
-                }
-            }
-        }
-
-        public void CopyDirectory(string sourceDirPath, string saveDirPath)
-        {
-            if (sourceDirPath != null && sourceDirPath != "")
-            {
-                if (!Directory.Exists(saveDirPath))
-                {
-                    Directory.CreateDirectory(saveDirPath);
-                }
-
-                if (Directory.Exists(sourceDirPath))
-                {
-                    string[] files = Directory.GetFiles(sourceDirPath);
-                    foreach (string file in files)
-                    {
-                        string pFilePath = saveDirPath + "\\" + Path.GetFileName(file);
-
-                        File.Copy(file, pFilePath, true);
-                    }
-                }
-            }
-        }
-
         protected List<string> GetDeleteFile(string oldGame)
         {
             if (string.IsNullOrEmpty(oldGame))
@@ -458,14 +417,6 @@ namespace DTAClient.DXGUI.Generic
             Logger.Log("About to write spawn.ini.");
 
             IniFile spawnReader = new IniFile(SafePath.CombineFilePath(ProgramConstants.GamePath, "spawn.ini"));
-            string oldAi = spawnReader.GetStringValue("Settings", "AI", "INI\\Game Options\\AI\\Other");
-            string newAi = "INI\\Game Options\\AI\\Other";
-
-            if (oldAi != newAi)
-            {
-                DelFile(GetDeleteFile(oldAi));
-                CopyDirectory(newAi, "./");
-            }
 
             using var spawnStreamWriter = new StreamWriter(SafePath.CombineFilePath(ProgramConstants.GamePath, "spawn.ini"));
 
@@ -489,7 +440,9 @@ namespace DTAClient.DXGUI.Generic
             if (UserINISettings.Instance.GameSpeed == 0)
                 UserINISettings.Instance.GameSpeed.Value = 1;
 
-            spawnStreamWriter.WriteLine("AI=" + newAi);
+            //TODO战役AI
+            //string newAi = (cmbAI.SelectedItem.Tag as AI).DisplayName;
+            //spawnStreamWriter.WriteLine("AI=" + newAi);
             spawnStreamWriter.WriteLine("CampaignID=" + mission.Index);
             //spawnStreamWriter.WriteLine("GameSpeed=" + UserINISettings.Instance.GameSpeed);
             spawnStreamWriter.WriteLine("GameSpeed=" + ddGameSpeed.SelectedItem?.Text);

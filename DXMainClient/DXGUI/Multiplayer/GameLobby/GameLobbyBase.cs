@@ -1687,9 +1687,6 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             IniFile spawnReader = new IniFile(spawnerSettingsFile.FullName);
 
-            string oldAi = spawnReader.GetStringValue("Settings", "AI", "INI\\Game Options\\AI\\Other");
-            string newAi = ((string[])cmbAI.SelectedItem.Tag)[0];
-
             spawnerSettingsFile.Delete();
 
             if (Map.IsCoop)
@@ -1713,12 +1710,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             IniSection settings = new IniSection("Settings");
 
-            if (oldAi != newAi)
-            {
-
-                DelFile(GetDeleteFile(oldAi));
-                CopyDirectory(newAi, "./");
-            }
+            string newAi = (cmbAI.SelectedItem.Tag as AI).DisplayName;
             //写入新AI
             settings.SetStringValue("AI", newAi);
 
@@ -2174,46 +2166,6 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             spawnIni.WriteIniFile();
         }
 
-        public void DelFile(List<string> deleteFile)
-        {
-            //  string resultDirectory = Environment.CurrentDirectory;//目录
-
-            if (deleteFile != null)
-            {
-                for (int i = 0; i < deleteFile.Count; i++)
-                {
-                    try
-                    {
-                        File.Delete(deleteFile[i]);
-                    }
-                    catch
-                    {
-                        continue;
-                    }
-                }
-            }
-        }
-
-        public void CopyDirectory(string sourceDirPath, string saveDirPath)
-        {
-
-            if (sourceDirPath != "" && sourceDirPath != null)
-            {
-
-                if (!Directory.Exists(saveDirPath))
-                {
-                    Directory.CreateDirectory(saveDirPath);
-                }
-                string[] files = Directory.GetFiles(sourceDirPath);
-                foreach (string file in files)
-                {
-                    string pFilePath = saveDirPath + "\\" + Path.GetFileName(file);
-
-                    File.Copy(file, pFilePath, true);
-                }
-            }
-        }
-
         /// <summary>
         /// Writes spawn.ini, writes the map file, initializes statistics and
         /// starts the game process.
@@ -2239,7 +2191,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             var cmbAI = DropDowns.FirstOrDefault(p => p.Name == "cmbAI");
             if (cmbAI != null)
             {
-                AI ai = cmbAI.Tag as AI;
+                AI ai = cmbAI.SelectedItem.Tag as AI;
                 ai.Backup();
             }
 
@@ -2286,7 +2238,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             var cmbAI = DropDowns.FirstOrDefault(p => p.Name == "cmbAI");
             if (cmbAI != null)
             {
-                AI ai = cmbAI.Tag as AI;
+                AI ai = (cmbAI.SelectedItem).Tag as AI;
                 ai.Recovery();
             }
         }

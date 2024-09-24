@@ -176,11 +176,17 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         /// <param name="gameMode">Currently selected gamemode, if set.</param>
         public void ApplyMapCode(IniFile mapIni, GameMode gameMode)
         {
-            if (dataWriteMode != DropDownDataWriteMode.MAPCODE || SelectedIndex < 0 || SelectedIndex >= Items.Count) return;
+            if (dataWriteMode != DropDownDataWriteMode.MAPCODE || SelectedIndex < 0 || SelectedIndex >= Items.Count)
+                return;
+
+            if (Name == "cmbAI")//AI的逻辑在外部配好了
+                return;
 
             string customIniPath;
-            if (Items[SelectedIndex].Tag != null) customIniPath = ((string[])Items[SelectedIndex].Tag)[0];
-            else customIniPath = Items[SelectedIndex].Text;
+            if (Items[SelectedIndex].Tag != null)
+                customIniPath = ((string[])Items[SelectedIndex].Tag)[0];
+            else
+                customIniPath = Items[SelectedIndex].Text;
 
             MapCodeHelper.ApplyMapCode(mapIni, customIniPath, gameMode);
         }
