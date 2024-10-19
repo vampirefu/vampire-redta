@@ -1110,9 +1110,13 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 //新逻辑：避免重复选择位置
                 ddPlayerStart.SelectedIndexChanged += (sender, e) =>
                 {
+                    if (PlayerUpdatingInProgress)
+                        return;
+
                     if (SelectedIndexChangedFlag)
                         return;
 
+                    //Dictionary<string, (int index, int value)> records = new Dictionary<string, (int index, int value)>();
                     Dictionary<string, int> records = new Dictionary<string, int>();
 
                     foreach (var subddPlayerStart in ddPlayerStarts)

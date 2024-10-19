@@ -44,13 +44,13 @@ public class AI
             if (File.Exists(targetPath)) //移动至备份文件夹
             {
                 string backupFilePath = SafePath.CombineFilePath(detailBackupDir, routePath);
-                new FileInfo(targetPath).MoveTo(backupFilePath);
+                new FileInfo(targetPath).MoveTo(backupFilePath, true);
                 replaceList.Add(backupFilePath);
-                new FileInfo(file).CopyTo(targetPath);
+                new FileInfo(file).CopyTo(targetPath, true);
             }
             else
             {
-                new FileInfo(file).CopyTo(targetPath);
+                new FileInfo(file).CopyTo(targetPath, true);
                 addList.Add(targetPath);
             }
         }
@@ -78,19 +78,14 @@ public class AI
         if (dto == null)
             return;
 
-        string fileBackupDir = SafePath.GetFileDirectoryName(AIConfig.AIBackupDir, dto.AIName);
+        string fileBackupDir = SafePath.CombineDirectoryPath(AIConfig.AIBackupDir, dto.AIName);
         if (!Directory.Exists(fileBackupDir))
             return;
 
         foreach (var item in dto.AddList)
         {
             if (File.Exists(item))
-            {
-                string routePath = item.Replace(fileBackupDir, "");
-                string recoveryFilePath = SafePath.CombineFilePath(ProgramConstants.GamePath, routePath);
-                if (File.Exists(recoveryFilePath))
-                    File.Delete(recoveryFilePath);
-            }
+                File.Delete(item);
         }
 
         foreach (var item in dto.ReplaceList)
@@ -99,8 +94,7 @@ public class AI
             {
                 string routePath = item.Replace(fileBackupDir, "");
                 string recoveryFilePath = SafePath.CombineFilePath(ProgramConstants.GamePath, routePath);
-                if (File.Exists(recoveryFilePath))
-                    new FileInfo(item).CopyTo(recoveryFilePath, true);
+                new FileInfo(item).CopyTo(recoveryFilePath, true);
             }
         }
 
