@@ -9,6 +9,9 @@
     <AnalysisModeDocumentation Condition="!$(Configuration.Contains(Debug))">None</AnalysisModeDocumentation>
     <AnalysisModeNaming Condition="!$(Configuration.Contains(Debug))">None</AnalysisModeNaming>
     <AnalysisModeStyle Condition="!$(Configuration.Contains(Debug))">None</AnalysisModeStyle>
+    <AssemblyVersion>2.8.0.1</AssemblyVersion>
+    <FileVersion>2.8.0.1</FileVersion>
+    <InformationalVersion>2.8.0.1</InformationalVersion>
   </PropertyGroup>
 
   <Import Project="$(MSBuildThisFileDirectory)build\VSCompatibleLayer.props" Condition="'$(BuildingInsideVisualStudio)' == 'True'" />

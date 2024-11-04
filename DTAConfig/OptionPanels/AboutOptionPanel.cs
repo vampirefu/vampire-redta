@@ -20,7 +20,7 @@ internal class AboutOptionPanel : XNAOptionsPanel
     {
     }
 
-    private const string ModVersion = "1.1.0";
+    private const string ModVersion = "1.2.0";
     /// <summary>
     /// 当前版本
     /// </summary>

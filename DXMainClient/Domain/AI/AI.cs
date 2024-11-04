@@ -34,6 +34,9 @@ public class AI
         if (!Directory.Exists(detailBackupDir))
             Directory.CreateDirectory(detailBackupDir);
 
+        if (!Directory.Exists(Dir))
+            Directory.CreateDirectory(Dir);
+
         var files = GetAllFiles();
         List<string> replaceList = new List<string>();
         List<string> addList = new List<string>();
