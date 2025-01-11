@@ -9,17 +9,17 @@ using DTAClient.DXGUI.Multiplayer.GameLobby;
 using Rampastring.Tools;
 
 namespace DTAClient.DXGUI.Helpers;
-internal class ShowBloodHelper
+public class MaxBoxHelper
 {
-    private const string BloodDisplay = "Phobos_ShowBlood.dll";
-    private const string UnBloodDisplay = "Phobos_UnShow.dll";
+    private const string PhobosLast = "Phobos_last.dll";
+    private const string Phobos27 = "Phobos_27.dll";
 
-    public static void ApplyBloodDisplay(GameLobbyCheckBox bloodDisplay)
+    public static void ApplyMaxBox(GameLobbyCheckBox maxBox)
     {
-        if (bloodDisplay.Name != "chkBloodDisplay")
+        if (maxBox.Name != "chkMaxBox")
             return;
 
-        string bloodDisplaySettingDir = SafePath.CombineDirectoryPath(ProgramConstants.GamePath, "INI", "Game Options", "BloodDisplay");
+        string settingDir = SafePath.CombineDirectoryPath(ProgramConstants.GamePath, "INI", "Game Options", "MaxBox");
 
         string originPhobosPath = SafePath.CombineFilePath(ProgramConstants.GamePath, "Phobos.dll");
         if (File.Exists(originPhobosPath))
@@ -33,7 +33,7 @@ internal class ShowBloodHelper
             }
         }
 
-        string newPhobosPath = Path.Combine(bloodDisplaySettingDir, bloodDisplay.Checked ? BloodDisplay : UnBloodDisplay);
+        string newPhobosPath = Path.Combine(settingDir, maxBox.Checked ? PhobosLast : Phobos27);
         var file = new FileInfo(newPhobosPath);
         if (file.Exists)
             file.CopyTo(originPhobosPath);

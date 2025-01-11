@@ -2184,6 +2184,12 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             var chkBloodDisplay = CheckBoxes.FirstOrDefault(p => p.Name == "chkBloodDisplay");
             if (chkBloodDisplay != null)
                 ShowBloodHelper.ApplyBloodDisplay(chkBloodDisplay);
+
+            //补充逻辑：无限开箱
+            var chkMaxBox = CheckBoxes.FirstOrDefault(p => p.Name == "chkMaxBox");
+            if (chkMaxBox != null)
+                MaxBoxHelper.ApplyMaxBox(chkMaxBox);
+
             //补充逻辑：原生AI逻辑是否触发(已弃用，改为使用ini文件替换的逻辑)
             //var chkDefenceAiTrigger = CheckBoxes.FirstOrDefault(p => p.Name == "chkDefenceAiTrigger");
             //if (chkDefenceAiTrigger != null && chkDefenceAiTrigger.Visible && chkDefenceAiTrigger.Checked)

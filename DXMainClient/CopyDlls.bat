@@ -11,7 +11,7 @@ echo TargetDir:%TargetDir%
 echo SrcPath:%TargetPath%
 echo CopyDir:%dtaDllDir%
 
-if exist %dtaDllDir% xcopy /y /e /d %TargetPath% %dtaDllDir%
-if exist %dtaDllDir% xcopy /y /e /d %TargetDir%\ClientCore.dll %dtaDllDir%
-if exist %dtaDllDir% xcopy /y /e /d %TargetDir%\ClientGUI.dll %dtaDllDir%
-if exist %dtaDllDir% xcopy /y /e /d %TargetDir%\DTAConfig.dll %dtaDllDir%
+if exist %dtaDllDir% xcopy /f /y /e /d %TargetPath% %dtaDllDir%
+if exist %dtaDllDir% xcopy /f /y /e /d %TargetDir%\ClientCore.dll %dtaDllDir%
+if exist %dtaDllDir% xcopy /f /y /e /d %TargetDir%\ClientGUI.dll %dtaDllDir%
+if exist %dtaDllDir% xcopy /f /y /e /d %TargetDir%\DTAConfig.dll %dtaDllDir%
