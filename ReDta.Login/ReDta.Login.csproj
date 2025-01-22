@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\bg.png" />
+    <None Remove="Resources\logo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MaterialDesignThemes" Version="5.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\bg.png" />
+    <Resource Include="Resources\logo.png" />
+    <Resource Include="Resources\missionselectorbg.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="LoginWin.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(MSBuildThisFileDirectory)..\build\WinForms.props" />
+
+</Project>

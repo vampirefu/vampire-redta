@@ -6,6 +6,8 @@ using System.Runtime.Loader;
 using System.Threading;
 #if !(XNA||GL)
 using System.Windows.Forms;
+using MaterialDesignThemes.Wpf;
+using Vampire.ReDta.Login;
 #endif
 /* !! We cannot use references to other projects or non-framework assemblies in this class, assembly loading events not hooked up yet !! */
 
@@ -80,6 +82,7 @@ namespace DTAClient
 #if !(XNA||GL) && DEBUG
             MessageBox.Show("233");
 #endif
+
             bool noAudio = false;
             bool multipleInstanceMode = false;
             List<string> unknownStartupParams = new List<string>();

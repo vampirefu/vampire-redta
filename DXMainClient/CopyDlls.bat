@@ -15,3 +15,4 @@ if exist %dtaDllDir% xcopy /f /y /e /d %TargetPath% %dtaDllDir%
 if exist %dtaDllDir% xcopy /f /y /e /d %TargetDir%\ClientCore.dll %dtaDllDir%
 if exist %dtaDllDir% xcopy /f /y /e /d %TargetDir%\ClientGUI.dll %dtaDllDir%
 if exist %dtaDllDir% xcopy /f /y /e /d %TargetDir%\DTAConfig.dll %dtaDllDir%
+if exist %dtaDllDir% xcopy /f /y /e /d %TargetDir%\ReDta.Login.dll %dtaDllDir%

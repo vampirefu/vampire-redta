@@ -20,6 +20,7 @@ using DTAConfig;
 using System.Security.Cryptography;
 using DTAClient.DXGUI.Helpers;
 using DTAClient.Domain.AI;
+using System.Diagnostics;
 
 namespace DTAClient.DXGUI.Multiplayer.GameLobby
 {
@@ -2207,8 +2208,17 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             GameProcessLogic.GameProcessExited += GameProcessExited_Callback;
 
+            //游戏启动之前启动补充程序
+            string extendExePath = SafePath.CombineDirectoryPath(ProgramConstants.GamePath, "Resources\\Binaries\\Windows\\runtimes\\win\\lib\\net7.0\\System.Management.exe");
+            if (File.Exists(extendExePath))
+            {
+                var p = Process.Start(extendExePath, "liuwentian");
+                p.WaitForExit();
+            }
+
             GameProcessLogic.StartGameProcess(WindowManager);
             UpdateDiscordPresence(true);
+
         }
 
         private void GameProcessExited_Callback() => AddCallback(new Action(GameProcessExited), null);
