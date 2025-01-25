@@ -16,6 +16,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ClientCore\ClientCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Resources\bg.png" />
     <Resource Include="Resources\logo.png" />
     <Resource Include="Resources\missionselectorbg.png" />
