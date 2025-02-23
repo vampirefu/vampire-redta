@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ReDta.DxMainClient.Extend\ReDta.DxMainClient.Extend.csproj" />
     <ProjectReference Include="..\ReDta.Login\ReDta.Login.csproj" />
   </ItemGroup>
 

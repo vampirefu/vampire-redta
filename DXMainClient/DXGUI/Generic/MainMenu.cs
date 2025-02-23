@@ -684,12 +684,10 @@ namespace DTAClient.DXGUI.Generic
 
             innerPanel.Show(null); // Darkening
             XNAMessageBox msgBox = new XNAMessageBox(WindowManager, "Update failed".L10N("UI:Main:UpdateFailedTitle"),
-                string.Format(("An error occured while updating. Returned error was: {0}" +
-                Environment.NewLine + Environment.NewLine +
-                "If you are connected to the Internet and your firewall isn't blocking" + Environment.NewLine +
-                "{1}, and the issue is reproducible, contact us at " + Environment.NewLine +
-                "{2} for support.").L10N("UI:Main:UpdateFailedText"),
-                e.Reason, Path.GetFileName(ProgramConstants.StartupExecutable), MainClientConstants.SUPPORT_URL_SHORT), XNAMessageBoxButtons.OK);
+               (
+               $"An error occured while updating. Returned error was: {e.Reason}" + Environment.NewLine + $"If you are connected to the Internet and your firewall isn't blocking" + Environment.NewLine + $"{Path.GetFileName(ProgramConstants.StartupExecutable)}, and the issue is reproducible, contact us at " + Environment.NewLine + $"{MainClientConstants.SUPPORT_URL_SHORT} for support."
+               ).L10N("UI:Main:UpdateFailedText")
+               , XNAMessageBoxButtons.OK);
             msgBox.OKClickedAction = MsgBox_OKClicked;
             msgBox.Show();
         }

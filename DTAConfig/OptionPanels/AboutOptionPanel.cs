@@ -14,13 +14,14 @@ using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 
 namespace DTAConfig.OptionPanels;
-internal class AboutOptionPanel : XNAOptionsPanel
+
+public class AboutOptionPanel : XNAOptionsPanel
 {
     public AboutOptionPanel(WindowManager windowManager, UserINISettings iniSettings) : base(windowManager, iniSettings)
     {
     }
 
-    private const string ModVersion = "1.0.0.7";
+    public const string ModVersion = "1.8.1";
     /// <summary>
     /// 当前版本
     /// </summary>

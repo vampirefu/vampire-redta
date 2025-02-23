@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using ClientCore;
 using DTAClient.DXGUI.Helpers;
 using Rampastring.Tools;
+using Vampire.Common.Helpers;
 
 namespace DTAClient.Domain.AI;
 public class AI

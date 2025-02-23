@@ -16,6 +16,11 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using Vampire.ReDta.Login;
+using Vampire.ReDta.Login.Services;
+using SharpDX.DXGI;
+using ReDta.DxMainClient.Extend.Liu;
+using DTAClient.DXGUI.Generic;
+using ReDta.DxMainClient.Extend.Components;
 
 namespace DTAClient
 {
@@ -49,12 +54,58 @@ namespace DTAClient
         /// <param name="parameters">The client's startup parameters.</param>
         public static void Initialize(StartupParams parameters)
         {
-
+#if !DEBUG
             LoginWin loginWin = new LoginWin();
             loginWin.ShowDialog();
             if (!loginWin.IsLogin)
             {
                 return;
+            }
+
+            LoginService.CheckSession(() =>
+            {
+                try
+                {
+                    using (Process process = new Process())
+                    {
+                        process.StartInfo.FileName = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "ShowMsg.bat");
+                        process.StartInfo.Arguments = "该账号已在其他地方登录";
+                        process.StartInfo.UseShellExecute = false;
+                        process.StartInfo.CreateNoWindow = true;
+                        process.Start();
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+
+                try
+                {
+                    var target = Process.GetProcesses().FirstOrDefault(p => p.ProcessName == "dotnet");
+                    if (target != null)
+                    {
+                        target.Kill();
+                        target.WaitForExit();
+                    }
+                }
+                catch (Exception)
+                {
+                }
+            });
+#endif
+
+            //检查更新
+            VersionChecker checker = new VersionChecker();
+            string newVersion;
+            if (checker.HasUpdate(out newVersion))
+            {
+                UpdatePromptWin win = new UpdatePromptWin();
+                win.Loaded += (s, e) =>
+                {
+                    win.SetVersion(newVersion);
+                };
+                win.ShowDialog();
             }
 
 #if WINFORMS

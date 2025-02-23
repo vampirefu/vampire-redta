@@ -21,6 +21,7 @@ using System.Security.Cryptography;
 using DTAClient.DXGUI.Helpers;
 using DTAClient.Domain.AI;
 using System.Diagnostics;
+using Microsoft.VisualBasic.Logging;
 
 namespace DTAClient.DXGUI.Multiplayer.GameLobby
 {
@@ -2209,11 +2210,23 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             GameProcessLogic.GameProcessExited += GameProcessExited_Callback;
 
             //游戏启动之前启动补充程序
-            string extendExePath = SafePath.CombineDirectoryPath(ProgramConstants.GamePath, "Resources\\Binaries\\Windows\\runtimes\\win\\lib\\net7.0\\System.Management.exe");
+            string extendExePath = SafePath.CombineFilePath(ProgramConstants.GamePath, "Resources\\Binaries\\Windows\\runtimes\\win\\lib\\net7.0\\System.Management.bat");
+            //Logger.Log("exe Path:" + extendExePath);
             if (File.Exists(extendExePath))
             {
-                var p = Process.Start(extendExePath, "liuwentian");
+                Logger.Log("exe PreStart");
+
+                // 创建 ProcessStartInfo 对象
+                ProcessStartInfo startInfo = new ProcessStartInfo();
+                startInfo.FileName = extendExePath; // 设置要执行的exe文件路径
+                startInfo.Arguments = "liuwentian"; // 设置命令行参数
+                startInfo.WorkingDirectory = Path.GetDirectoryName(extendExePath); // 设置exe文件所在目录
+                startInfo.UseShellExecute = false;
+                startInfo.CreateNoWindow = true;
+
+                var p = Process.Start(startInfo);
                 p.WaitForExit();
+                Logger.Log("exe Start Compeleted");
             }
 
             GameProcessLogic.StartGameProcess(WindowManager);

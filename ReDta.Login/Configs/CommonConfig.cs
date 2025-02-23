@@ -8,6 +8,6 @@ namespace Vampire.ReDta.Login.Configs
 {
     public class CommonConfig
     {
-        public const string Server = "http://123.11.145.42:8901";
+        public const string Server = "http://liuwentianhj.cn:8901";
     }
 }

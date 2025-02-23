@@ -41,6 +41,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DTAConfig\DTAConfig.csproj" />
+    <ProjectReference Include="..\ReDta.Common\ReDta.Common.csproj" />
+    <ProjectReference Include="..\ReDta.DxMainClient.Extend\ReDta.DxMainClient.Extend.csproj" />
     <ProjectReference Include="..\ReDta.Login\ReDta.Login.csproj" />
   </ItemGroup>
   <Import Project="$(MSBuildThisFileDirectory)..\build\WinForms.props" />

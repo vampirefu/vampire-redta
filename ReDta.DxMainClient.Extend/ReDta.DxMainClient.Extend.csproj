@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\bottom.png" />
+    <None Remove="Resources\buttonCover.png" />
+    <None Remove="Resources\left.png" />
+    <None Remove="Resources\leftBottom.png" />
+    <None Remove="Resources\leftTop.png" />
+    <None Remove="Resources\right.png" />
+    <None Remove="Resources\rightBottom.png" />
+    <None Remove="Resources\rightTop.png" />
+    <None Remove="Resources\Top.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\buttonCover.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DTAConfig\DTAConfig.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\bottom.png" />
+    <Resource Include="Resources\left.png" />
+    <Resource Include="Resources\leftBottom.png" />
+    <Resource Include="Resources\leftTop.png" />
+    <Resource Include="Resources\button.png" />
+    <Resource Include="Resources\right.png" />
+    <Resource Include="Resources\rightBottom.png" />
+    <Resource Include="Resources\rightTop.png" />
+    <Resource Include="Resources\Top.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Components\UpdatePromptWin.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
+</Project>

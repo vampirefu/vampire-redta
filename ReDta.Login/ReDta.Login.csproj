@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ClientCore\ClientCore.csproj" />
+    <ProjectReference Include="..\ReDta.Common\ReDta.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>
