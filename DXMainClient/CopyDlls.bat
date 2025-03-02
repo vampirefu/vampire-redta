@@ -17,3 +17,4 @@ if exist %dtaDllDir% xcopy /f /y /e /d %TargetDir%\ClientGUI.dll %dtaDllDir%
 if exist %dtaDllDir% xcopy /f /y /e /d %TargetDir%\DTAConfig.dll %dtaDllDir%
 if exist %dtaDllDir% xcopy /f /y /e /d %TargetDir%\ReDta.Login.dll %dtaDllDir%
 if exist %dtaDllDir% xcopy /f /y /e /d %TargetDir%\ReDta.DxMainClient.Extend.dll %dtaDllDir%
+if exist %dtaDllDir% xcopy /f /y /e /d %TargetDir%\ClientUpdater.dll %dtaDllDir%

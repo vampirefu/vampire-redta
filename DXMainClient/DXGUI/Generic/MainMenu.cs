@@ -25,6 +25,7 @@ using System.Drawing.Design;
 using System.Text;
 using System.Globalization;
 using System.Xml.Linq;
+using ReDta.DxMainClient.Extend.Liu;
 
 namespace DTAClient.DXGUI.Generic
 {
@@ -77,10 +78,6 @@ namespace DTAClient.DXGUI.Generic
         private XNALabel lblCnCNetPlayerCount;
         private XNALinkLabel lblUpdateStatus;
         private XNALinkLabel lblVersion;
-        /// <summary>
-        /// 平台声明
-        /// </summary>
-        private XNALabel lblSoftState;
 
         private CnCNetLobby cncnetLobby;
 
@@ -254,11 +251,6 @@ namespace DTAClient.DXGUI.Generic
 
             lblVersion = new XNALinkLabel(WindowManager);
             lblVersion.Name = nameof(lblVersion);
-            lblVersion.LeftClick += LblVersion_LeftClick;
-
-            //软件声明
-            lblSoftState = new XNALabel(WindowManager);
-            lblSoftState.Name = nameof(lblSoftState);
 
             lblUpdateStatus = new XNALinkLabel(WindowManager);
             lblUpdateStatus.Name = nameof(lblUpdateStatus);
@@ -278,10 +270,10 @@ namespace DTAClient.DXGUI.Generic
             AddChild(btnExit);
             AddChild(lblCnCNetStatus);
             AddChild(lblCnCNetPlayerCount);
-            AddChild(lblSoftState);
 
             if (!ClientConfiguration.Instance.ModMode)
             {
+                lblVersion.LeftClick += LblVersion_LeftClick;
                 // ModMode disables version tracking and the updater if it's enabled
 
                 AddChild(lblVersion);
@@ -306,8 +298,6 @@ namespace DTAClient.DXGUI.Generic
 
 
             base.Initialize(); // Read control attributes from INI
-            lblSoftState.Text = "本平台及Mod均不收费";
-            lblSoftState.ClientRectangle = new Rectangle(1000, 740, lblSoftState.Width, lblSoftState.Height);
 
             innerPanel = new MainMenuDarkeningPanel(WindowManager, discordHandler);
             innerPanel.ClientRectangle = new Rectangle(0, 0, Width, Height);
@@ -317,6 +307,12 @@ namespace DTAClient.DXGUI.Generic
             innerPanel.Hide();
 
             lblVersion.Text = Updater.GameVersion;
+            if (Updater.GameVersion == "N/A")
+            {
+                AddChild(lblVersion);
+                lblVersion.Text = VersionChecker.ModVersion;
+                lblVersion.ClientRectangle = new Rectangle(1000, 740, lblVersion.Width, lblVersion.Height);
+            }
 
 
             innerPanel.UpdateQueryWindow.UpdateDeclined += UpdateQueryWindow_UpdateDeclined;

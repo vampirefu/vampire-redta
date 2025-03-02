@@ -59,7 +59,6 @@ namespace DTAConfig
             tabControl.AddTab("CnCNet".L10N("UI:DTAConfig:TabCnCNet"), UIDesignConstants.BUTTON_WIDTH_92);
             tabControl.AddTab("Updater".L10N("UI:DTAConfig:TabUpdater"), UIDesignConstants.BUTTON_WIDTH_92);
             tabControl.AddTab("Components".L10N("UI:DTAConfig:TabComponents"), UIDesignConstants.BUTTON_WIDTH_92);
-            tabControl.AddTab("关于", UIDesignConstants.BUTTON_WIDTH_92);
             tabControl.SelectedIndexChanged += TabControl_SelectedIndexChanged;
 
             var btnCancel = new XNAClientButton(WindowManager);
@@ -88,7 +87,6 @@ namespace DTAConfig
                 new CnCNetOptionsPanel(WindowManager, UserINISettings.Instance, gameCollection),
                 updaterOptionsPanel,
                 componentsPanel,
-                new AboutOptionPanel(WindowManager, UserINISettings.Instance),
             };
 
             if (ClientConfiguration.Instance.ModMode || Updater.UpdateMirrors == null || Updater.UpdateMirrors.Count < 1)

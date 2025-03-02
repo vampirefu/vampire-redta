@@ -12,7 +12,9 @@ namespace ReDta.DxMainClient.Extend.Liu
     public class VersionChecker
     {
         public const string VersionUrl = "https://liuwentianhj.cn:8900/update.html";
-        public string CurVersion { get { return AboutOptionPanel.ModVersion; } }
+
+        public const string ModVersion = "1.8.2";
+        public string CurVersion { get { return ModVersion; } }
 
         public string GetLastVersion()
         {
