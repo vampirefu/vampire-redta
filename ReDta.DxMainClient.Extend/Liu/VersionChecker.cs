@@ -13,7 +13,7 @@ namespace ReDta.DxMainClient.Extend.Liu
     {
         public const string VersionUrl = "https://liuwentianhj.cn:8900/update.html";
 
-        public const string ModVersion = "1.8.2";
+        public static string ModVersion = Helpers.IniHelper.ReadItem("ReDta", "Version").AsString("1.8.2");
         public string CurVersion { get { return ModVersion; } }
 
         public string GetLastVersion()

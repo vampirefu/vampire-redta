@@ -179,10 +179,7 @@ namespace DTAClient.Domain.Multiplayer
                 var localMapSHAs = new List<string>();
 
                 var tasks = new List<Task>();
-                //新增逻辑：便利Custom的路径下.map会编译子文件夹
-#if DEBUG
-                var customMaps = customMapsDirectory.EnumerateFiles($"*{MAP_FILE_EXTENSION}", customMapsDirectory.FullName.Contains(CUSTOM_MAPS_DIRECTORY) ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly).ToList();
-#endif
+
                 foreach (IEnumerable<FileInfo> mapFiles in new List<IEnumerable<FileInfo>> { customMapsDirectory.EnumerateFiles($"*{MAP_FILE_EXTENSION}", customMapsDirectory.FullName.Contains(CUSTOM_MAPS_DIRECTORY) ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly), customMapsDirectory.EnumerateFiles($"*{"yrm"}"), customMapsDirectory.EnumerateFiles($"*{"mpr"}") })
 
                     foreach (FileInfo mapFile in mapFiles)
@@ -368,6 +365,11 @@ namespace DTAClient.Domain.Multiplayer
 
                     // Logger.Log(gameModeAlias.L10N("UI:GameMode:" + gameModeAlias));
                     GameMode gm = GameModes.Find(g => g.Name == gameModeAlias.L10N("UI:GameMode:" + gameModeAlias) || g.UIName == gameModeAlias.L10N("UI:GameMode:" + gameModeAlias));
+
+                    //2025.3.25 不存在的模式不另添加
+                    if (gm == null && gameModeAlias != "第三方图")
+                        continue;
+
 
                     if (gm == null)
                     {

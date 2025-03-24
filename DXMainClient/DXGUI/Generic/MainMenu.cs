@@ -297,6 +297,7 @@ namespace DTAClient.DXGUI.Generic
             }
 
 
+            AddChild(lblVersion);
             base.Initialize(); // Read control attributes from INI
 
             innerPanel = new MainMenuDarkeningPanel(WindowManager, discordHandler);
@@ -309,9 +310,8 @@ namespace DTAClient.DXGUI.Generic
             lblVersion.Text = Updater.GameVersion;
             if (Updater.GameVersion == "N/A")
             {
-                AddChild(lblVersion);
                 lblVersion.Text = VersionChecker.ModVersion;
-                lblVersion.ClientRectangle = new Rectangle(1000, 740, lblVersion.Width, lblVersion.Height);
+                //lblVersion.ClientRectangle = new Rectangle(1000, 740, lblVersion.Width, lblVersion.Height);
             }
 
 

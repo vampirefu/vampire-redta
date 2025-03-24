@@ -171,7 +171,7 @@ namespace DTAClient.Domain.Multiplayer
         /// The game modes that the map is listed for.
         /// </summary>
         [JsonInclude]
-        public string[] GameModes;
+        public string[] GameModes { get; set; }
 
         /// <summary>
         /// The forced UnitCount for the map. -1 means none.
@@ -535,51 +535,26 @@ namespace DTAClient.Domain.Multiplayer
                 Name = basicSection.GetStringValue("Name", "Unnamed map");
                 Author = basicSection.GetStringValue("Author", "Unknown author");
                 PlayDescription = basicSection.GetStringValue("PlayDescription", "");
-                //string gameModesString = basicSection.GetStringValue("GameModes", string.Empty);
-                //if (string.IsNullOrEmpty(gameModesString))
-                //{
-                //    gameModesString = basicSection.GetStringValue("GameMode", "Standard");
-                //}
+                //2025.3.2地图模式
+                string gameModesString = basicSection.GetStringValue("GameModes", string.Empty);
+                if (string.IsNullOrEmpty(gameModesString))
+                {
+                    gameModesString = basicSection.GetStringValue("GameMode", "Standard");
+                }
 
-                //GameModes = gameModesString.Split(',');
-
+                GameModes = gameModesString.Split(',');
+                //逻辑变更：加入的第三方地图另加GameMode，暂定第三方图
+                GameModes = new List<string> { "第三方图" }.Concat(GameModes).ToArray();
                 //if (GameModes.Length == 0)
                 //{
                 //    Logger.Log("Custom map " + customMapFilePath + " has no game modes!");
                 //    return false;
                 //}
 
-                //for (int i = 0; i < GameModes.Length; i++)
-                //{
-                //    string gameMode = GameModes[i].Trim().L10N("UI:GameMode:" + GameModes[i].Trim());
-                //    GameModes[i] = gameMode.Substring(0, 1).ToUpperInvariant() + gameMode.Substring(1);
-
-                //}
-
-                //逻辑变更：加入的第三方地图另加GameMode，暂定第三方图
-                GameModes = new string[] { "第三方图" };
-
-                //新增逻辑
-                List<string> existModes = new List<string>
+                for (int i = 0; i < GameModes.Length; i++)
                 {
-                    "Standard",
-                    "Team Alliance",
-                    "Unholy Alliance",
-                    "Megawealth",
-                    "Land Rush",
-                    "Meat Grinder",
-                    "Naval War",
-                    "Cooperative Easy",
-                    "Cooperative Normal",
-                    "Cooperative Hard",
-                    "DenfenseMode",
-                };
-                int index = existModes.FindIndex(p => CompleteFilePath.Contains(p));
-                if (index != -1)
-                {
-                    var tempGameModes = GameModes.ToList();
-                    tempGameModes.Add(existModes[index]);
-                    GameModes = tempGameModes.ToArray();
+                    string gameMode = GameModes[i].Trim().L10N("UI:GameMode:" + GameModes[i].Trim());
+                    GameModes[i] = gameMode.Substring(0, 1).ToUpperInvariant() + gameMode.Substring(1);
                 }
 
                 MinPlayers = 0;

@@ -32,7 +32,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
     /// </summary>
     public class GameLobbyCheckBox : XNAClientCheckBox
     {
-        public GameLobbyCheckBox(WindowManager windowManager) : base (windowManager) { }
+        public GameLobbyCheckBox(WindowManager windowManager) : base(windowManager) { }
 
         public bool IsMultiplayer { get; set; }
 
@@ -73,7 +73,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
         public List<string> ControlName;
 
-        public List<string> ControlIndex;
+        public List<string> ControlIndex { get; set; }
 
         public override void Initialize()
         {
@@ -88,8 +88,8 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 // oh no, we have a circular class reference here!
                 if (parent is GameLobbyBase gameLobby)
                 {
-                    if (gameLobby.CheckBoxes.Find(chk => chk.Name == this.Name)==null)
-                    gameLobby.CheckBoxes.Add(this);
+                    if (gameLobby.CheckBoxes.Find(chk => chk.Name == this.Name) == null)
+                        gameLobby.CheckBoxes.Add(this);
                     break;
                 }
 
@@ -209,7 +209,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             base.OnLeftClick();
             UserChecked = Checked;
 
-            
+
         }
     }
 }
