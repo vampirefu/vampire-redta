@@ -18,7 +18,7 @@ namespace DTAConfig.Settings
         /// A path where the files edited by user are saved if
         /// <see cref="FileOperationOptions"/> is set to <see cref="FileOperationOptions.KeepChanges"/>.
         /// </summary>
-        public string CachedPath => SafePath.CombineDirectoryPath(ProgramConstants.ClientUserFilesPath, "SettingsCache", sourcePath);
+        public string CachedPath => Path.Combine(ProgramConstants.ClientUserFilesPath, "SettingsCache", sourcePath);
 
         public FileOperationOptions FileOperationOptions { get; }
 
@@ -134,7 +134,12 @@ namespace DTAConfig.Settings
                 case FileOperationOptions.KeepChanges:
                     if (File.Exists(DestinationPath))
                     {
-                        SafePath.GetDirectory(CachedPath).Create();
+                        //SafePath.GetDirectory(CachedPath).Create();
+                        var dir = Path.GetDirectoryName(CachedPath);
+                        if (!Directory.Exists(dir))
+                            Directory.CreateDirectory(dir);
+                        if (!File.Exists(CachedPath))
+                            File.Create(CachedPath);
                         File.Copy(DestinationPath, CachedPath, true);
                         File.Delete(DestinationPath);
                     }
