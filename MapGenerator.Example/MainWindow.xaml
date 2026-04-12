@@ -1,11 +1,11 @@
 <Window x:Class="MapGenerator.Example.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        Title="地图生成器" Height="550" Width="800" WindowStartupLocation="CenterScreen"
-        WindowStyle="None" AllowsTransparency="True" Background="Transparent"
-        ResizeMode="CanResizeWithGrip" MouseDown="Window_MouseDown" UseLayoutRounding="True" SnapsToDevicePixels="True"
-        >
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    Title="地图生成器" Height="550" Width="800" WindowStartupLocation="CenterScreen"
+    WindowStyle="None" AllowsTransparency="True" Background="Transparent"
+    ResizeMode="CanResizeWithGrip" MouseDown="Window_MouseDown" MouseMove="Window_MouseMove" UseLayoutRounding="True" SnapsToDevicePixels="True"
+    >
     <Window.Resources>
         <!-- 基础动效 -->
         <Storyboard x:Key="FadeInStoryboard">
@@ -54,13 +54,10 @@
             <DoubleAnimation Storyboard.TargetName="ScanlineTransform" Storyboard.TargetProperty="X" From="-900" To="900" Duration="0:0:6"/>
         </Storyboard>
 
-        <!-- 图标缓慢旋转 -->
-        <Storyboard x:Key="IconSpinStoryboard" RepeatBehavior="Forever">
-            <DoubleAnimation Storyboard.TargetName="TitleIcon" Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)" From="0" To="360" Duration="0:0:10"/>
-        </Storyboard>
+        
 
-        <!-- 按钮样式：暖色主色，微光晕 -->
-        <Style x:Key="NeonButtonStyle" TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedButton}">
+        <!-- 按钮样式：暖色主色，带点击波纹与发光 -->
+        <Style x:Key="NeonButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="{StaticResource AccentBrush}"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
@@ -70,26 +67,57 @@
                     <DropShadowEffect Color="#FF8A00" BlurRadius="0" ShadowDepth="0" Opacity="0"/>
                 </Setter.Value>
             </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Trigger.EnterActions>
-                        <BeginStoryboard>
-                            <Storyboard>
-                                <DoubleAnimation Storyboard.TargetProperty="Effect.BlurRadius" To="12" Duration="0:0:0.22"/>
-                                <DoubleAnimation Storyboard.TargetProperty="Effect.Opacity" To="0.36" Duration="0:0:0.22"/>
-                            </Storyboard>
-                        </BeginStoryboard>
-                    </Trigger.EnterActions>
-                    <Trigger.ExitActions>
-                        <BeginStoryboard>
-                            <Storyboard>
-                                <DoubleAnimation Storyboard.TargetProperty="Effect.BlurRadius" To="0" Duration="0:0:0.22"/>
-                                <DoubleAnimation Storyboard.TargetProperty="Effect.Opacity" To="0" Duration="0:0:0.22"/>
-                            </Storyboard>
-                        </BeginStoryboard>
-                    </Trigger.ExitActions>
-                </Trigger>
-            </Style.Triggers>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid>
+                            <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="6" SnapsToDevicePixels="True">
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#FF8A00" BlurRadius="0" ShadowDepth="0" Opacity="0"/>
+                                </Border.Effect>
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
+                            </Border>
+                            <Ellipse x:Name="PART_Ripple" Width="240" Height="240" Opacity="0" RenderTransformOrigin="0.5,0.5" IsHitTestVisible="False">
+                                <Ellipse.Fill>
+                                    <SolidColorBrush Color="#33FFFFFF"/>
+                                </Ellipse.Fill>
+                                <Ellipse.RenderTransform>
+                                    <ScaleTransform ScaleX="0" ScaleY="0"/>
+                                </Ellipse.RenderTransform>
+                            </Ellipse>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <EventTrigger RoutedEvent="PreviewMouseLeftButtonDown">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="PART_Ripple" Storyboard.TargetProperty="Opacity" From="0.35" To="0" Duration="0:0:0.6"/>
+                                        <DoubleAnimation Storyboard.TargetName="PART_Ripple" Storyboard.TargetProperty="(Ellipse.RenderTransform).(ScaleTransform.ScaleX)" From="0" To="1" Duration="0:0:0.6"/>
+                                        <DoubleAnimation Storyboard.TargetName="PART_Ripple" Storyboard.TargetProperty="(Ellipse.RenderTransform).(ScaleTransform.ScaleY)" From="0" To="1" Duration="0:0:0.6"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="border" Storyboard.TargetProperty="(Border.Effect).(DropShadowEffect.BlurRadius)" To="20" Duration="0:0:0.22"/>
+                                            <DoubleAnimation Storyboard.TargetName="border" Storyboard.TargetProperty="(Border.Effect).(DropShadowEffect.Opacity)" To="0.36" Duration="0:0:0.22"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="border" Storyboard.TargetProperty="(Border.Effect).(DropShadowEffect.BlurRadius)" To="0" Duration="0:0:0.22"/>
+                                            <DoubleAnimation Storyboard.TargetName="border" Storyboard.TargetProperty="(Border.Effect).(DropShadowEffect.Opacity)" To="0" Duration="0:0:0.22"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
         <!-- ComboBox items: ensure dropdown items use light background and readable foreground -->
         <Style TargetType="ComboBoxItem">
@@ -104,16 +132,119 @@
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="{StaticResource AccentBrush}"/>
         </Style>
+
+        <!-- 增强动画资源：平移、快速扫描线、粒子与图标脉冲 -->
+        <Storyboard x:Key="BackgroundPanStoryboard" RepeatBehavior="Forever" AutoReverse="True">
+            <DoubleAnimation Storyboard.TargetName="BgPanTransform" Storyboard.TargetProperty="X" From="-6" To="6" Duration="0:0:12"/>
+            <DoubleAnimation Storyboard.TargetName="BgPanTransform" Storyboard.TargetProperty="Y" From="-4" To="4" Duration="0:0:10"/>
+        </Storyboard>
+
+        <Storyboard x:Key="FastScanlineStoryboard" RepeatBehavior="Forever">
+            <DoubleAnimation Storyboard.TargetName="Scanline2Transform" Storyboard.TargetProperty="X" From="-900" To="900" Duration="0:0:3"/>
+        </Storyboard>
+
+        <Storyboard x:Key="IconSpinStoryboard" RepeatBehavior="Forever">
+            <DoubleAnimation Storyboard.TargetName="TitleIconRotateTransform" Storyboard.TargetProperty="Angle" From="0" To="360" Duration="0:0:6">
+                <DoubleAnimation.EasingFunction>
+                    <SineEase EasingMode="EaseInOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+
+        <Storyboard x:Key="TitleIconPulseStoryboard" RepeatBehavior="Forever" AutoReverse="True">
+            <DoubleAnimation Storyboard.TargetName="TitleIconScaleTransform" Storyboard.TargetProperty="ScaleX" From="1" To="1.08" Duration="0:0:1.6"/>
+            <DoubleAnimation Storyboard.TargetName="TitleIconScaleTransform" Storyboard.TargetProperty="ScaleY" From="1" To="1.08" Duration="0:0:1.6"/>
+        </Storyboard>
+
+        <Storyboard x:Key="Particle1Storyboard" RepeatBehavior="Forever">
+            <DoubleAnimation Storyboard.TargetName="Particle1Transform" Storyboard.TargetProperty="X" From="-120" To="900" Duration="0:0:18"/>
+            <DoubleAnimation Storyboard.TargetName="Particle1" Storyboard.TargetProperty="Opacity" From="0" To="0.45" Duration="0:0:2" AutoReverse="True"/>
+        </Storyboard>
+
+        <Storyboard x:Key="Particle2Storyboard" RepeatBehavior="Forever" BeginTime="0:0:3">
+            <DoubleAnimation Storyboard.TargetName="Particle2Transform" Storyboard.TargetProperty="X" From="900" To="-200" Duration="0:0:22"/>
+            <DoubleAnimation Storyboard.TargetName="Particle2" Storyboard.TargetProperty="Opacity" From="0" To="0.38" Duration="0:0:2" AutoReverse="True"/>
+        </Storyboard>
+
+        <Storyboard x:Key="Particle3Storyboard" RepeatBehavior="Forever" BeginTime="0:0:5">
+            <DoubleAnimation Storyboard.TargetName="Particle3Transform" Storyboard.TargetProperty="X" From="-200" To="900" Duration="0:0:16"/>
+            <DoubleAnimation Storyboard.TargetName="Particle3" Storyboard.TargetProperty="Opacity" From="0" To="0.32" Duration="0:0:2" AutoReverse="True"/>
+        </Storyboard>
+
+        <Storyboard x:Key="Particle4Storyboard" RepeatBehavior="Forever" BeginTime="0:0:7">
+            <DoubleAnimation Storyboard.TargetName="Particle4Transform" Storyboard.TargetProperty="X" From="900" To="-200" Duration="0:0:20"/>
+            <DoubleAnimation Storyboard.TargetName="Particle4" Storyboard.TargetProperty="Opacity" From="0" To="0.28" Duration="0:0:2" AutoReverse="True"/>
+        </Storyboard>
     </Window.Resources>
 
+    <!-- 在 Window 加载时启动增强动画 -->
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="Loaded">
+            <BeginStoryboard Storyboard="{StaticResource BackgroundShift}"/>
+            <BeginStoryboard Storyboard="{StaticResource BackgroundPanStoryboard}"/>
+            <BeginStoryboard Storyboard="{StaticResource ScanlineStoryboard}"/>
+            <BeginStoryboard Storyboard="{StaticResource FastScanlineStoryboard}"/>
+            <BeginStoryboard Storyboard="{StaticResource IconSpinStoryboard}"/>
+            <BeginStoryboard Storyboard="{StaticResource TitleIconPulseStoryboard}"/>
+            <BeginStoryboard Storyboard="{StaticResource Particle1Storyboard}"/>
+            <BeginStoryboard Storyboard="{StaticResource Particle2Storyboard}"/>
+            <BeginStoryboard Storyboard="{StaticResource Particle3Storyboard}"/>
+            <BeginStoryboard Storyboard="{StaticResource Particle4Storyboard}"/>
+        </EventTrigger>
+    </Window.Triggers>
     <Grid UseLayoutRounding="True" SnapsToDevicePixels="True">
         <Border CornerRadius="12" BorderBrush="{StaticResource AccentBrush}" BorderThickness="1" Margin="8" Background="Transparent">
             <Border.Effect>
                 <DropShadowEffect Color="#A8A0A0" BlurRadius="14" ShadowDepth="0" Opacity="0.12"/>
             </Border.Effect>
             <Grid>
-                <Rectangle x:Name="BgRect" RadiusX="12" RadiusY="12" Fill="{StaticResource WarmGradientBrush}" Stretch="Fill"/>
+                <Rectangle x:Name="BgRect" RadiusX="12" RadiusY="12" Fill="{StaticResource WarmGradientBrush}" Stretch="Fill">
+                    <Rectangle.RenderTransform>
+                        <TranslateTransform x:Name="BgPanTransform" X="0" Y="0"/>
+                    </Rectangle.RenderTransform>
+                </Rectangle>
 
+                <!-- 背景漂浮光晕 -->
+                <Ellipse x:Name="Halo1" Width="420" Height="220" Opacity="0.18" IsHitTestVisible="False" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="60,20,0,0" RenderTransformOrigin="0.5,0.5">
+                    <Ellipse.Fill>
+                        <RadialGradientBrush GradientOrigin="0.3,0.3">
+                            <GradientStop Color="#FFF8D1" Offset="0"/>
+                            <GradientStop Color="#00FFF8D1" Offset="1"/>
+                        </RadialGradientBrush>
+                    </Ellipse.Fill>
+                    <Ellipse.Effect>
+                        <BlurEffect Radius="28"/>
+                    </Ellipse.Effect>
+                    <Ellipse.RenderTransform>
+                        <TranslateTransform x:Name="Halo1Transform" X="0" Y="0"/>
+                    </Ellipse.RenderTransform>
+                </Ellipse>
+
+                <!-- 粒子层 -->
+                <Canvas x:Name="ParticleLayer" IsHitTestVisible="False">
+                    <Ellipse x:Name="Particle1" Width="18" Height="18" Fill="#FFF2C6" Opacity="0.0" Canvas.Left="-80" Canvas.Top="110" RenderTransformOrigin="0.5,0.5">
+                        <Ellipse.RenderTransform>
+                            <TranslateTransform x:Name="Particle1Transform" X="0" Y="0"/>
+                        </Ellipse.RenderTransform>
+                    </Ellipse>
+                    <Ellipse x:Name="Particle2" Width="12" Height="12" Fill="#FFF0A0" Opacity="0.0" Canvas.Left="900" Canvas.Top="60" RenderTransformOrigin="0.5,0.5">
+                        <Ellipse.RenderTransform>
+                            <TranslateTransform x:Name="Particle2Transform" X="0" Y="0"/>
+                        </Ellipse.RenderTransform>
+                    </Ellipse>
+                    <Ellipse x:Name="Particle3" Width="14" Height="14" Fill="#FFE6B8" Opacity="0.0" Canvas.Left="-60" Canvas.Top="180" RenderTransformOrigin="0.5,0.5">
+                        <Ellipse.RenderTransform>
+                            <TranslateTransform x:Name="Particle3Transform" X="0" Y="0"/>
+                        </Ellipse.RenderTransform>
+                    </Ellipse>
+                    <Ellipse x:Name="Particle4" Width="10" Height="10" Fill="#FFDDA0" Opacity="0.0" Canvas.Left="900" Canvas.Top="220" RenderTransformOrigin="0.5,0.5">
+                        <Ellipse.RenderTransform>
+                            <TranslateTransform x:Name="Particle4Transform" X="0" Y="0"/>
+                        </Ellipse.RenderTransform>
+                    </Ellipse>
+                </Canvas>
+
+                <!-- 原扫描光条 -->
                 <Rectangle x:Name="ScanlineRect" RadiusX="12" RadiusY="12" Opacity="0.08" IsHitTestVisible="False" RenderTransformOrigin="0.5,0.5">
                     <Rectangle.Fill>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
@@ -124,6 +255,20 @@
                     </Rectangle.Fill>
                     <Rectangle.RenderTransform>
                         <TranslateTransform x:Name="ScanlineTransform" X="-900"/>
+                    </Rectangle.RenderTransform>
+                </Rectangle>
+
+                <!-- 第二快速扫描线 -->
+                <Rectangle x:Name="ScanlineRect2" RadiusX="12" RadiusY="12" Opacity="0.05" IsHitTestVisible="False">
+                    <Rectangle.Fill>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                            <GradientStop Color="#00FFFFFF" Offset="0"/>
+                            <GradientStop Color="#66FFFFFF" Offset="0.3"/>
+                            <GradientStop Color="#00FFFFFF" Offset="0.5"/>
+                        </LinearGradientBrush>
+                    </Rectangle.Fill>
+                    <Rectangle.RenderTransform>
+                        <TranslateTransform x:Name="Scanline2Transform" X="-900"/>
                     </Rectangle.RenderTransform>
                 </Rectangle>
             </Grid>
@@ -148,7 +293,10 @@
                     <materialDesign:PackIcon x:Name="TitleIcon" Kind="Map" Width="28" Height="28" VerticalAlignment="Center"
                                            Foreground="{DynamicResource PrimaryHueLightBrush}" Margin="0,0,8,0" RenderTransformOrigin="0.5,0.5">
                         <materialDesign:PackIcon.RenderTransform>
-                            <RotateTransform Angle="0"/>
+                            <TransformGroup>
+                                <ScaleTransform x:Name="TitleIconScaleTransform" ScaleX="1" ScaleY="1"/>
+                                <RotateTransform x:Name="TitleIconRotateTransform" Angle="0"/>
+                            </TransformGroup>
                         </materialDesign:PackIcon.RenderTransform>
                     </materialDesign:PackIcon>
                     <TextBlock Text="地图生成器" FontSize="20" FontWeight="Bold" VerticalAlignment="Center"
@@ -192,7 +340,7 @@
                                 BorderBrush="#E6C3A3" BorderThickness="1" Padding="8" MinHeight="36"/>
                         <Button x:Name="BrowseToolPathButton" Grid.Column="2" Content="浏览" 
                                 Style="{StaticResource NeonButtonStyle}" Margin="8,0,0,0" 
-                                Click="BrowseToolPathButton_Click" MinWidth="60"/>
+                                Click="BrowseToolPathButton_Click" Width="60" Height="32"/>
                     </Grid>
 
                     <Grid>
@@ -209,7 +357,7 @@
                                 BorderBrush="#E6C3A3" BorderThickness="1" Padding="8" MinHeight="36"/>
                         <Button x:Name="BrowseGameResourcePathButton" Grid.Column="2" Content="浏览" 
                                 Style="{StaticResource NeonButtonStyle}" Margin="8,0,0,0" 
-                                Click="BrowseGameResourcePathButton_Click" MinWidth="60"/>
+                                Click="BrowseGameResourcePathButton_Click" Width="60" Height="32"/>
                     </Grid>
                 </StackPanel>
             </materialDesign:Card>

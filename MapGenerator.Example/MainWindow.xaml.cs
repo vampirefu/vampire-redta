@@ -70,6 +70,65 @@ namespace MapGenerator.Example
             }
         }
 
+        private void Window_MouseMove(object sender, MouseEventArgs e)
+        {
+            var p = e.GetPosition(this);
+            double cx = ActualWidth * 0.5;
+            double cy = ActualHeight * 0.5;
+            if (cx <= 0 || cy <= 0)
+                return;
+
+            double nx = (p.X - cx) / cx; // -1..1
+            double ny = (p.Y - cy) / cy;
+
+            double maxBg = 10.0;
+            double maxParticles = 6.0;
+
+            try
+            {
+                if (BgPanTransform != null)
+                {
+                    BgPanTransform.X = nx * maxBg;
+                    BgPanTransform.Y = ny * maxBg * 0.6;
+                }
+
+                if (Particle1Transform != null)
+                {
+                    Particle1Transform.X = nx * maxParticles * -1.0;
+                    Particle1Transform.Y = ny * maxParticles * -0.6;
+                }
+                if (Particle2Transform != null)
+                {
+                    Particle2Transform.X = nx * maxParticles * 0.9;
+                    Particle2Transform.Y = ny * maxParticles * 0.4;
+                }
+                if (Particle3Transform != null)
+                {
+                    Particle3Transform.X = nx * maxParticles * -0.6;
+                    Particle3Transform.Y = ny * maxParticles * 0.6;
+                }
+                if (Particle4Transform != null)
+                {
+                    Particle4Transform.X = nx * maxParticles * 0.8;
+                    Particle4Transform.Y = ny * maxParticles * -0.3;
+                }
+
+                if (ScanlineTransform != null)
+                    ScanlineTransform.Y = ny * 6;
+                if (Scanline2Transform != null)
+                    Scanline2Transform.Y = ny * 8;
+                if (Halo1Transform != null)
+                {
+                    Halo1Transform.X = nx * 18;
+                    Halo1Transform.Y = ny * 8;
+                }
+            }
+            catch
+            {
+                // 保守处理：若运行时找不到元素或线程竞态，则忽略
+            }
+        }
+
         private void LoadDefaultPaths()
         {
             string defaultToolPath = @"C:\Users\Administrator\Desktop\AGWarDTA\Resources\RandomMapGenerator_RA2";
