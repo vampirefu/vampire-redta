@@ -4,70 +4,59 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         Title="地图生成器" Height="550" Width="800" WindowStartupLocation="CenterScreen"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent"
-        ResizeMode="CanResizeWithGrip" MouseDown="Window_MouseDown" UseLayoutRounding="True" SnapsToDevicePixels="True"
-        >
+        ResizeMode="CanResizeWithGrip">
     <Window.Resources>
-        <!-- 基础动效 -->
+        <!-- 现有基础动效 -->
         <Storyboard x:Key="FadeInStoryboard">
-            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.45">
+            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.5">
                 <DoubleAnimation.EasingFunction>
                     <CubicEase EasingMode="EaseOut"/>
                 </DoubleAnimation.EasingFunction>
             </DoubleAnimation>
         </Storyboard>
         <Storyboard x:Key="SlideInStoryboard">
-            <ThicknessAnimation Storyboard.TargetProperty="Margin" From="0,28,0,0" To="0" Duration="0:0:0.36">
+            <ThicknessAnimation Storyboard.TargetProperty="Margin" From="0,50,0,0" To="0" Duration="0:0:0.5">
                 <ThicknessAnimation.EasingFunction>
                     <CubicEase EasingMode="EaseOut"/>
                 </ThicknessAnimation.EasingFunction>
             </ThicknessAnimation>
         </Storyboard>
         <Storyboard x:Key="ProgressGlowStoryboard" RepeatBehavior="Forever">
-            <DoubleAnimation Storyboard.TargetProperty="Effect.Opacity" From="0.2" To="0.9" Duration="0:0:0.8" AutoReverse="True"/>
+            <DoubleAnimation Storyboard.TargetProperty="Effect.Opacity" From="0.3" To="1" Duration="0:0:0.8" AutoReverse="True"/>
         </Storyboard>
 
-        <!-- 亮暖配色资源（简约、温暖、科技感） -->
-        <SolidColorBrush x:Key="PrimaryHueLightBrush" Color="#3B2E2A"/>
-        <SolidColorBrush x:Key="SecondaryHueLightBrush" Color="#7A4B2B"/>
-        <SolidColorBrush x:Key="AccentBrush" Color="#FF8A00"/>
-        <SolidColorBrush x:Key="CardBackgroundBrush" Color="#FFFDF7"/>
-
-        <!-- 背景渐变（暖色） -->
-        <LinearGradientBrush x:Key="WarmGradientBrush" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#FFFDF7" Offset="0"/>
-            <GradientStop Color="#FFF6EA" Offset="0.6"/>
-            <GradientStop Color="#FFF0E0" Offset="1"/>
+        <!-- 赛博风渐变背景笔刷 -->
+        <LinearGradientBrush x:Key="NeonGradientBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#061226" Offset="0"/>
+            <GradientStop Color="#0b1b3f" Offset="0.5"/>
+            <GradientStop Color="#001f3f" Offset="1"/>
         </LinearGradientBrush>
 
-        <!-- 背景颜色缓变（微妙波动） -->
+        <!-- 背景颜色缓变动画（目标：BgRect.Fill 的 GradientStops 的 Color） -->
         <Storyboard x:Key="BackgroundShift" RepeatBehavior="Forever" AutoReverse="True">
             <ColorAnimation Storyboard.TargetName="BgRect" Storyboard.TargetProperty="(Rectangle.Fill).(LinearGradientBrush.GradientStops)[0].Color"
-                            To="#FFFEF9" Duration="0:0:9" />
+                            To="#0a1630" Duration="0:0:6" />
             <ColorAnimation Storyboard.TargetName="BgRect" Storyboard.TargetProperty="(Rectangle.Fill).(LinearGradientBrush.GradientStops)[1].Color"
-                            To="#FFF8ED" Duration="0:0:9" />
+                            To="#082042" Duration="0:0:6" />
             <ColorAnimation Storyboard.TargetName="BgRect" Storyboard.TargetProperty="(Rectangle.Fill).(LinearGradientBrush.GradientStops)[2].Color"
-                            To="#FFF2E4" Duration="0:0:9" />
+                            To="#00304f" Duration="0:0:6" />
         </Storyboard>
 
-        <!-- 扫描光条（用于轻微科技感移动高光） -->
+        <!-- 扫描线动画（从上到下重复） -->
         <Storyboard x:Key="ScanlineStoryboard" RepeatBehavior="Forever">
-            <DoubleAnimation Storyboard.TargetName="ScanlineTransform" Storyboard.TargetProperty="X" From="-900" To="900" Duration="0:0:6"/>
+            <DoubleAnimation Storyboard.TargetName="ScanlineTransform" Storyboard.TargetProperty="Y" From="-400" To="400" Duration="0:0:4"/>
         </Storyboard>
 
-        <!-- 图标缓慢旋转 -->
+        <!-- 标题图标旋转（缓慢循环） -->
         <Storyboard x:Key="IconSpinStoryboard" RepeatBehavior="Forever">
-            <DoubleAnimation Storyboard.TargetName="TitleIcon" Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)" From="0" To="360" Duration="0:0:10"/>
+            <DoubleAnimation Storyboard.TargetName="IconRotation" Storyboard.TargetProperty="Angle" From="0" To="360" Duration="0:0:6"/>
         </Storyboard>
 
-        <!-- 按钮样式：暖色主色，微光晕 -->
+        <!-- 炫光按钮样式，基于 MaterialDesign 风格扩展发光效果 -->
         <Style x:Key="NeonButtonStyle" TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedButton}">
-            <Setter Property="Background" Value="{StaticResource AccentBrush}"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
-            <Setter Property="Padding" Value="8,4"/>
             <Setter Property="Effect">
                 <Setter.Value>
-                    <DropShadowEffect Color="#FF8A00" BlurRadius="0" ShadowDepth="0" Opacity="0"/>
+                    <DropShadowEffect Color="#00d8ff" BlurRadius="0" ShadowDepth="0" Opacity="0"/>
                 </Setter.Value>
             </Setter>
             <Style.Triggers>
@@ -75,55 +64,51 @@
                     <Trigger.EnterActions>
                         <BeginStoryboard>
                             <Storyboard>
-                                <DoubleAnimation Storyboard.TargetProperty="Effect.BlurRadius" To="12" Duration="0:0:0.22"/>
-                                <DoubleAnimation Storyboard.TargetProperty="Effect.Opacity" To="0.36" Duration="0:0:0.22"/>
+                                <DoubleAnimation Storyboard.TargetProperty="Effect.BlurRadius" To="14" Duration="0:0:0.28"/>
+                                <DoubleAnimation Storyboard.TargetProperty="Effect.Opacity" To="0.9" Duration="0:0:0.28"/>
                             </Storyboard>
                         </BeginStoryboard>
                     </Trigger.EnterActions>
                     <Trigger.ExitActions>
                         <BeginStoryboard>
                             <Storyboard>
-                                <DoubleAnimation Storyboard.TargetProperty="Effect.BlurRadius" To="0" Duration="0:0:0.22"/>
-                                <DoubleAnimation Storyboard.TargetProperty="Effect.Opacity" To="0" Duration="0:0:0.22"/>
+                                <DoubleAnimation Storyboard.TargetProperty="Effect.BlurRadius" To="0" Duration="0:0:0.28"/>
+                                <DoubleAnimation Storyboard.TargetProperty="Effect.Opacity" To="0" Duration="0:0:0.28"/>
                             </Storyboard>
                         </BeginStoryboard>
                     </Trigger.ExitActions>
                 </Trigger>
             </Style.Triggers>
         </Style>
-        <!-- ComboBox items: ensure dropdown items use light background and readable foreground -->
-        <Style TargetType="ComboBoxItem">
-            <Setter Property="Background" Value="{StaticResource CardBackgroundBrush}"/>
-            <Setter Property="Foreground" Value="{DynamicResource PrimaryHueLightBrush}"/>
-            <Setter Property="Padding" Value="8,6"/>
-        </Style>
-
-        <!-- 简化滚动条外观 -->
-        <Style TargetType="ScrollBar">
-            <Setter Property="Width" Value="10"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="{StaticResource AccentBrush}"/>
-        </Style>
     </Window.Resources>
 
-    <Grid UseLayoutRounding="True" SnapsToDevicePixels="True">
-        <Border CornerRadius="12" BorderBrush="{StaticResource AccentBrush}" BorderThickness="1" Margin="8" Background="Transparent">
+    <!-- 在窗口加载时启动背景、扫描线、图标旋转与淡入动画 -->
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+            <BeginStoryboard Storyboard="{StaticResource FadeInStoryboard}"/>
+            <BeginStoryboard Storyboard="{StaticResource BackgroundShift}"/>
+            <BeginStoryboard Storyboard="{StaticResource IconSpinStoryboard}"/>
+            <BeginStoryboard Storyboard="{StaticResource ScanlineStoryboard}"/>
+        </EventTrigger>
+    </Window.Triggers>
+
+    <Grid>
+        <Border CornerRadius="12" BorderBrush="#0fd8ff" BorderThickness="1" Margin="8" Background="Transparent">
             <Border.Effect>
-                <DropShadowEffect Color="#A8A0A0" BlurRadius="14" ShadowDepth="0" Opacity="0.12"/>
+                <DropShadowEffect Color="#001f3f" BlurRadius="28" ShadowDepth="0" Opacity="0.45"/>
             </Border.Effect>
             <Grid>
-                <Rectangle x:Name="BgRect" RadiusX="12" RadiusY="12" Fill="{StaticResource WarmGradientBrush}" Stretch="Fill"/>
+                <Rectangle x:Name="BgRect" RadiusX="12" RadiusY="12" Fill="{StaticResource NeonGradientBrush}" Stretch="Fill"/>
 
-                <Rectangle x:Name="ScanlineRect" RadiusX="12" RadiusY="12" Opacity="0.08" IsHitTestVisible="False" RenderTransformOrigin="0.5,0.5">
+                <Rectangle x:Name="ScanlineRect" RadiusX="12" RadiusY="12" Opacity="0.06" IsHitTestVisible="False" RenderTransformOrigin="0.5,0.5">
                     <Rectangle.Fill>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                            <GradientStop Color="#00FFFFFF" Offset="0"/>
-                            <GradientStop Color="#33FFFFFF" Offset="0.45"/>
-                            <GradientStop Color="#00FFFFFF" Offset="0.55"/>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Color="#66ffffff" Offset="0"/>
+                            <GradientStop Color="#00ffffff" Offset="0.25"/>
                         </LinearGradientBrush>
                     </Rectangle.Fill>
                     <Rectangle.RenderTransform>
-                        <TranslateTransform x:Name="ScanlineTransform" X="-900"/>
+                        <TranslateTransform x:Name="ScanlineTransform" Y="-400"/>
                     </Rectangle.RenderTransform>
                 </Rectangle>
             </Grid>
@@ -145,10 +130,10 @@
                 </Grid.ColumnDefinitions>
                 
                 <StackPanel Grid.Column="0" Orientation="Horizontal">
-                    <materialDesign:PackIcon x:Name="TitleIcon" Kind="Map" Width="28" Height="28" VerticalAlignment="Center"
-                                           Foreground="{DynamicResource PrimaryHueLightBrush}" Margin="0,0,8,0" RenderTransformOrigin="0.5,0.5">
+                    <materialDesign:PackIcon Kind="Map" Width="28" Height="28" VerticalAlignment="Center" 
+                                           Foreground="{DynamicResource PrimaryHueLightBrush}" Margin="0,0,8,0">
                         <materialDesign:PackIcon.RenderTransform>
-                            <RotateTransform Angle="0"/>
+                            <RotateTransform x:Name="IconRotation" CenterX="14" CenterY="14"/>
                         </materialDesign:PackIcon.RenderTransform>
                     </materialDesign:PackIcon>
                     <TextBlock Text="地图生成器" FontSize="20" FontWeight="Bold" VerticalAlignment="Center"
@@ -158,16 +143,16 @@
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
                     <Button x:Name="MinimizeButton" Style="{StaticResource MaterialDesignIconButton}" 
                             Click="MinimizeButton_Click" Margin="0,0,4,0">
-                        <materialDesign:PackIcon Kind="WindowMinimize" Width="18" Height="18" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
+                        <materialDesign:PackIcon Kind="WindowMinimize" Width="18" Height="18"/>
                     </Button>
                     <Button x:Name="CloseButton" Style="{StaticResource MaterialDesignIconButton}" 
                             Click="CloseButton_Click">
-                        <materialDesign:PackIcon Kind="WindowClose" Width="18" Height="18" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
+                        <materialDesign:PackIcon Kind="WindowClose" Width="18" Height="18"/>
                     </Button>
                 </StackPanel>
             </Grid>
 
-            <materialDesign:Card Grid.Row="1" Margin="0,0,0,10" Padding="12" Background="{StaticResource CardBackgroundBrush}">
+            <materialDesign:Card Grid.Row="1" Margin="0,0,0,10" Padding="12">
                 <materialDesign:Card.Style>
                     <Style TargetType="materialDesign:Card">
                         <Style.Triggers>
@@ -177,8 +162,19 @@
                         </Style.Triggers>
                     </Style>
                 </materialDesign:Card.Style>
-                <StackPanel>
-                    <Grid Margin="0,0,0,8">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Column="0" Margin="0,0,8,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
@@ -187,15 +183,16 @@
                         <materialDesign:PackIcon Kind="Folder" Width="20" Height="20" VerticalAlignment="Center" 
                                                 Foreground="{DynamicResource SecondaryHueLightBrush}" Margin="0,0,8,0"/>
                         <TextBox x:Name="ToolPathTextBox" Grid.Column="1" materialDesign:HintAssist.Hint="工具路径"
-                                Style="{StaticResource MaterialDesignOutlinedTextBox}" VerticalAlignment="Center"
-                                Background="{StaticResource CardBackgroundBrush}" Foreground="{DynamicResource PrimaryHueLightBrush}"
-                                BorderBrush="#E6C3A3" BorderThickness="1" Padding="8" MinHeight="36"/>
+                                Style="{StaticResource MaterialDesignOutlinedTextBox}" VerticalAlignment="Center"/>
                         <Button x:Name="BrowseToolPathButton" Grid.Column="2" Content="浏览" 
-                                Style="{StaticResource NeonButtonStyle}" Margin="8,0,0,0" 
+                                Style="{StaticResource MaterialDesignOutlinedButton}" Margin="8,0,0,0" 
                                 Click="BrowseToolPathButton_Click" MinWidth="60"/>
                     </Grid>
 
-                    <Grid>
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
@@ -204,17 +201,15 @@
                         <materialDesign:PackIcon Kind="GamepadVariant" Width="20" Height="20" VerticalAlignment="Center" 
                                                 Foreground="{DynamicResource SecondaryHueLightBrush}" Margin="0,0,8,0"/>
                         <TextBox x:Name="GameResourcePathTextBox" Grid.Column="1" materialDesign:HintAssist.Hint="游戏资源路径"
-                                Style="{StaticResource MaterialDesignOutlinedTextBox}" VerticalAlignment="Center"
-                                Background="{StaticResource CardBackgroundBrush}" Foreground="{DynamicResource PrimaryHueLightBrush}"
-                                BorderBrush="#E6C3A3" BorderThickness="1" Padding="8" MinHeight="36"/>
+                                Style="{StaticResource MaterialDesignOutlinedTextBox}" VerticalAlignment="Center"/>
                         <Button x:Name="BrowseGameResourcePathButton" Grid.Column="2" Content="浏览" 
-                                Style="{StaticResource NeonButtonStyle}" Margin="8,0,0,0" 
+                                Style="{StaticResource MaterialDesignOutlinedButton}" Margin="8,0,0,0" 
                                 Click="BrowseGameResourcePathButton_Click" MinWidth="60"/>
                     </Grid>
-                </StackPanel>
+                </Grid>
             </materialDesign:Card>
 
-            <materialDesign:Card Grid.Row="2" Margin="0,0,0,10" Padding="12" Background="{StaticResource CardBackgroundBrush}">
+            <materialDesign:Card Grid.Row="2" Margin="0,0,0,10" Padding="12">
                 <materialDesign:Card.Style>
                     <Style TargetType="materialDesign:Card">
                         <Style.Triggers>
@@ -235,41 +230,29 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
-                        <StackPanel Grid.Column="0" Margin="0,0,8,0" Orientation="Vertical">
+                        <Grid Grid.Column="0" Margin="0,0,8,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
                             <TextBlock Text="气候类型" VerticalAlignment="Center" Margin="0,0,8,0"
                                       Foreground="{DynamicResource PrimaryHueLightBrush}"/>
-                            <ComboBox x:Name="ClimateComboBox" 
-                                     Style="{StaticResource MaterialDesignOutlinedComboBox}" Margin="0,4,0,0"
-                                     Background="{StaticResource CardBackgroundBrush}" Foreground="{DynamicResource PrimaryHueLightBrush}"
-                                     BorderBrush="#E6C3A3" BorderThickness="1" Padding="8">
-                                <ComboBox.Resources>
-                                    <Style TargetType="ComboBoxItem">
-                                        <Setter Property="Background" Value="{StaticResource CardBackgroundBrush}"/>
-                                        <Setter Property="Foreground" Value="{DynamicResource PrimaryHueLightBrush}"/>
-                                        <Setter Property="Padding" Value="8,4"/>
-                                    </Style>
-                                </ComboBox.Resources>
+                            <ComboBox x:Name="ClimateComboBox" Grid.Row="1" 
+                                     Style="{StaticResource MaterialDesignOutlinedComboBox}" Margin="0,4,0,0">
                                 <ComboBoxItem Content="温带 (TEMPERATE)" IsSelected="True"/>
                                 <ComboBoxItem Content="温带岛屿 (TEMPERATE_Islands)"/>
                                 <ComboBoxItem Content="城市 (NEWURBAN)"/>
                                 <ComboBoxItem Content="沙漠 (DESERT)"/>
                             </ComboBox>
-                        </StackPanel>
+                        </Grid>
 
-                        <StackPanel Grid.Column="1" Margin="0,0,8,0" Orientation="Vertical">
+                        <Grid Grid.Column="1" Margin="0,0,8,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
                             <TextBlock Text="玩家数量" VerticalAlignment="Center" Margin="0,0,8,0"
                                       Foreground="{DynamicResource PrimaryHueLightBrush}"/>
-                            <ComboBox x:Name="PlayerCountComboBox" 
-                                     Style="{StaticResource MaterialDesignOutlinedComboBox}" Margin="0,4,0,0"
-                                     Background="{StaticResource CardBackgroundBrush}" Foreground="{DynamicResource PrimaryHueLightBrush}"
-                                     BorderBrush="#E6C3A3" BorderThickness="1" Padding="8">
-                                <ComboBox.Resources>
-                                    <Style TargetType="ComboBoxItem">
-                                        <Setter Property="Background" Value="{StaticResource CardBackgroundBrush}"/>
-                                        <Setter Property="Foreground" Value="{DynamicResource PrimaryHueLightBrush}"/>
-                                        <Setter Property="Padding" Value="8,4"/>
-                                    </Style>
-                                </ComboBox.Resources>
+                            <ComboBox x:Name="PlayerCountComboBox" Grid.Row="1" 
+                                     Style="{StaticResource MaterialDesignOutlinedComboBox}" Margin="0,4,0,0">
                                 <ComboBoxItem Content="2人"/>
                                 <ComboBoxItem Content="3人"/>
                                 <ComboBoxItem Content="4人" IsSelected="True"/>
@@ -278,35 +261,29 @@
                                 <ComboBoxItem Content="7人"/>
                                 <ComboBoxItem Content="8人"/>
                             </ComboBox>
-                        </StackPanel>
+                        </Grid>
 
-                        <StackPanel Grid.Column="2" Orientation="Vertical">
+                        <Grid Grid.Column="2">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
                             <TextBlock Text="地图大小" VerticalAlignment="Center" Margin="0,0,8,0"
                                       Foreground="{DynamicResource PrimaryHueLightBrush}"/>
-                            <ComboBox x:Name="MapSizeComboBox" 
-                                     Style="{StaticResource MaterialDesignOutlinedComboBox}" Margin="0,4,0,0"
-                                     Background="{StaticResource CardBackgroundBrush}" Foreground="{DynamicResource PrimaryHueLightBrush}"
-                                     BorderBrush="#E6C3A3" BorderThickness="1" Padding="8">
-                                <ComboBox.Resources>
-                                    <Style TargetType="ComboBoxItem">
-                                        <Setter Property="Background" Value="{StaticResource CardBackgroundBrush}"/>
-                                        <Setter Property="Foreground" Value="{DynamicResource PrimaryHueLightBrush}"/>
-                                        <Setter Property="Padding" Value="8,4"/>
-                                    </Style>
-                                </ComboBox.Resources>
+                            <ComboBox x:Name="MapSizeComboBox" Grid.Row="1" 
+                                     Style="{StaticResource MaterialDesignOutlinedComboBox}" Margin="0,4,0,0">
                                 <ComboBoxItem Content="小型"/>
                                 <ComboBoxItem Content="中型" IsSelected="True"/>
                                 <ComboBoxItem Content="大型"/>
                                 <ComboBoxItem Content="超大"/>
                             </ComboBox>
-                        </StackPanel>
+                        </Grid>
                     </Grid>
                     <CheckBox x:Name="RandomDamageCheckBox" Content="随机建筑损伤" IsChecked="True" Margin="0,8,0,0"
                              Style="{StaticResource MaterialDesignCheckBox}"/>
                 </StackPanel>
             </materialDesign:Card>
 
-            <materialDesign:Card Grid.Row="3" Margin="0,0,0,10" Padding="12" Background="{StaticResource CardBackgroundBrush}">
+            <materialDesign:Card Grid.Row="3" Margin="0,0,0,10" Padding="12">
                 <materialDesign:Card.Style>
                     <Style TargetType="materialDesign:Card">
                         <Style.Triggers>
@@ -326,7 +303,7 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <Button x:Name="GenerateMapButton" Grid.Column="0" Content="生成随机地图" Height="40" 
+                        <Button x:Name="GenerateMapButton" Grid.Column="0" Content="生成随机地图" Height="40" 
                             Style="{StaticResource NeonButtonStyle}" Margin="0,0,8,0" 
                             Click="GenerateMapButton_Click">
                         <Button.ContentTemplate>
@@ -338,7 +315,7 @@
                             </DataTemplate>
                         </Button.ContentTemplate>
                     </Button>
-                    <Button x:Name="RenderThumbnailButton" Grid.Column="1" Content="渲染地图缩略图" Height="40" 
+                        <Button x:Name="RenderThumbnailButton" Grid.Column="1" Content="渲染地图缩略图" Height="40" 
                             Style="{StaticResource NeonButtonStyle}" Margin="0,0,8,0" 
                             Click="RenderThumbnailButton_Click">
                         <Button.ContentTemplate>
@@ -350,7 +327,7 @@
                             </DataTemplate>
                         </Button.ContentTemplate>
                     </Button>
-                    <Button x:Name="ExtractPreviewButton" Grid.Column="2" Content="提取地图缩略图" Height="40" 
+                        <Button x:Name="ExtractPreviewButton" Grid.Column="2" Content="提取地图缩略图" Height="40" 
                             Style="{StaticResource NeonButtonStyle}" 
                             Click="ExtractPreviewButton_Click">
                         <Button.ContentTemplate>
@@ -365,7 +342,7 @@
                 </Grid>
             </materialDesign:Card>
 
-            <materialDesign:Card Grid.Row="4" Padding="12" Background="{StaticResource CardBackgroundBrush}">
+            <materialDesign:Card Grid.Row="4" Padding="12">
                 <materialDesign:Card.Style>
                     <Style TargetType="materialDesign:Card">
                         <Style.Triggers>
@@ -386,15 +363,13 @@
                     <ProgressBar x:Name="ProgressBar" Grid.Row="1" Height="6" Minimum="0" Maximum="100" Value="0"
                                 Style="{StaticResource MaterialDesignLinearProgressBar}" Margin="0,0,0,10">
                         <ProgressBar.Effect>
-                            <DropShadowEffect x:Name="ProgressGlow" Color="#FF8A00" BlurRadius="8" ShadowDepth="0" Opacity="0"/>
+                            <DropShadowEffect x:Name="ProgressGlow" Color="#FF9800" BlurRadius="8" ShadowDepth="0" Opacity="0"/>
                         </ProgressBar.Effect>
                     </ProgressBar>
-                        <TextBox x:Name="LogTextBox" Grid.Row="2" IsReadOnly="True" 
+                    <TextBox x:Name="LogTextBox" Grid.Row="2" IsReadOnly="True" 
                             VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" 
                             Height="100" TextWrapping="Wrap"
-                            Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                            Background="{StaticResource CardBackgroundBrush}" Foreground="{DynamicResource PrimaryHueLightBrush}"
-                            BorderBrush="#E6C3A3" BorderThickness="1" Padding="8"/>
+                            Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
                 </Grid>
             </materialDesign:Card>
         </Grid>
