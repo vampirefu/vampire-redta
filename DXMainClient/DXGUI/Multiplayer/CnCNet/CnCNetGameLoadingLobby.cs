@@ -231,7 +231,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
         public void OnJoined()
         {
             FileHashCalculator fhc = new FileHashCalculator();
-            fhc.CalculateHashes(gameModes);
+            fhc.CalculateHashes();
 
             if (IsHost)
             {
@@ -705,7 +705,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             sb.Append(0); // LoadedGameId
 
             broadcastChannel.SendCTCPMessage(sb.ToString(), QueuedMessageType.SYSTEM_MESSAGE, 20);
-            //µ÷ÊÔÁª»ú¹ã²¥
+            //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ã²¥
             Logger.Log($"/***************[CnCNetGameLoadingLobby]BroadcastGame:{sb}***************/");
         }
 
