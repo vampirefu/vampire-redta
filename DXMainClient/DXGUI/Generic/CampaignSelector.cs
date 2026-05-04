@@ -8,7 +8,6 @@ using ClientGUI;
 using Rampastring.XNAUI.XNAControls;
 using Rampastring.XNAUI;
 using Rampastring.Tools;
-using ClientUpdater;
 using Localization;
 using System.Linq;
 using DTAClient.Domain.AI;
@@ -355,8 +354,7 @@ namespace DTAClient.DXGUI.Generic
 
             Mission mission = Missions[selectedMissionId];
 
-            if (!ClientConfiguration.Instance.ModMode &&
-                (!Updater.IsFileNonexistantOrOriginal(mission.Scenario) || AreFilesModified()))
+            if (!ClientConfiguration.Instance.ModMode && AreFilesModified())
             {
                 // Confront the user by showing the cheater screen
                 missionToLaunch = mission;
@@ -389,12 +387,7 @@ namespace DTAClient.DXGUI.Generic
 
         private bool AreFilesModified()
         {
-            foreach (string filePath in filesToCheck)
-            {
-                if (!Updater.IsFileNonexistantOrOriginal(filePath))
-                    return true;
-            }
-
+            // Updater removed: cannot determine file originality, assume not modified
             return false;
         }
 

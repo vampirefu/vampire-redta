@@ -6,7 +6,6 @@ using DTAClient.Domain;
 using ClientCore;
 using Rampastring.Tools;
 using DTAClient.DXGUI;
-using ClientUpdater;
 using System.Security.Principal;
 using System.DirectoryServices;
 using System.Linq;
@@ -52,11 +51,7 @@ namespace DTAClient
             if (!resourcesDirectory.Exists)
                 throw new DirectoryNotFoundException("Theme directory not found!" + Environment.NewLine + ProgramConstants.RESOURCES_DIR);
 
-            Logger.Log("Initializing updater.");
-
-            SafePath.DeleteFileIfExists(ProgramConstants.GamePath, "version_u");
-
-            Updater.Initialize(ProgramConstants.GamePath, ProgramConstants.GetBaseResourcePath(), ClientConfiguration.Instance.SettingsIniName, ClientConfiguration.Instance.LocalGame, SafePath.GetFile(ProgramConstants.StartupExecutable).Name);
+            // Updater removed: initialization skipped
 
             Logger.Log("OSDescription: " + RuntimeInformation.OSDescription);
             Logger.Log("OSArchitecture: " + RuntimeInformation.OSArchitecture);
@@ -112,21 +107,7 @@ namespace DTAClient
                 }
             }
 
-            if (Updater.CustomComponents != null)
-            {
-                Logger.Log("Removing partial custom component downloads.");
-                foreach (var component in Updater.CustomComponents)
-                {
-                    try
-                    {
-                        SafePath.DeleteFileIfExists(ProgramConstants.GamePath, FormattableString.Invariant($"{component.LocalPath}_u"));
-                    }
-                    catch
-                    {
-
-                    }
-                }
-            }
+            // Updater removed: no custom components to clean up
 
             FinalSunSettings.WriteFinalSunIni();
 

@@ -29,7 +29,7 @@
 
   <Target Name="MoveCommonBinaries" AfterTargets="Publish">
     <Message Importance="high" Text="Moving common binaries"/>
-    <Move SourceFiles="$(PublishDir)ClientUpdater.dll" DestinationFolder="$(PublishDir)../" />
+    <!-- Updater removed: ClientUpdater.dll move omitted -->
     <Move SourceFiles="$(PublishDir)DiscordRPC.dll" DestinationFolder="$(PublishDir)../" />
     <Move SourceFiles="$(PublishDir)Localization.dll" DestinationFolder="$(PublishDir)../" />
     <Move SourceFiles="$(PublishDir)Localization.pdb" DestinationFolder="$(PublishDir)../" />
