@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using MapGenerator.Core;
 
 namespace DTAClient.DXGUI.Multiplayer.GameLobby
 {
@@ -215,8 +216,8 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
         public void RunCmd()
         {
-            string strCmdText;
             Random r = new Random();
+
             string Generate = (string)ddClimate.SelectedItem.Tag;
             if (ddClimate.SelectedIndex == 0)
             {
@@ -226,28 +227,39 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             int sizex = 35 * (ddSize.SelectedIndex + 1) + r.Next(30, 50);
             int sizey = 35 * (ddSize.SelectedIndex + 1) + r.Next(30, 50);
 
-            People = GetPeople(ddPeople.SelectedItem.Text);
+            int playerCount;
+            if (ddPeople.SelectedItem.Text == "Random".L10N("UI:Main:Random"))
+                playerCount = r.Next(2, 8);
+            else
+                playerCount = int.Parse(ddPeople.SelectedItem.Text);
 
-            if (cbDamage.Checked)
+            bool randomBuildingDamage = cbDamage.Checked;
+
+            string toolPath = Path.Combine(ProgramConstants.GamePath, "Resources", "RandomMapGenerator_RA2");
+
+            RandomMapOptions options = new RandomMapOptions
             {
-                Damage = "-d";
+                Climate = Generate,
+                PlayerCount = playerCount,
+                Size = ddSize.SelectedIndex,
+                RandomBuildingDamage = randomBuildingDamage
+            };
+
+            try
+            {
+                RandomMapGenerator generator = new RandomMapGenerator(toolPath, ProgramConstants.GamePath);
+                generator.SetOutputPath(ProgramConstants.GamePath);
+                generator.ProgressChanged += (s, e) => { /* optional progress handling */ };
+                generator.GenerateRandomMap(options);
             }
-
-            strCmdText = "/c cd /d \"" + ProgramConstants.GamePath + "Resources\\RandomMapGenerator_RA2\" &&" +
-                    string.Format(" RandomMapGenerator.exe -w {10} -h {11} --nwp {0} --sep {1} --nep {2} --swp {3} --sp {4} --wp {5} --ep {6} --np {7} {8} --type {9} -g standard &&", People[0], People[1], People[2], People[3], People[4], People[5], People[6], People[7], Damage, Generate, sizex, sizey) +
-                        string.Format(" cd Map Renderer &&" + " CNCMaps.Renderer.exe -i \"{0}Maps/Custom/随机地图.map\" -o 随机地图 -m \"{1}\" -Y -z +(1280,0) --thumb-png --bkp ", ProgramConstants.GamePath, ProgramConstants.GamePath.TrimEnd('\\'));
-
-            Process process = new Process();
-            process.StartInfo.FileName = "cmd.exe";
-            process.StartInfo.Arguments = strCmdText;
-            process.StartInfo.UseShellExecute = false;   //是否使用操作系统shell启动 
-            process.StartInfo.CreateNoWindow = true;   //是否在新窗口中启动该进程的值 (不显示程序窗口)
-            process.Start();
-            process.WaitForExit();  //等待程序执行完退出进程
-            process.Close();
-
-            Stop = true;
-
+            catch (Exception)
+            {
+                // ignore - StartText will check for preview existence
+            }
+            finally
+            {
+                Stop = true;
+            }
         }
         public void StartText()
         {
@@ -265,20 +277,33 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 "We're sinking the submarine".L10N("UI:Main:GenText11"),
                 "The building is being painted".L10N("UI:Main:GenText12") };
             Random r = new Random();
-
             while (!Stop)
             {
                 lblStatus.Text = TextList[r.Next(TextList.Length)];
                 Thread.Sleep(500);
             }
 
-            File.Delete("Maps/Custom/随机地图.png");
-            FileInfo fi = new FileInfo("Maps/Custom/thumb_随机地图.png");
-
             try
             {
-                fi.MoveTo("Maps/Custom/随机地图.png");
-                btnpreview.IdleTexture = AssetLoader.LoadTextureUncached("Maps/Custom/随机地图.png");
+                string previewRelative = Path.Combine("Maps", "Custom", "随机地图.png");
+                string previewFull = Path.Combine(ProgramConstants.GamePath, previewRelative);
+
+                if (File.Exists(previewFull))
+                {
+                    btnpreview.IdleTexture = AssetLoader.LoadTextureUncached(previewRelative.Replace('\\', '/'));
+                    lblStatus.Text = "completed".L10N("UI:Main:completed");
+                    btnGenerate.Enabled = true;
+                    btnSave.Enabled = true;
+                    Stop = false;
+                    return;
+                }
+                else
+                {
+                    lblStatus.Text = "error".L10N("UI:Main:error");
+                    btnGenerate.Enabled = true;
+                    Stop = false;
+                    return;
+                }
             }
             catch
             {
@@ -287,11 +312,6 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 Stop = false;
                 return;
             }
-            lblStatus.Text = "completed".L10N("UI:Main:completed"); ;
-
-            btnGenerate.Enabled = true;
-            btnSave.Enabled = true;
-            Stop = false;
 
 
         }

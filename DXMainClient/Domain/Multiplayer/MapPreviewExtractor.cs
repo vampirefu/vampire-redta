@@ -187,7 +187,7 @@ namespace DTAClient.Domain.Multiplayer
 
                 // https://github.com/SixLabors/ImageSharp/blob/main/tests/ImageSharp.Tests/TestUtilities/ReferenceCodecs/SystemDrawingBridge.cs
                 var image = new Image<Bgr24>(width, height);
-                Configuration configuration = image.GetConfiguration();
+                Configuration configuration = Configuration.Default;
                 Buffer2D<Bgr24> imageBuffer = image.Frames.RootFrame.PixelBuffer;
                 using IMemoryOwner<Bgr24> workBuffer = Configuration.Default.MemoryAllocator.Allocate<Bgr24>(width);
 

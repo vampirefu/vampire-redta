@@ -42,6 +42,7 @@
   <ItemGroup>
     <ProjectReference Include="..\DTAConfig\DTAConfig.csproj" />
     <ProjectReference Include="..\DTAClient.Online.Core\DTAClient.Online.Core.csproj" />
+    <ProjectReference Include="..\MapGenerator.Core\MapGenerator.Core.csproj" />
   </ItemGroup>
   <Import Project="$(MSBuildThisFileDirectory)..\build\WinForms.props" />
   <Import Project="$(MSBuildThisFileDirectory)..\build\AfterPublish.targets" />
