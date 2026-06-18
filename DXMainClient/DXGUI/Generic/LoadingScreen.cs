@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using ClientCore;
 using ClientCore.CnCNet5;
 using ClientGUI;
-using ClientUpdater;
+using DTAClient.Domain;
 using DTAClient.Domain.Multiplayer;
 using DTAClient.DXGUI.Multiplayer;
 using DTAClient.DXGUI.Multiplayer.CnCNet;
@@ -47,7 +47,6 @@ namespace DTAClient.DXGUI.Generic
 
         private bool visibleSpriteCursor;
 
-        private Task updaterInitTask;
         private Task mapLoadTask;
         private readonly CnCNetManager cncnetManager;
         private readonly IServiceProvider serviceProvider;
@@ -81,14 +80,6 @@ namespace DTAClient.DXGUI.Generic
 
             CenterOnParent();
 
-            bool initUpdater = !ClientConfiguration.Instance.ModMode;
-
-            if (initUpdater)
-            {
-                updaterInitTask = new Task(InitUpdater);
-                updaterInitTask.Start();
-            }
-
             mapLoadTask = mapLoader.LoadMapsAsync();
 
             if (Cursor.Visible)
@@ -98,22 +89,10 @@ namespace DTAClient.DXGUI.Generic
             }
         }
 
-        private void InitUpdater()
-        {
-            Updater.OnLocalFileVersionsChecked += LogGameClientVersion;
-            Updater.CheckLocalFileVersions();
-        }
-
-        private void LogGameClientVersion()
-        {
-            Logger.Log($"Game Client Version: {ClientConfiguration.Instance.LocalGame} {Updater.GameVersion}");
-            Updater.OnLocalFileVersionsChecked -= LogGameClientVersion;
-        }
-
         private void Finish()
         {
             ProgramConstants.GAME_VERSION = ClientConfiguration.Instance.ModMode ?
-                "N/A" : Updater.GameVersion;
+                "N/A" : MainClientConstants.GAME_VERSION;
 
             MainMenu mainMenu = serviceProvider.GetService<MainMenu>();
 
@@ -140,11 +119,8 @@ namespace DTAClient.DXGUI.Generic
         {
             base.Update(gameTime);
 
-            if (updaterInitTask == null || updaterInitTask.Status == TaskStatus.RanToCompletion)
-            {
-                if (mapLoadTask.Status == TaskStatus.RanToCompletion)
-                    Finish();
-            }
+            if (mapLoadTask.Status == TaskStatus.RanToCompletion)
+                Finish();
         }
     }
 }

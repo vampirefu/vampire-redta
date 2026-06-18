@@ -89,8 +89,6 @@ namespace DTAClient.DXGUI.Generic
         {
             primarySwitches.Add(switchable);
             btnMainButton.Text = switchable.GetSwitchName() + " (F2)";
-            if (switchable.GetSwitchName() == "Game Lobby".L10N("UI:Main:GameLobby"))
-                optionsWindow.tabControl.MakeUnselectable(OptionsWindow.UpdaterIndex);
         }
 
         public void RemovePrimarySwitchable(ISwitchable switchable)

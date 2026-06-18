@@ -6,7 +6,6 @@ using DTAClient.Domain;
 using ClientCore;
 using Rampastring.Tools;
 using DTAClient.DXGUI;
-using ClientUpdater;
 using System.Security.Principal;
 using System.DirectoryServices;
 using System.Linq;
@@ -52,11 +51,6 @@ namespace DTAClient
             if (!resourcesDirectory.Exists)
                 throw new DirectoryNotFoundException("Theme directory not found!" + Environment.NewLine + ProgramConstants.RESOURCES_DIR);
 
-            Logger.Log("Initializing updater.");
-
-            SafePath.DeleteFileIfExists(ProgramConstants.GamePath, "version_u");
-
-            Updater.Initialize(ProgramConstants.GamePath, ProgramConstants.GetBaseResourcePath(), ClientConfiguration.Instance.SettingsIniName, ClientConfiguration.Instance.LocalGame, SafePath.GetFile(ProgramConstants.StartupExecutable).Name);
 
             Logger.Log("OSDescription: " + RuntimeInformation.OSDescription);
             Logger.Log("OSArchitecture: " + RuntimeInformation.OSArchitecture);
@@ -81,20 +75,6 @@ namespace DTAClient
 #endif
             Task.Factory.StartNew(MigrateOldLogFiles);
 
-            DirectoryInfo updaterFolder = SafePath.GetDirectory(ProgramConstants.GamePath, "Updater");
-
-            if (updaterFolder.Exists)
-            {
-                Logger.Log("Attempting to delete temporary updater directory.");
-                try
-                {
-                    updaterFolder.Delete(true);
-                }
-                catch
-                {
-                }
-            }
-
             if (ClientConfiguration.Instance.CreateSavedGamesDirectory)
             {
                 DirectoryInfo savedGamesFolder = SafePath.GetDirectory(ProgramConstants.GamePath, "Saved Games");
@@ -108,22 +88,6 @@ namespace DTAClient
                     }
                     catch
                     {
-                    }
-                }
-            }
-
-            if (Updater.CustomComponents != null)
-            {
-                Logger.Log("Removing partial custom component downloads.");
-                foreach (var component in Updater.CustomComponents)
-                {
-                    try
-                    {
-                        SafePath.DeleteFileIfExists(ProgramConstants.GamePath, FormattableString.Invariant($"{component.LocalPath}_u"));
-                    }
-                    catch
-                    {
-
                     }
                 }
             }

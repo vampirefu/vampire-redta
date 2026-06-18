@@ -109,8 +109,6 @@ namespace ClientCore
             AlwaysDisplayTunnelList = new BoolSetting(iniFile, MULTIPLAYER, "AlwaysDisplayTunnelList", false);
             MapSortState = new IntSetting(iniFile, MULTIPLAYER, "MapSortState", (int)SortDirection.None);
 
-            CheckForUpdates = new BoolSetting(iniFile, OPTIONS, "CheckforUpdates", true);
-
             PrivacyPolicyAccepted = new BoolSetting(iniFile, OPTIONS, "PrivacyPolicyAccepted", false);
 
             //随机壁纸
@@ -238,8 +236,6 @@ namespace ClientCore
         /********/
         /* MISC */
         /********/
-
-        public BoolSetting CheckForUpdates { get; private set; }
 
         public BoolSetting PrivacyPolicyAccepted { get; private set; }
         public BoolSetting IsFirstRun { get; private set; }

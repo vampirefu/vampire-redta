@@ -8,34 +8,21 @@ using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 using System;
-using ClientUpdater;
-using DTAClient.DXGUI.Generic;
 
 namespace DTAConfig
 {
     public class OptionsWindow : XNAWindow
     {
-        public const int AboutIndex = 6;
-        /// <summary>
-        /// 可选扩展索引
-        /// </summary>
-        public const int ExtensionIndex = 5;
-        /// <summary>
-        /// 更新器Panel索引
-        /// </summary>
-        public const int UpdaterIndex = 4;
+        public const int AboutIndex = 4;
 
         public OptionsWindow(WindowManager windowManager, GameCollection gameCollection) : base(windowManager)
         {
             this.gameCollection = gameCollection;
         }
 
-        public event EventHandler OnForceUpdate;
-
         public XNAClientTabControl tabControl;
 
         private XNAOptionsPanel[] optionsPanels;
-        private ComponentsPanel componentsPanel;
 
         private DisplayOptionsPanel displayOptionsPanel;
         private XNAControl topBar;
@@ -57,8 +44,6 @@ namespace DTAConfig
             tabControl.AddTab("Audio".L10N("UI:DTAConfig:TabAudio"), UIDesignConstants.BUTTON_WIDTH_92);
             tabControl.AddTab("Game".L10N("UI:DTAConfig:TabGame"), UIDesignConstants.BUTTON_WIDTH_92);
             tabControl.AddTab("CnCNet".L10N("UI:DTAConfig:TabCnCNet"), UIDesignConstants.BUTTON_WIDTH_92);
-            tabControl.AddTab("Updater".L10N("UI:DTAConfig:TabUpdater"), UIDesignConstants.BUTTON_WIDTH_92);
-            tabControl.AddTab("Components".L10N("UI:DTAConfig:TabComponents"), UIDesignConstants.BUTTON_WIDTH_92);
             tabControl.AddTab("关于", UIDesignConstants.BUTTON_WIDTH_92);
             tabControl.SelectedIndexChanged += TabControl_SelectedIndexChanged;
 
@@ -76,9 +61,6 @@ namespace DTAConfig
             btnSave.LeftClick += BtnSave_LeftClick;
 
             displayOptionsPanel = new DisplayOptionsPanel(WindowManager, UserINISettings.Instance);
-            componentsPanel = new ComponentsPanel(WindowManager, UserINISettings.Instance);
-            var updaterOptionsPanel = new UpdaterOptionsPanel(WindowManager, UserINISettings.Instance);
-            updaterOptionsPanel.OnForceUpdate += (s, e) => { Disable(); OnForceUpdate?.Invoke(this, EventArgs.Empty); };
 
             optionsPanels = new XNAOptionsPanel[]
             {
@@ -86,18 +68,8 @@ namespace DTAConfig
                 new AudioOptionsPanel(WindowManager, UserINISettings.Instance),
                 new GameOptionsPanel(WindowManager, UserINISettings.Instance, topBar),
                 new CnCNetOptionsPanel(WindowManager, UserINISettings.Instance, gameCollection),
-                updaterOptionsPanel,
-                componentsPanel,
                 new AboutOptionPanel(WindowManager, UserINISettings.Instance),
             };
-
-            if (ClientConfiguration.Instance.ModMode || Updater.UpdateMirrors == null || Updater.UpdateMirrors.Count < 1)
-            {
-                tabControl.MakeUnselectable(UpdaterIndex);
-                tabControl.MakeUnselectable(ExtensionIndex);
-            }
-            else if (Updater.CustomComponents == null || Updater.CustomComponents.Count < 1)
-                tabControl.MakeUnselectable(ExtensionIndex);
 
             foreach (var panel in optionsPanels)
             {
@@ -143,50 +115,12 @@ namespace DTAConfig
 
         private void BtnBack_LeftClick(object sender, EventArgs e)
         {
-            if (Updater.IsComponentDownloadInProgress())
-            {
-                var msgBox = new XNAMessageBox(WindowManager, "Downloads in progress".L10N("UI:DTAConfig:DownloadingTitle"),
-                    ("Optional component downloads are in progress. The downloads will be cancelled if you exit the Options menu." +
-                    Environment.NewLine + Environment.NewLine +
-                    "Are you sure you want to continue?").L10N("UI:DTAConfig:DownloadingText"), XNAMessageBoxButtons.YesNo);
-                msgBox.Show();
-                msgBox.YesClickedAction = ExitDownloadCancelConfirmation_YesClicked;
-
-                return;
-            }
-            //tabControl.MakeSelectable(4);
-            WindowManager.SoundPlayer.SetVolume(Convert.ToSingle(UserINISettings.Instance.ClientVolume));
-            Disable();
-        }
-
-        private void ExitDownloadCancelConfirmation_YesClicked(XNAMessageBox messageBox)
-        {
-            componentsPanel.CancelAllDownloads();
             WindowManager.SoundPlayer.SetVolume(Convert.ToSingle(UserINISettings.Instance.ClientVolume));
             Disable();
         }
 
         private void BtnSave_LeftClick(object sender, EventArgs e)
         {
-            if (Updater.IsComponentDownloadInProgress())
-            {
-                XNAMessageBox msgBox = new XNAMessageBox(WindowManager, "Downloads in progress".L10N("UI:DTAConfig:DownloadingTitle"),
-                      ("Optional component downloads are in progress. The downloads will be cancelled if you exit the Options menu." +
-                      Environment.NewLine + Environment.NewLine +
-                      "Are you sure you want to continue?").L10N("UI:DTAConfig:DownloadingText"), XNAMessageBoxButtons.YesNo);
-                msgBox.Show();
-                msgBox.YesClickedAction = SaveDownloadCancelConfirmation_YesClicked;
-
-                return;
-            }
-            //tabControl.MakeSelectable(4);
-            SaveSettings();
-        }
-
-        private void SaveDownloadCancelConfirmation_YesClicked(XNAMessageBox messageBox)
-        {
-            componentsPanel.CancelAllDownloads();
-
             SaveSettings();
         }
 
@@ -275,8 +209,6 @@ namespace DTAConfig
 
             RefreshOptionPanels();
 
-            componentsPanel.Open();
-
             Enable();
         }
 
@@ -287,16 +219,6 @@ namespace DTAConfig
                 panel.ToggleMainMenuOnlyOptions(enable);
             }
         }
-
-        public void SwitchToCustomComponentsPanel()
-        {
-            foreach (var panel in optionsPanels)
-                panel.Disable();
-
-            tabControl.SelectedTab = 5;
-        }
-
-        public void InstallCustomComponent(int id) => componentsPanel.InstallComponent(id);
 
         public void PostInit()
         {

@@ -1,4 +1,5 @@
 ﻿using ClientCore;
+using System.Reflection;
 
 namespace DTAClient.Domain
 {
@@ -19,6 +20,8 @@ namespace DTAClient.Domain
         public static int MAP_CELL_SIZE_Y = 24;
 
         public static OSVersion OSId = OSVersion.UNKNOWN;
+
+        public static string GAME_VERSION = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "Undefined";
 
         public static void Initialize()
         {

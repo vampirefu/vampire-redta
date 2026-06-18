@@ -25,9 +25,6 @@ namespace DTAClient.DXGUI.Generic
         public CampaignSelector CampaignSelector;
         public GameLoadingWindow GameLoadingWindow;
         public StatisticsWindow StatisticsWindow;
-        public UpdateQueryWindow UpdateQueryWindow;
-        public ManualUpdateQueryWindow ManualUpdateQueryWindow;
-        public UpdateWindow UpdateWindow;
         public ExtrasWindow ExtrasWindow;
 
         public override void Initialize()
@@ -48,15 +45,6 @@ namespace DTAClient.DXGUI.Generic
 
             StatisticsWindow = new StatisticsWindow(WindowManager);
             AddChild(StatisticsWindow);
-
-            UpdateQueryWindow = new UpdateQueryWindow(WindowManager);
-            AddChild(UpdateQueryWindow);
-
-            ManualUpdateQueryWindow = new ManualUpdateQueryWindow(WindowManager);
-            AddChild(ManualUpdateQueryWindow);
-
-            UpdateWindow = new UpdateWindow(WindowManager);
-            AddChild(UpdateWindow);
 
             ExtrasWindow = new ExtrasWindow(WindowManager);
             AddChild(ExtrasWindow);

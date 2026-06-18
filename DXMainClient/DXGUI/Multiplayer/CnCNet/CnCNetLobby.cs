@@ -32,8 +32,6 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
     internal class CnCNetLobby : XNAWindow, ISwitchable
     {
-        public event EventHandler UpdateCheck;
-
         public CnCNetLobby(WindowManager windowManager, CnCNetManager connectionManager,
             CnCNetGameLobby gameLobby, CnCNetGameLoadingLobby gameLoadingLobby,
             TopBar topBar, PrivateMessagingWindow pmWindow, TunnelHandler tunnelHandler,
@@ -119,7 +117,6 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
         private PasswordRequestWindow passwordRequestWindow;
 
         private bool isInGameRoom = false;
-        private bool updateDenied = false;
 
         private string localGameID;
         private CnCNetGame localGame;
@@ -1425,24 +1422,6 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             if (channelUser == null)
                 return;
 
-            if (localGame != null &&
-                channel.ChannelName == localGame.GameBroadcastChannel &&
-                !updateDenied &&
-                channelUser.IsAdmin &&
-                !isInGameRoom &&
-                e.Message.StartsWith("UPDATE ") &&
-                e.Message.Length > 7)
-            {
-                string version = e.Message.Substring(7);
-                if (version != ProgramConstants.GAME_VERSION)
-                {
-                    var updateMessageBox = XNAMessageBox.ShowYesNoDialog(WindowManager, "Update available".L10N("UI:Main:UpdateAvailableTitle"),
-                        "An update is available. Do you want to perform the update now?".L10N("UI:Main:UpdateAvailableText"));
-                    updateMessageBox.NoClickedAction = UpdateMessageBox_NoClicked;
-                    updateMessageBox.YesClickedAction = UpdateMessageBox_YesClicked;
-                }
-            }
-
             if (!e.Message.StartsWith("GAME "))
                 return;
 
@@ -1543,11 +1522,6 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
                 Logger.Log("Game parsing error: " + ex.Message);
             }
         }
-
-        private void UpdateMessageBox_YesClicked(XNAMessageBox messageBox) =>
-            UpdateCheck?.Invoke(this, EventArgs.Empty);
-
-        private void UpdateMessageBox_NoClicked(XNAMessageBox messageBox) => updateDenied = true;
 
         private void BtnLogout_LeftClick(object sender, EventArgs e)
         {
