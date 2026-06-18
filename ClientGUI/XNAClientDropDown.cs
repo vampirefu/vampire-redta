@@ -5,6 +5,7 @@ using System;
 using Localization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace ClientGUI
 {
@@ -17,6 +18,10 @@ namespace ClientGUI
         private int _clientHoveredIndex = -1;
         private Texture2D _scrollBarTexture;
         private bool _ignoreNextClick = false; // 新增标志：忽略下一次点击（用于防止刚打开时立即关闭）
+        private bool _isDraggingThumb = false; // 是否正在拖拽滚动条滑块
+        private int _dragThumbOffsetY = 0; // 拖拽时鼠标相对于滑块顶部的偏移量
+        private bool _suppressNextClick = false; // 拖拽结束后抑制本次点击选择
+        private const int SCROLL_BAR_WIDTH = 10;
 
         public XNAClientDropDown(WindowManager windowManager) : base(windowManager)
         {
@@ -26,6 +31,32 @@ namespace ClientGUI
         {
             if (ToolTip == null)
                 ToolTip = new ToolTip(WindowManager, this);
+        }
+
+        /// <summary>
+        /// 计算滚动条的几何信息
+        /// </summary>
+        private void GetScrollBarGeometry(out int scrollBarX, out int scrollBarY, out int scrollBarHeight, out int thumbHeight, out int thumbY)
+        {
+            scrollBarX = Width - SCROLL_BAR_WIDTH - 1;
+
+            Rectangle listRectangle;
+            if (DropDownState == DropDownState.OPENED_DOWN)
+                listRectangle = new Rectangle(0, DropDownTexture.Height, Width, Height - DropDownTexture.Height);
+            else
+                listRectangle = new Rectangle(0, 0, Width, Height - DropDownTexture.Height);
+
+            scrollBarY = listRectangle.Y + 1;
+            scrollBarHeight = listRectangle.Height - 2;
+
+            int totalItems = Items.Count;
+            float viewRatio = (float)MAX_VISIBLE_ITEMS / totalItems;
+            thumbHeight = (int)(scrollBarHeight * viewRatio);
+            if (thumbHeight < 10) thumbHeight = 10;
+
+            float scrollRatio = (totalItems > MAX_VISIBLE_ITEMS) ? (float)_scrollIndex / (totalItems - MAX_VISIBLE_ITEMS) : 0f;
+            int maxThumbY = scrollBarHeight - thumbHeight;
+            thumbY = scrollBarY + (int)(maxThumbY * scrollRatio);
         }
 
         public override void Initialize()
@@ -59,6 +90,33 @@ namespace ClientGUI
 
         public override void OnMouseLeftDown()
         {
+            // 检查是否点击了滚动条区域（展开状态且有滚动条时）
+            if (DropDownState != DropDownState.CLOSED && Items.Count > MAX_VISIBLE_ITEMS)
+            {
+                Point p = GetCursorPoint();
+                GetScrollBarGeometry(out int scrollBarX, out int scrollBarY, out int scrollBarHeight, out int thumbHeight, out int thumbY);
+
+                if (p.X >= scrollBarX && p.X <= scrollBarX + SCROLL_BAR_WIDTH &&
+                    p.Y >= scrollBarY && p.Y <= scrollBarY + scrollBarHeight)
+                {
+                    if (p.Y >= thumbY && p.Y <= thumbY + thumbHeight)
+                    {
+                        // 点击了滑块，记录偏移量并开始拖拽
+                        _dragThumbOffsetY = p.Y - thumbY;
+                        _isDraggingThumb = true;
+                    }
+                    else
+                    {
+                        // 点击了轨道（非滑块区域），滚动一页
+                        if (p.Y < thumbY)
+                            _scrollIndex = Math.Max(0, _scrollIndex - MAX_VISIBLE_ITEMS);
+                        else
+                            _scrollIndex = Math.Min(Items.Count - MAX_VISIBLE_ITEMS, _scrollIndex + MAX_VISIBLE_ITEMS);
+                    }
+                    return;
+                }
+            }
+
             // 记录调用基类前的状态
             bool previouslyClosed = DropDownState == DropDownState.CLOSED;
 
@@ -122,6 +180,31 @@ namespace ClientGUI
 
         public override void Update(GameTime gameTime)
         {
+            // 处理滑块拖拽
+            if (_isDraggingThumb)
+            {
+                if (Mouse.GetState().LeftButton == ButtonState.Released)
+                {
+                    // 鼠标松开，停止拖拽，抑制本次点击选择
+                    _isDraggingThumb = false;
+                    _suppressNextClick = true;
+                }
+                else
+                {
+                    // 根据鼠标位置更新滚动位置（使用偏移量保持滑块不跳动）
+                    GetScrollBarGeometry(out int scrollBarX, out int scrollBarY, out int scrollBarHeight, out int thumbHeight, out int thumbY);
+                    Point p = GetCursorPoint();
+                    int targetThumbY = p.Y - _dragThumbOffsetY;
+                    int maxThumbY = scrollBarHeight - thumbHeight;
+                    if (maxThumbY > 0)
+                    {
+                        float ratio = (float)(targetThumbY - scrollBarY) / maxThumbY;
+                        _scrollIndex = (int)(ratio * (Items.Count - MAX_VISIBLE_ITEMS));
+                        _scrollIndex = Math.Max(0, Math.Min(_scrollIndex, Items.Count - MAX_VISIBLE_ITEMS));
+                    }
+                }
+            }
+
             base.Update(gameTime);
 
             // 自定义悬停逻辑（仅在有滚动条时启用）
@@ -142,9 +225,8 @@ namespace ClientGUI
                         int idx = relativeY / ItemHeight;
                         int actualIndex = _scrollIndex + idx;
                         
-                        // 排除滚动条区域（假设滚动条宽度为10）
-                        int scrollBarWidth = 10;
-                        if (p.X < Width - scrollBarWidth)
+                        // 排除滚动条区域
+                        if (p.X < Width - SCROLL_BAR_WIDTH)
                         {
                             if (actualIndex < Items.Count && Items[actualIndex].Selectable)
                             {
@@ -158,6 +240,20 @@ namespace ClientGUI
 
         public override void OnLeftClick()
         {
+            // 拖拽刚结束，抑制本次点击选择
+            if (_suppressNextClick)
+            {
+                _suppressNextClick = false;
+                return;
+            }
+
+            // 如果正在拖拽滑块，停止拖拽但不关闭下拉框
+            if (_isDraggingThumb)
+            {
+                _isDraggingThumb = false;
+                return;
+            }
+
             // 如果没有滚动条，使用基类点击逻辑
             if (DropDownState == DropDownState.CLOSED || Items.Count <= MAX_VISIBLE_ITEMS)
             {
@@ -198,6 +294,8 @@ namespace ClientGUI
 
         protected override void CloseDropDown()
         {
+            if (_isDraggingThumb)
+                return; // 拖拽时不关闭下拉框
             base.CloseDropDown();
             UpdateToolTipBlock();
             _scrollIndex = 0;
@@ -271,8 +369,7 @@ namespace ClientGUI
 
                 DrawRectangle(listRectangle, BorderColor);
 
-                int scrollBarWidth = 10;
-                int itemWidth = Width - 2 - scrollBarWidth;
+                int itemWidth = Width - 2 - SCROLL_BAR_WIDTH;
 
                 // 3. 绘制可见条目
                 for (int i = 0; i < MAX_VISIBLE_ITEMS; i++)
@@ -303,25 +400,13 @@ namespace ClientGUI
                 }
 
                 // 4. 绘制滚动条
-                int scrollBarX = Width - scrollBarWidth - 1;
-                int scrollBarY = listRectangle.Y + 1;
-                int scrollBarHeight = listRectangle.Height - 2;
+                GetScrollBarGeometry(out int scrollBarX, out int scrollBarY, out int scrollBarHeight, out int thumbHeight, out int thumbY);
 
                 // 滚动条背景（轨道）
-                DrawTexture(_scrollBarTexture, new Rectangle(scrollBarX, scrollBarY, scrollBarWidth, scrollBarHeight), Color.Black * 0.5f);
-
-                // 计算滑块位置和大小
-                int totalItems = Items.Count;
-                float viewRatio = (float)MAX_VISIBLE_ITEMS / totalItems;
-                int thumbHeight = (int)(scrollBarHeight * viewRatio);
-                if (thumbHeight < 10) thumbHeight = 10;
-
-                float scrollRatio = (float)_scrollIndex / (totalItems - MAX_VISIBLE_ITEMS);
-                int maxThumbY = scrollBarHeight - thumbHeight;
-                int thumbY = scrollBarY + (int)(maxThumbY * scrollRatio);
+                DrawTexture(_scrollBarTexture, new Rectangle(scrollBarX, scrollBarY, SCROLL_BAR_WIDTH, scrollBarHeight), Color.Black * 0.5f);
 
                 // 绘制滑块
-                DrawTexture(_scrollBarTexture, new Rectangle(scrollBarX, thumbY, scrollBarWidth, thumbHeight), Color.Gray);
+                DrawTexture(_scrollBarTexture, new Rectangle(scrollBarX, thumbY, SCROLL_BAR_WIDTH, thumbHeight), Color.Gray);
             }
         }
     }
