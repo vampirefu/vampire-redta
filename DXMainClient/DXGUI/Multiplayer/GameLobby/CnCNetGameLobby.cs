@@ -1,4 +1,4 @@
-using ClientCore;
+﻿using ClientCore;
 using ClientCore.CnCNet5;
 using ClientGUI;
 using DTAClient.Domain.Multiplayer;
@@ -18,7 +18,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using DTAClient.Domain.Multiplayer.CnCNet;
-using Localization;
 
 namespace DTAClient.DXGUI.Multiplayer.GameLobby
 {
@@ -95,12 +94,12 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             MapSharer.MapUploadComplete += MapSharer_MapUploadComplete;
 
             AddChatBoxCommand(new ChatBoxCommand("TUNNELINFO",
-                "View tunnel server information".L10N("UI:Main:TunnelInfo"), false, PrintTunnelServerInformation));
+                "当前隧道服务器:{0}{1}(玩家数:{2}/{3})(是否官方:{4})", false, PrintTunnelServerInformation));
             AddChatBoxCommand(new ChatBoxCommand("CHANGETUNNEL",
-                "Change the used CnCNet tunnel server (game host only)".L10N("UI:Main:ChangeTunnel"),
-                true, (s) => ShowTunnelSelectionWindow("Select tunnel server:".L10N("UI:Main:SelectTunnelServer"))));
+                "更换隧道服务器",
+                true, (s) => ShowTunnelSelectionWindow("选择隧道服务器:")));
             AddChatBoxCommand(new ChatBoxCommand("DOWNLOADMAP",
-                "Download a map from CNCNet's map server using a map ID and an optional filename.\nExample: \"/downloadmap MAPID [2] My Battle Map\"".L10N("UI:Main:DownloadMapCommandDescription"),
+                "Download a map from CNCNet's map server using a map ID and an optional filename.\nExample: \"/downloadmap MAPID [2] My Battle Map\"",
                 false, DownloadMapByIdCommand));
         }
 
@@ -165,7 +164,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             btnChangeTunnel = FindChild<XNAClientButton>(nameof(btnChangeTunnel));
 
-            btnChangeTunnel.Text = "Change Tunnel".L10N("UI:Main:ChangeTunnel");
+            btnChangeTunnel.Text = "更换隧道服务器";
 
             btnChangeTunnel.LeftClick += BtnChangeTunnel_LeftClick;
 
@@ -207,7 +206,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             }, GetCursorPoint());
         }
 
-        private void BtnChangeTunnel_LeftClick(object sender, EventArgs e) => ShowTunnelSelectionWindow("Select tunnel server:".L10N("UI:Main:SelectTunnelServer"));
+        private void BtnChangeTunnel_LeftClick(object sender, EventArgs e) => ShowTunnelSelectionWindow("选择隧道服务器:");
 
         private void GameBroadcastTimer_TimeElapsed(object sender, EventArgs e) => BroadcastGame();
 
@@ -318,11 +317,11 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         {
             if (tunnelHandler.CurrentTunnel == null)
             {
-                AddNotice("Tunnel server unavailable!".L10N("UI:Main:TunnelUnavailable"));
+                AddNotice("隧道服务器不可用!");
             }
             else
             {
-                AddNotice(string.Format("Current tunnel server: {0} {1} (Players: {2}/{3}) (Official: {4})".L10N("UI:Main:TunnelInfo"),
+                AddNotice(string.Format("当前隧道服务器:{0}{1}(玩家数:{2}/{3})(是否官方:{4})",
                         tunnelHandler.CurrentTunnel.Name, tunnelHandler.CurrentTunnel.Country, tunnelHandler.CurrentTunnel.Clients, tunnelHandler.CurrentTunnel.MaxClients, tunnelHandler.CurrentTunnel.Official
                     ));
             }
@@ -419,7 +418,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 PlayerInfo player = Players[index];
                 player.Name = e.User.Name;
                 ddPlayerNames[index].Items[0].Text = player.Name;
-                AddNotice(string.Format("Player {0} changed their name to {1}".L10N("UI:Main:PlayerRename"), e.OldUserName, e.User.Name));
+                AddNotice(string.Format("玩家{0}更改了名称{1}", e.OldUserName, e.User.Name));
             }
         }
 
@@ -451,7 +450,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             if (e.UserName == hostName)
             {
                 connectionManager.MainChannel.AddMessage(new ChatMessage(
-                    ERROR_MESSAGE_COLOR, "The game host abandoned the game.".L10N("UI:Main:HostAbandoned")));
+                    ERROR_MESSAGE_COLOR, "游戏主持关闭了游戏房间."));
                 BtnLeaveGame_LeftClick(this, EventArgs.Empty);
             }
             else
@@ -465,7 +464,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             if (e.UserName == hostName)
             {
                 connectionManager.MainChannel.AddMessage(new ChatMessage(
-                    ERROR_MESSAGE_COLOR, "The game host abandoned the game.".L10N("UI:Main:HostAbandoned")));
+                    ERROR_MESSAGE_COLOR, "游戏主持关闭了游戏房间."));
                 BtnLeaveGame_LeftClick(this, EventArgs.Empty);
             }
             else
@@ -477,7 +476,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             if (e.UserName == ProgramConstants.PLAYERNAME)
             {
                 connectionManager.MainChannel.AddMessage(new ChatMessage(
-                    ERROR_MESSAGE_COLOR, "You were kicked from the game!".L10N("UI:Main:YouWereKicked")));
+                    ERROR_MESSAGE_COLOR, "您已被踢出房间!"));
                 Clear();
                 this.Visible = false;
                 this.Enabled = false;
@@ -502,7 +501,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 if (channel.Users.Find(hostName) == null)
                 {
                     connectionManager.MainChannel.AddMessage(new ChatMessage(
-                        ERROR_MESSAGE_COLOR, "The game host has abandoned the game.".L10N("UI:Main:HostHasAbandoned")));
+                        ERROR_MESSAGE_COLOR, "游戏主持关闭了游戏房间."));
                     BtnLeaveGame_LeftClick(this, EventArgs.Empty);
                 }
             }
@@ -546,7 +545,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             if (Players.Count >= playerLimit)
             {
-                AddNotice("Player limit reached. The game room has been locked.".L10N("UI:Main:GameRoomNumberLimitReached"));
+                AddNotice("玩家人数已打上限;游戏房间已锁定.");
                 LockGame();
             }
         }
@@ -579,14 +578,14 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             if (e.ModeString == "+i")
             {
                 if (Players.Count >= playerLimit)
-                    AddNotice("Player limit reached. The game room has been locked.".L10N("UI:Main:GameRoomNumberLimitReached"));
+                    AddNotice("玩家人数已打上限;游戏房间已锁定.");
                 else
-                    AddNotice("The game host has locked the game room.".L10N("UI:Main:RoomLockedByHost"));
+                    AddNotice("游戏主持锁定了游戏房间.");
                 Locked = true;
             }
             else if (e.ModeString == "-i")
             {
-                AddNotice("The game room has been unlocked.".L10N("UI:Main:GameRoomUnlocked"));
+                AddNotice("游戏房间已解除锁定.");
                 Locked = false;
             }
         }
@@ -612,7 +611,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             if (cncnetUserData.IsIgnored(e.Message.SenderIdent))
             {
                 lbChatMessages.AddMessage(new ChatMessage(Color.Silver,
-                    string.Format("Message blocked from {0}".L10N("UI:Main:MessageBlockedFromPlayer"), e.Message.SenderName)));
+                    string.Format("消息被屏蔽{0}", e.Message.SenderName)));
             }
             else
             {
@@ -630,17 +629,15 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         {
             if (Players.Count > 1)
             {
-                AddNotice("Contacting tunnel server...".L10N("UI:Main:ConnectingTunnel"));
+                AddNotice("连接到隧道服务器...");
 
                 List<int> playerPorts = tunnelHandler.CurrentTunnel.GetPlayerPortInfo(Players.Count);
 
                 if (playerPorts.Count < Players.Count)
                 {
-                    ShowTunnelSelectionWindow(("An error occured while contacting " +
-                        "the CnCNet tunnel server." + Environment.NewLine +
-                        "Try picking a different tunnel server:").L10N("UI:Main:ConnectTunnelError1"));
-                    AddNotice(("An error occured while contacting the specified CnCNet " +
-                        "tunnel server. Please try using a different tunnel server ").L10N("UI:Main:ConnectTunnelError2"), ERROR_MESSAGE_COLOR);
+                    ShowTunnelSelectionWindow("连接到CnCNet隧道服务器发生了错误." + Environment.NewLine +
+                        "尝试更换一个不同的隧道服务器:");
+                    AddNotice("连接到特定的CnCNet隧道服务器发生了错误.请尝试更换一个不同的隧道服务器", ERROR_MESSAGE_COLOR);
                     return;
                 }
 
@@ -691,8 +688,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         {
             if (Map == null || GameMode == null)
             {
-                AddNotice(("The game host needs to select a different map or " +
-                    "you will be unable to participate in the match.").L10N("UI:Main:HostMustReplaceMap"));
+                AddNotice(("游戏主持需要更换地图否则您将不能参与游戏."));
 
                 if (chkAutoReady.Checked)
                     channel.SendCTCPMessage("R 0", QueuedMessageType.GAME_PLAYERS_READY_STATUS_MESSAGE, 5);
@@ -1021,8 +1017,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             if (parts.Length < partIndex + 6)
             {
-                AddNotice(("The game host has sent an invalid game options message! " +
-                    "The game host's game version might be different from yours.").L10N("UI:Main:HostGameOptionInvalid"), Color.Red);
+                AddNotice(("游戏主持发送了无效的游戏设置!游戏主持的游戏版本可能与您不同."), Color.Red);
                 return;
             }
 
@@ -1037,21 +1032,21 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             if (frameSendRate != FrameSendRate)
             {
                 FrameSendRate = frameSendRate;
-                AddNotice(string.Format("The game host has changed FrameSendRate (order lag) to {0}".L10N("UI:Main:HostChangeFrameSendRate"), frameSendRate));
+                AddNotice(string.Format("游戏主持将FrameSendRate(orderlag)更改为{0}", frameSendRate));
             }
 
             int maxAhead = Conversions.IntFromString(parts[partIndex + 4], MaxAhead);
             if (maxAhead != MaxAhead)
             {
                 MaxAhead = maxAhead;
-                AddNotice(string.Format("The game host has changed MaxAhead to {0}".L10N("UI:Main:HostChangeMaxAhead"), maxAhead));
+                AddNotice(string.Format("游戏主持将MaxAhead更改为{0}", maxAhead));
             }
 
             int protocolVersion = Conversions.IntFromString(parts[partIndex + 5], ProtocolVersion);
             if (protocolVersion != ProtocolVersion)
             {
                 ProtocolVersion = protocolVersion;
-                AddNotice(string.Format("The game host has changed ProtocolVersion to {0}".L10N("UI:Main:HostChangeProtocolVersion"), protocolVersion));
+                AddNotice(string.Format("游戏主持将ProtocolVersion更改为{0}", protocolVersion));
             }
 
             string mapName = parts[partIndex + 8];
@@ -1094,8 +1089,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
                 if (!success)
                 {
-                    AddNotice(("Failed to parse check box options sent by game host!" +
-                        "The game host's game version might be different from yours.").L10N("UI:Main:HostCheckBoxParseError"), Color.Red);
+                    AddNotice(("解析游戏主持发送的选框设置失败!游戏主持的游戏版本可能与您不同."), Color.Red);
                     return;
                 }
 
@@ -1114,9 +1108,9 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                     if (checkBox.Checked != boolArray[optionIndex])
                     {
                         if (boolArray[optionIndex])
-                            AddNotice(string.Format("The game host has enabled {0}".L10N("UI:Main:HostEnableOption"), checkBox.Text));
+                            AddNotice(string.Format("游戏主持启用了{0}", checkBox.Text));
                         else
-                            AddNotice(string.Format("The game host has disabled {0}".L10N("UI:Main:HostDisableOption"), checkBox.Text));
+                            AddNotice(string.Format("游戏主持禁用了{0}", checkBox.Text));
                     }
 
                     CheckBoxes[gameOptionIndex].Checked = boolArray[optionIndex];
@@ -1127,8 +1121,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             {
                 if (parts.Length <= i)
                 {
-                    AddNotice(("The game host has sent an invalid game options message! " +
-                    "The game host's game version might be different from yours.").L10N("UI:Main:HostGameOptionInvalid"), Color.Red);
+                    AddNotice(("游戏主持发送了无效的游戏设置!游戏主持的游戏版本可能与您不同."), Color.Red);
                     return;
                 }
 
@@ -1137,8 +1130,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
                 if (!success)
                 {
-                    AddNotice(("Failed to parse drop down options sent by game host (2)! " +
-                        "The game host's game version might be different from yours.").L10N("UI:Main:HostGameOptionInvalidTheSecondTime"), Color.Red);
+                    AddNotice(("解析游戏主持发送的下拉框设置失败!游戏主持的游戏版本可能与您不同."), Color.Red);
                     return;
                 }
 
@@ -1153,7 +1145,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                     if (dd.OptionName == null)
                         ddName = dd.Name;
 
-                    AddNotice(string.Format("The game host has set {0} to {1}".L10N("UI:Main:HostSetOption"), ddName, dd.Items[ddSelectedIndex].Text));
+                    AddNotice(string.Format("游戏主持将{0}设为{1}", ddName, dd.Items[ddSelectedIndex].Text));
                 }
 
                 DropDowns[i - checkBoxIntegerCount].SelectedIndex = ddSelectedIndex;
@@ -1164,8 +1156,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             if (!parseSuccess)
             {
-                AddNotice(("Failed to parse random seed from game options message! " +
-                    "The game host's game version might be different from yours.").L10N("UI:Main:HostRandomSeedError"), Color.Red);
+                AddNotice(("解析游戏设置中的随机种子失败!游戏主持的游戏版本可能与您不同."), Color.Red);
             }
 
             bool removeStartingLocations = Convert.ToBoolean(Conversions.IntFromString(parts[partIndex + 7],
@@ -1179,30 +1170,29 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         {
             if (UserINISettings.Instance.EnableMapSharing)
             {
-                AddNotice("The game host has selected a map that doesn't exist on your installation.".L10N("UI:Main:MapNotExist"));
+                AddNotice("游戏主持选择了您本地未安装的地图.");
                 mapSharingConfirmationPanel.ShowForMapDownload();
             }
             else
             {
-                AddNotice("The game host has selected a map that doesn't exist on your installation.".L10N("UI:Main:MapNotExist") + " " +
-                    ("Because you've disabled map sharing, it cannot be transferred. The game host needs " +
-                    "to change the map or you will be unable to participate in the match.").L10N("UI:Main:MapSharingDisabledNotice"));
+                AddNotice("游戏主持选择了您本地未安装的地图." + " " +
+                    "由于您禁用了地图共享,地图无法传输.游戏主持需要更换地图否则您将不能参与游戏.");
                 channel.SendCTCPMessage(MAP_SHARING_DISABLED_MESSAGE, QueuedMessageType.SYSTEM_MESSAGE, 9);
             }
         }
 
         private void ShowOfficialMapMissingMessage(string sha1)
         {
-            AddNotice(("The game host has selected an official map that doesn't exist on your installation. " +
-                "This could mean that the game host has modified game files, or is running a different game version. " +
-                "They need to change the map or you will be unable to participate in the match.").L10N("UI:Main:OfficialMapNotExist"));
+            AddNotice(("游戏主持选择了一个您本地不存在的官方地图." +
+                "这可能意味着游戏主持修改了游戏文件或运行的是不同的游戏版本." +
+                "游戏主持需要更换地图否则您将不能参与游戏."));
             channel.SendCTCPMessage(MAP_SHARING_FAIL_MESSAGE + " " + sha1, QueuedMessageType.SYSTEM_MESSAGE, 9);
         }
 
         private void MapSharingConfirmationPanel_MapDownloadConfirmed(object sender, EventArgs e)
         {
             Logger.Log("Map sharing confirmed.");
-            AddNotice("Attempting to download map.".L10N("UI:Main:DownloadingMap"));
+            AddNotice("尝试下载地图.");
             mapSharingConfirmationPanel.SetDownloadingStatus();
             MapSharer.DownloadMap(lastMapSHA1, localGame, lastMapName);
         }
@@ -1289,7 +1279,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
         protected override void StartGame()
         {
-            AddNotice("Starting game...".L10N("UI:Main:StartingGame"));
+            AddNotice("开始游戏...");
 
             FileHashCalculator fhc = new FileHashCalculator();
             fhc.CalculateHashes();
@@ -1420,7 +1410,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
         private void ReturnNotification(string sender)
         {
-            AddNotice(string.Format("{0} has returned from the game.".L10N("UI:Main:PlayerReturned"), sender));
+            AddNotice(string.Format("{0}回到了游戏房间.", sender));
 
             PlayerInfo pInfo = Players.Find(p => p.Name == sender);
 
@@ -1464,7 +1454,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             if (sender != hostName)
                 return;
 
-            AddNotice(string.Format("Player {0} has different files compared to the game host. Either {0} or the game host could be cheating.".L10N("UI:Main:DifferentFileCheating"), cheaterName), Color.Red);
+            AddNotice(string.Format("玩家{0}与游戏主持文件不同.可能{0}或游戏主持在企图作弊.", cheaterName), Color.Red);
         }
 
         protected override void BroadcastDiceRoll(int dieSides, int[] results)
@@ -1480,19 +1470,19 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         {
             if (!Locked)
             {
-                AddNotice("You've locked the game room.".L10N("UI:Main:RoomLockedByYou"));
+                AddNotice("您已锁定了游戏房间.");
                 LockGame();
             }
             else
             {
                 if (Players.Count < playerLimit)
                 {
-                    AddNotice("You've unlocked the game room.".L10N("UI:Main:RoomUnockedByYou"));
+                    AddNotice("您已解除锁定游戏房间.");
                     UnlockGame(false);
                 }
                 else
                     AddNotice(string.Format(
-                        "Cannot unlock game; the player limit ({0}) has been reached.".L10N("UI:Main:RoomCantUnlockAsLimit"), playerLimit));
+                        "无法解锁游戏房间;玩家数({0})已达上限.", playerLimit));
             }
         }
 
@@ -1502,7 +1492,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 string.Format("MODE {0} +i", channel.ChannelName), QueuedMessageType.INSTANT_MESSAGE, -1));
 
             Locked = true;
-            btnLockGame.Text = "Unlock Game".L10N("UI:Main:UnlockGame");
+            btnLockGame.Text = "解锁游戏";
             AccelerateGameBroadcasting();
         }
 
@@ -1513,8 +1503,8 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             Locked = false;
             if (announce)
-                AddNotice("The game room has been unlocked.".L10N("UI:Main:GameRoomUnlocked"));
-            btnLockGame.Text = "Lock Game".L10N("UI:Main:LockGame");
+                AddNotice("游戏房间已解除锁定.");
+            btnLockGame.Text = "锁定游戏";
             AccelerateGameBroadcasting();
         }
 
@@ -1525,7 +1515,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             var pInfo = Players[playerIndex];
 
-            AddNotice(string.Format("Kicking {0} from the game...".L10N("UI:Main:KickPlayer"), pInfo.Name));
+            AddNotice(string.Format("将{0}踢出游戏...", pInfo.Name));
             channel.SendKickMessage(pInfo.Name, 8);
         }
 
@@ -1540,14 +1530,14 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             if (user != null)
             {
-                AddNotice(string.Format("Banning and kicking {0} from the game...".L10N("UI:Main:BanAndKickPlayer"), pInfo.Name));
+                AddNotice(string.Format("将{0}封禁并踢出...", pInfo.Name));
                 channel.SendBanMessage(user.Hostname, 8);
                 channel.SendKickMessage(user.Name, 8);
             }
         }
 
         private void HandleCheatDetectedMessage(string sender) =>
-            AddNotice(string.Format("{0} has modified game files during the client session. They are likely attempting to cheat!".L10N("UI:Main:PlayerModifyFileCheat"), sender), Color.Red);
+            AddNotice(string.Format("{0}更改了客户端文件.他们可能企图作弊!", sender), Color.Red);
 
         private void HandleTunnelServerChangeMessage(string sender, string tunnelAddressAndPort)
         {
@@ -1561,9 +1551,8 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             CnCNetTunnel tunnel = tunnelHandler.Tunnels.Find(t => t.Address == tunnelAddress && t.Port == tunnelPort);
             if (tunnel == null)
             {
-                AddNotice(("The game host has selected an invalid tunnel server! " +
-                    "The game host needs to change the server or you will be unable " +
-                    "to participate in the match.").L10N("UI:Main:HostInvalidTunnel"),
+                AddNotice(("游戏主持选择了一个无效的隧道服务器!" +
+                    "游戏主持需要更换服务器否则您将不能参与游戏."),
                     Color.Yellow);
                 btnLaunchGame.AllowClick = false;
                 return;
@@ -1580,7 +1569,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         private void HandleTunnelServerChange(CnCNetTunnel tunnel)
         {
             tunnelHandler.CurrentTunnel = tunnel;
-            AddNotice(string.Format("The game host has changed the tunnel server to: {0}".L10N("UI:Main:HostChangeTunnel"), tunnel.Name));
+            AddNotice(string.Format("游戏主持将隧道服务器更改为:{0}", tunnel.Name));
             UpdatePing();
         }
 
@@ -1594,7 +1583,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             // If the host has already uploaded the map, we shouldn't request them to re-upload it
             if (hostUploadedMaps.Contains(e.SHA1))
             {
-                AddNotice("Download of the custom map failed. The host needs to change the map or you will be unable to participate in this match.".L10N("UI:Main:DownloadCustomMapFailed"));
+                AddNotice("下载自定义地图失败.游戏主持需要更换地图否则您将不能参与游戏.");
                 mapSharingConfirmationPanel.SetFailedStatus();
 
                 channel.SendCTCPMessage(MAP_SHARING_FAIL_MESSAGE + " " + e.SHA1, QueuedMessageType.SYSTEM_MESSAGE, 9);
@@ -1604,12 +1593,12 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             {
                 // Notify the user that their chat command map download failed.
                 // Do not notify other users with a CTCP message as this is irrelevant to them.
-                AddNotice("Downloading map via chat command has failed. Check the map ID and try again.".L10N("UI:Main:DownloadMapCommandFailedGeneric"));
+                AddNotice("通过聊天命令下载地图失败.请检查地图ID后重试.");
                 mapSharingConfirmationPanel.SetFailedStatus();
                 return;
             }
 
-            AddNotice("Requesting the game host to upload the map to the CnCNet map database.".L10N("UI:Main:RequestHostUploadMapToDB"));
+            AddNotice("请求游戏主持将地图上传至CnCNet地图库.");
 
             channel.SendCTCPMessage(MAP_SHARING_UPLOAD_REQUEST + " " + e.SHA1, QueuedMessageType.SYSTEM_MESSAGE, 9);
         }
@@ -1637,13 +1626,13 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 // Somehow the user has managed to download an already existing sha1 hash.
                 // This special case prevents user confusion from the file successfully downloading but showing an error anyway.
                 AddNotice(returnMessage, Color.Yellow);
-                AddNotice("Map was downloaded, but a duplicate is already loaded from a different filename. This may cause strange behavior.".L10N("UI:Main:DownloadMapCommandDuplicateMapFileLoaded"),
+                AddNotice("地图已下载,但已存在相同SHA1的不同文件名的地图.这可能导致异常行为.",
                     Color.Yellow);
             }
             else
             {
                 AddNotice(returnMessage, Color.Red);
-                AddNotice("Transfer of the custom map failed. The host needs to change the map or you will be unable to participate in this match.".L10N("UI:Main:MapTransferFailed"));
+                AddNotice("传输自定义地图失败.游戏主持需要更换地图否则您将不能参与游戏.");
                 mapSharingConfirmationPanel.SetFailedStatus();
                 channel.SendCTCPMessage(MAP_SHARING_FAIL_MESSAGE + " " + e.SHA1, QueuedMessageType.SYSTEM_MESSAGE, 9);
             }
@@ -1658,10 +1647,10 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             hostUploadedMaps.Add(map.SHA1);
 
-            AddNotice(string.Format("Uploading map {0} to the CnCNet map database failed.".L10N("UI:Main:UpdateMapToDBFailed"), map.Name));
+            AddNotice(string.Format("上传{0}至CnCNet地图库失败.", map.Name));
             if (map == Map)
             {
-                AddNotice("You need to change the map or some players won't be able to participate in this match.".L10N("UI:Main:YouMustReplaceMap"));
+                AddNotice("您需要更换地图否则有玩家将不能参与游戏.");
                 channel.SendCTCPMessage(MAP_SHARING_FAIL_MESSAGE + " " + map.SHA1, QueuedMessageType.SYSTEM_MESSAGE, 9);
             }
         }
@@ -1673,7 +1662,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         {
             hostUploadedMaps.Add(e.Map.SHA1);
 
-            AddNotice(string.Format("Uploading map {0} to the CnCNet map database complete.".L10N("UI:Main:UpdateMapToDBSuccess"), e.Map.Name));
+            AddNotice(string.Format("上传{0}至CnCNet地图库完成.", e.Map.Name));
             if (e.Map == Map)
             {
                 channel.SendCTCPMessage(MAP_SHARING_DOWNLOAD_REQUEST + " " + Map.SHA1, QueuedMessageType.SYSTEM_MESSAGE, 9);
@@ -1713,8 +1702,8 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             {
                 Logger.Log("HandleMapUploadRequest: Map is official, so skip request");
 
-                AddNotice(string.Format(("{0} doesn't have the map '{1}' on their local installation. " +
-                    "The map needs to be changed or {0} is unable to participate in the match.").L10N("UI:Main:PlayerMissingMap"),
+                AddNotice(string.Format(("{0}的本地未安装地图'{1}'." +
+                    "需要更换地图否则{0}将不能参与游戏."),
                     sender, map.Name));
 
                 return;
@@ -1723,8 +1712,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             if (!IsHost)
                 return;
 
-            AddNotice(string.Format(("{0} doesn't have the map '{1}' on their local installation. " +
-                "Attempting to upload the map to the CnCNet map database.").L10N("UI:Main:UpdateMapToDBPrompt"),
+            AddNotice(string.Format(("{0}的本地未安装地图'{1}',尝试上传地图至CnCNet地图库."),
                 sender, map.Name));
 
             MapSharer.UploadMap(map, localGame);
@@ -1737,13 +1725,13 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         {
             if (sender == hostName)
             {
-                AddNotice("The game host failed to upload the map to the CnCNet map database.".L10N("UI:Main:HostUpdateMapToDBFailed"));
+                AddNotice("游戏主持上传地图至CnCNet地图库失败.");
 
                 hostUploadedMaps.Add(sha1);
 
                 if (lastMapSHA1 == sha1 && Map == null)
                 {
-                    AddNotice("The game host needs to change the map or you won't be able to participate in this match.".L10N("UI:Main:HostMustChangeMap"));
+                    AddNotice("游戏主持需要更换地图否则您将不能参与游戏.");
                 }
 
                 return;
@@ -1753,13 +1741,13 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             {
                 if (!IsHost)
                 {
-                    AddNotice(string.Format("{0} has failed to download the map from the CnCNet map database.".L10N("UI:Main:PlayerDownloadMapFailed") + " " +
-                        "The host needs to change the map or {0} won't be able to participate in this match.".L10N("UI:Main:HostNeedChangeMapForPlayer"), sender));
+                    AddNotice(string.Format("{0}从CnCNet地图库下载地图失败." + " " +
+                        "游戏主持需要更换地图否则{0}将不能参与游戏.", sender));
                 }
                 else
                 {
-                    AddNotice(string.Format("{0} has failed to download the map from the CnCNet map database.".L10N("UI:Main:PlayerDownloadMapFailed") + " " +
-                        "You need to change the map or {0} won't be able to participate in this match.".L10N("UI:Main:YouNeedChangeMapForPlayer"), sender));
+                    AddNotice(string.Format("{0}从CnCNet地图库下载地图失败." + " " +
+                        "您需要更换地图{0}将不能参与游戏.", sender));
                 }
             }
         }
@@ -1780,9 +1768,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
         private void HandleMapSharingBlockedMessage(string sender)
         {
-            AddNotice(string.Format("The selected map doesn't exist on {0}'s installation, and they " +
-                "have map sharing disabled in settings. The game host needs to change to a non-custom map or " +
-                "they will be unable to participate in this match.".L10N("UI:Main:PlayerMissingMaDisabledSharing"), sender));
+            AddNotice(string.Format("所选地图不存在{0}的本地安装中,并且他们禁用了地图分享.游戏主持需要更换为非自定义地图否则他们将不能参与游戏.", sender));
         }
 
         /// <summary>
@@ -1835,7 +1821,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             if (loadedMap != null)
             {
                 message = String.Format(
-                    "The map for ID \"{0}\" is already loaded from \"{1}.map\", delete the existing file before trying again.".L10N("UI:Main:DownloadMapCommandSha1AlreadyExists"),
+                    "ID为\"{0}\"的地图已从\"{1}.map\"加载,请先删除现有文件后再试.",
                     sha1,
                     loadedMap.Map.BaseFilePath);
                 AddNotice(message, Color.Yellow);
@@ -1851,7 +1837,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             chatCommandDownloadedMaps.Add(sha1);
 
-            message = String.Format("Attempting to download map via chat command: sha1={0}, mapName={1}".L10N("UI:Main:DownloadMapCommandStartingDownload"), sha1, mapName);
+            message = String.Format("Attempting to download map via chat command: sha1={0}, mapName={1}", sha1, mapName);
             Logger.Log(message);
             AddNotice(message);
 
@@ -1924,6 +1910,6 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
         #endregion
 
-        public override string GetSwitchName() => "Game Lobby".L10N("UI:Main:GameLobby");
+        public override string GetSwitchName() => "游戏大厅";
     }
 }

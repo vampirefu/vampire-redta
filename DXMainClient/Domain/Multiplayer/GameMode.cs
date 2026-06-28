@@ -1,5 +1,4 @@
 ﻿using ClientCore;
-using Localization;
 using Rampastring.Tools;
 using System;
 using System.Collections.Generic;

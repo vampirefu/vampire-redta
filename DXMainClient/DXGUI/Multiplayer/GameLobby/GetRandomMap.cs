@@ -1,7 +1,6 @@
 ﻿using ClientCore;
 using ClientGUI;
 using DTAClient.Domain.Multiplayer;
-using Localization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Rampastring.Tools;
@@ -73,7 +72,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             lblTitle = new XNALabel(WindowManager);
             lblTitle.ClientRectangle = new Rectangle(350, 20, 0, 0);
             lblTitle.CenterOnParentHorizontally();
-            lblTitle.Text = "Generate random map".L10N("UI:Main:GenRanMap");
+            lblTitle.Text = "生成随机地图";
 
             lblStatus = new XNALabel(WindowManager);
             lblStatus.ClientRectangle = new Rectangle(360, 420, 0, 0);
@@ -81,7 +80,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             btnGenerate = new XNAClientButton(WindowManager);
             btnGenerate.Name = "btnGenerate";
             btnGenerate.ClientRectangle = new Rectangle(350, 460, 100, 20);
-            btnGenerate.Text = "Generate".L10N("UI:Main:Generate");
+            btnGenerate.Text = "生成";
             btnGenerate.IdleTexture = AssetLoader.LoadTexture("92pxbtn.png");
             btnGenerate.HoverTexture = AssetLoader.LoadTexture("92pxbtn_c.png");
             btnGenerate.LeftClick += btnGenerat_LeftClick;
@@ -90,7 +89,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             btnCancel = new XNAClientButton(WindowManager);
             btnCancel.Name = "btnCancel";
             btnCancel.ClientRectangle = new Rectangle(40, 460, 100, 20);
-            btnCancel.Text = "Cancel".L10N("UI:Main:ButtonCancel");
+            btnCancel.Text = "取消";
             btnCancel.IdleTexture = AssetLoader.LoadTexture("92pxbtn.png");
             btnCancel.HoverTexture = AssetLoader.LoadTexture("92pxbtn_c.png");
             btnCancel.LeftClick += btnCancel_LeftClick;
@@ -98,7 +97,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             btnSave = new XNAClientButton(WindowManager);
             btnSave.Name = "btnSave";
             btnSave.ClientRectangle = new Rectangle(660, 460, 100, 20);
-            btnSave.Text = "Save".L10N("UI:Main:ButtonSave");
+            btnSave.Text = "保存";
             btnSave.IdleTexture = AssetLoader.LoadTexture("92pxbtn.png");
             btnSave.HoverTexture = AssetLoader.LoadTexture("92pxbtn_c.png");
             btnSave.Enabled = false;
@@ -106,28 +105,28 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             lblClimate = new XNALabel(WindowManager);
             lblClimate.ClientRectangle = new Rectangle(40, OPTIONHEIGHT, 0, 0);
-            lblClimate.Text = "Climatic".L10N("UI:Main:Climatic");
+            lblClimate.Text = "地形气候";
 
             ddClimate = new XNAClientDropDown(WindowManager);
             ddClimate.ClientRectangle = new Rectangle(lblClimate.X + 70, OPTIONHEIGHT, 80, 20);
             XNADropDownItem Desert = new XNADropDownItem();
-            Desert.Text = "DESERT".L10N("UI:Main:DESERT");
+            Desert.Text = "沙漠";
             Desert.Tag = "DESERT";
             XNADropDownItem Newurban = new XNADropDownItem();
-            Newurban.Text = "NEWURBAN".L10N("UI:Main:NEWURBAN");
+            Newurban.Text = "城市";
             Newurban.Tag = "NEWURBAN";
             XNADropDownItem Temperate = new XNADropDownItem();
-            Temperate.Text = "TEMPERATE".L10N("UI:Main:TEMPERATE");
+            Temperate.Text = "温和";
             Temperate.Tag = "TEMPERATE";
             XNADropDownItem Temperate_Islands = new XNADropDownItem();
-            Temperate_Islands.Text = "Islands".L10N("UI:Main:Islands");
+            Temperate_Islands.Text = "岛屿";
             Temperate_Islands.Tag = "TEMPERATE_Islands";
 
             btnpreview = new XNAButton(WindowManager);
             btnpreview.ClientRectangle = new Rectangle(100, 150, 600, 250);
 
 
-            ddClimate.AddItem("Random".L10N("UI:Main:Random"));
+            ddClimate.AddItem("随机");
             ddClimate.AddItem(Temperate);
             ddClimate.AddItem(Temperate_Islands);
             ddClimate.AddItem(Newurban);
@@ -136,11 +135,11 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             lblPeople = new XNALabel(WindowManager);
             lblPeople.ClientRectangle = new Rectangle(ddClimate.X + 100, OPTIONHEIGHT, 80, 0);
-            lblPeople.Text = "Number".L10N("UI:Main:Number");
+            lblPeople.Text = "人数";
 
             ddPeople = new XNAClientDropDown(WindowManager);
             ddPeople.ClientRectangle = new Rectangle(lblPeople.X + 40, OPTIONHEIGHT, 80, 20);
-            ddPeople.AddItem("Random".L10N("UI:Main:Random"));
+            ddPeople.AddItem("随机");
 
 
             for (int i = 2; i <= 8; i++)
@@ -151,20 +150,20 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             lblSize = new XNALabel(WindowManager);
             lblSize.ClientRectangle = new Rectangle(ddPeople.X + 100, OPTIONHEIGHT, 0, 0);
-            lblSize.Text = "Size".L10N("UI:Main:Size");
+            lblSize.Text = "大小";
 
             ddSize = new XNAClientDropDown(WindowManager);
             ddSize.ClientRectangle = new Rectangle(lblSize.X + 40, OPTIONHEIGHT, 80, 20);
-            ddSize.AddItem("small".L10N("UI:Main:small"));
-            ddSize.AddItem("medium".L10N("UI:Main:medium"));
-            ddSize.AddItem("big".L10N("UI:Main:big"));
-            ddSize.AddItem("Very big".L10N("UI:Main:Verybig"));
+            ddSize.AddItem("小");
+            ddSize.AddItem("中等");
+            ddSize.AddItem("大");
+            ddSize.AddItem("超大");
             ddSize.SelectedIndex = 1;
 
 
             cbDamage = new XNAClientCheckBox(WindowManager);
             cbDamage.ClientRectangle = new Rectangle(ddSize.X + 150, OPTIONHEIGHT, 0, 0);
-            cbDamage.Text = "Random building damage".L10N("UI:Main:RanBuildDamage");
+            cbDamage.Text = "建筑物随机损坏";
 
 
             //thread.Abort()
@@ -228,7 +227,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             int sizey = 35 * (ddSize.SelectedIndex + 1) + r.Next(30, 50);
 
             int playerCount;
-            if (ddPeople.SelectedItem.Text == "Random".L10N("UI:Main:Random"))
+            if (ddPeople.SelectedItem.Text == "随机")
                 playerCount = r.Next(2, 8);
             else
                 playerCount = int.Parse(ddPeople.SelectedItem.Text);
@@ -264,18 +263,18 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         public void StartText()
         {
             string[] TextList = {
-                "Is dispersing civilians.".L10N("UI:Main:GenText1"),
-                "Ore being mined".L10N("UI:Main:GenText2"),
-                "The base construction vehicles are being loaded".L10N("UI:Main:GenText3"),
-                "Ammunition being examined".L10N("UI:Main:GenText4"),
-                "Bobosa is being distributed for mobilization".L10N("UI:Main:GenText5"),
-                "Getting the Phantom tank familiar with the environment".L10N("UI:Main:GenText6"),
-                "The police dogs are being calmed".L10N("UI:Main:GenText7"),
-                "Catching dolphins".L10N("UI:Main:GenText8"),
-                "Bargaining with the logistics".L10N("UI:Main:GenText9"),
-                "The transport plane is being refuelled".L10N("UI:Main:GenText10"),
-                "We're sinking the submarine".L10N("UI:Main:GenText11"),
-                "The building is being painted".L10N("UI:Main:GenText12") };
+                "正在驱散平民",
+                "正在开采矿石",
+                "正在装载基地建设车辆",
+                "正在检查弹药",
+                "正在为动员兵发放PPSh-41冲锋枪",
+                "正在让幻影坦克熟悉环境",
+                "正在安抚警犬",
+                "正在捕捉海豚",
+                "正在跟后勤争取资源",
+                "正在给运输机补充燃料",
+                "正在击沉潜艇",
+                "正在给建筑粉刷" };
             Random r = new Random();
             while (!Stop)
             {
@@ -291,7 +290,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 if (File.Exists(previewFull))
                 {
                     btnpreview.IdleTexture = AssetLoader.LoadTextureUncached(previewRelative.Replace('\\', '/'));
-                    lblStatus.Text = "completed".L10N("UI:Main:completed");
+                    lblStatus.Text = "完成";
                     btnGenerate.Enabled = true;
                     btnSave.Enabled = true;
                     Stop = false;
@@ -299,7 +298,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 }
                 else
                 {
-                    lblStatus.Text = "error".L10N("UI:Main:error");
+                    lblStatus.Text = "错误";
                     btnGenerate.Enabled = true;
                     Stop = false;
                     return;
@@ -307,7 +306,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             }
             catch
             {
-                lblStatus.Text = "error".L10N("UI:Main:error");
+                lblStatus.Text = "错误";
                 btnGenerate.Enabled = true;
                 Stop = false;
                 return;
@@ -322,7 +321,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             int[] p = { 0, 0, 0, 0, 0, 0, 0, 0 };
             int Current;
             Random r = new Random();
-            if (Peoples == "Random".L10N("UI:Main:Random"))
+            if (Peoples == "随机")
                 Current = r.Next(2, 8);
             else
                 Current = int.Parse(Peoples);

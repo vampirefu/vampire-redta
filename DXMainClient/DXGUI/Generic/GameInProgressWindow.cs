@@ -5,7 +5,6 @@ using ClientCore;
 using Rampastring.XNAUI;
 using ClientGUI;
 using System.IO;
-using Localization;
 using Color = Microsoft.Xna.Framework.Color;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 using System.Diagnostics;
@@ -64,7 +63,7 @@ namespace DTAClient.DXGUI
 
             //开始游戏
             XNALabel explanation = new XNALabel(WindowManager);
-            explanation.Text = "A game is in progress.".L10N("UI:Main:GameInProgress");
+            explanation.Text = "游戏正在运行.";
 
             AddChild(window);
 

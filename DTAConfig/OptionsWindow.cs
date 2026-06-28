@@ -1,5 +1,4 @@
-﻿using Localization;
-using ClientCore;
+﻿using ClientCore;
 using ClientCore.CnCNet5;
 using ClientGUI;
 using DTAConfig.OptionPanels;
@@ -46,10 +45,10 @@ namespace DTAConfig
             tabControl.ClientRectangle = new Rectangle(12, 12, 0, 23);
             tabControl.FontIndex = 1;
             tabControl.ClickSound = new EnhancedSoundEffect("button.wav");
-            tabControl.AddTab("Display".L10N("UI:DTAConfig:TabDisplay"), UIDesignConstants.BUTTON_WIDTH_92);
-            tabControl.AddTab("Audio".L10N("UI:DTAConfig:TabAudio"), UIDesignConstants.BUTTON_WIDTH_92);
-            tabControl.AddTab("Game".L10N("UI:DTAConfig:TabGame"), UIDesignConstants.BUTTON_WIDTH_92);
-            tabControl.AddTab("CnCNet".L10N("UI:DTAConfig:TabCnCNet"), UIDesignConstants.BUTTON_WIDTH_92);
+            tabControl.AddTab("显示", UIDesignConstants.BUTTON_WIDTH_92);
+            tabControl.AddTab("音频", UIDesignConstants.BUTTON_WIDTH_92);
+            tabControl.AddTab("游戏", UIDesignConstants.BUTTON_WIDTH_92);
+            tabControl.AddTab("CnCNet", UIDesignConstants.BUTTON_WIDTH_92);
             tabControl.AddTab("关于", UIDesignConstants.BUTTON_WIDTH_92);
             tabControl.SelectedIndexChanged += TabControl_SelectedIndexChanged;
 
@@ -57,13 +56,13 @@ namespace DTAConfig
             btnCancel.Name = "btnCancel";
             btnCancel.ClientRectangle = new Rectangle(Width - 104,
                 Height - 35, UIDesignConstants.BUTTON_WIDTH_92, UIDesignConstants.BUTTON_HEIGHT);
-            btnCancel.Text = "Cancel".L10N("UI:DTAConfig:ButtonCancel");
+            btnCancel.Text = "取消";
             btnCancel.LeftClick += BtnBack_LeftClick;
 
             var btnSave = new XNAClientButton(WindowManager);
             btnSave.Name = "btnSave";
             btnSave.ClientRectangle = new Rectangle(12, btnCancel.Y, UIDesignConstants.BUTTON_WIDTH_92, UIDesignConstants.BUTTON_HEIGHT);
-            btnSave.Text = "Save".L10N("UI:DTAConfig:ButtonSave");
+            btnSave.Text = "保存";
             btnSave.LeftClick += BtnSave_LeftClick;
 
             displayOptionsPanel = new DisplayOptionsPanel(WindowManager, UserINISettings.Instance);
@@ -149,18 +148,18 @@ namespace DTAConfig
             catch (Exception ex)
             {
                 Logger.Log("Saving settings failed! Error message: " + ex.Message);
-                XNAMessageBox.Show(WindowManager, "Saving Settings Failed".L10N("UI:DTAConfig:SaveSettingFailTitle"),
-                    "Saving settings failed! Error message:".L10N("UI:DTAConfig:SaveSettingFailText") + " " + ex.Message);
+                XNAMessageBox.Show(WindowManager, "保存设置失败",
+                    "保存设置失败!错误信息:" + " " + ex.Message);
             }
 
             Disable();
 
             if (restartRequired)
             {
-                var msgBox = new XNAMessageBox(WindowManager, "Restart Required".L10N("UI:DTAConfig:RestartClientTitle"),
-                    ("The client needs to be restarted for some of the changes to take effect." +
+                var msgBox = new XNAMessageBox(WindowManager, "需要重启",
+                    ("客户端需要重启以应用新的设置." +
                     Environment.NewLine + Environment.NewLine +
-                    "Do you want to restart now?").L10N("UI:DTAConfig:RestartClientText"), XNAMessageBoxButtons.YesNo);
+                    "您想现在重启吗?"), XNAMessageBoxButtons.YesNo);
                 msgBox.Show();
                 msgBox.YesClickedAction = RestartMsgBox_YesClicked;
             }
@@ -184,12 +183,12 @@ namespace DTAConfig
 
             if (optionValuesChanged)
             {
-                XNAMessageBox.Show(WindowManager, "Setting Value(s) Changed".L10N("UI:DTAConfig:SettingChangedTitle"),
-                    ("One or more setting values are" + Environment.NewLine +
-                    "no longer available and were changed." +
+                XNAMessageBox.Show(WindowManager, "设置项(s)变更",
+                    ("一个或多个设置项" + Environment.NewLine +
+                    "已不再可用或变更." +
                     Environment.NewLine + Environment.NewLine +
-                    "You may want to verify the new setting" + Environment.NewLine +
-                    "values in client's options window.").L10N("UI:DTAConfig:SettingChangedText"));
+                    "您肯定想在客户端设置窗口" + Environment.NewLine +
+                    "确认这些设置项."));
 
                 return true;
             }

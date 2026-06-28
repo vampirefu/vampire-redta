@@ -1,7 +1,6 @@
 ﻿using ClientCore;
 using ClientCore.CnCNet5;
 using DTAClient.Online.EventArguments;
-using Localization;
 using Microsoft.Xna.Framework;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
@@ -58,22 +57,22 @@ namespace DTAClient.Online
 
             ircChatColors = new IRCColor[]
             {
-                new IRCColor("Default color".L10N("UI:Main:ColorDefault"), false, cDefaultChatColor, 0),
-                new IRCColor("Default color #2".L10N("UI:Main:ColorDefault2"), false, cDefaultChatColor, 1),
-                new IRCColor("Light Blue".L10N("UI:Main:ColorLightBlue"), true, Color.LightBlue, 2),
-                new IRCColor("Green".L10N("UI:Main:ColorForestGreen"), true, Color.ForestGreen, 3),
-                new IRCColor("Dark Red".L10N("UI:Main:ColorDarkRed"), true, new Color(180, 0, 0, 255), 4),
-                new IRCColor("Red".L10N("UI:Main:ColorRed"), true, Color.Red, 5),
-                new IRCColor("Purple".L10N("UI:Main:ColorMediumOrchid"), true, Color.MediumOrchid, 6),
-                new IRCColor("Orange".L10N("UI:Main:ColorOrange"), true, Color.Orange, 7),
-                new IRCColor("Yellow".L10N("UI:Main:ColorYellow"), true, Color.Yellow, 8),
-                new IRCColor("Lime Green".L10N("UI:Main:ColorLime"), true, Color.Lime, 9),
-                new IRCColor("Turquoise".L10N("UI:Main:ColorTurquoise"), true, Color.Turquoise, 10),
-                new IRCColor("Sky Blue".L10N("UI:Main:ColorLightSkyBlue"), true, Color.LightSkyBlue, 11),
-                new IRCColor("Blue".L10N("UI:Main:ColorRoyalBlue"), true, Color.RoyalBlue, 12),
-                new IRCColor("Pink".L10N("UI:Main:ColorFuchsia"), true, Color.Fuchsia, 13),
-                new IRCColor("Gray".L10N("UI:Main:ColorLightGray"), true, Color.LightGray, 14),
-                new IRCColor("Gray #2".L10N("UI:Main:ColorGray2"), false, Color.Gray, 15)
+                new IRCColor("默认颜色", false, cDefaultChatColor, 0),
+                new IRCColor("默认颜色#2", false, cDefaultChatColor, 1),
+                new IRCColor("亮蓝色", true, Color.LightBlue, 2),
+                new IRCColor("绿色", true, Color.ForestGreen, 3),
+                new IRCColor("深红色", true, new Color(180, 0, 0, 255), 4),
+                new IRCColor("红色", true, Color.Red, 5),
+                new IRCColor("紫色", true, Color.MediumOrchid, 6),
+                new IRCColor("橙色", true, Color.Orange, 7),
+                new IRCColor("黄色", true, Color.Yellow, 8),
+                new IRCColor("柠檬绿色", true, Color.Lime, 9),
+                new IRCColor("碧绿色", true, Color.Turquoise, 10),
+                new IRCColor("天蓝色", true, Color.LightSkyBlue, 11),
+                new IRCColor("浅紫色", true, Color.RoyalBlue, 12),
+                new IRCColor("粉色", true, Color.Fuchsia, 13),
+                new IRCColor("灰色", true, Color.LightGray, 14),
+                new IRCColor("灰色#2", false, Color.Gray, 15)
             };
         }
 
@@ -137,7 +136,7 @@ namespace DTAClient.Online
         public void AddChannel(Channel channel)
         {
             if (FindChannel(channel.ChannelName) != null)
-                throw new ArgumentException("The channel already exists!".L10N("UI:Main:ChannelExist"), "channel");
+                throw new ArgumentException("频道已经存在!", "channel");
 
             channels.Add(channel);
         }
@@ -145,7 +144,7 @@ namespace DTAClient.Online
         public void RemoveChannel(Channel channel)
         {
             if (channel.Persistent)
-                throw new ArgumentException("Persistent channels cannot be removed.".L10N("UI:Main:PersistentChannelRemove"), "channel");
+                throw new ArgumentException("常驻频道无法被移除.", "channel");
 
             channels.Remove(channel);
         }
@@ -189,7 +188,7 @@ namespace DTAClient.Online
         private void DoAttemptedServerChanged(string serverName)
         {
             MainChannel.AddMessage(new ChatMessage(
-                string.Format("Attempting connection to {0}".L10N("UI:Main:AttemptConnectToServer"), serverName)));
+                string.Format("尝试连接到{0}", serverName)));
             AttemptedServerChanged?.Invoke(this, new AttemptedServerEventArgs(serverName));
         }
 
@@ -409,7 +408,7 @@ namespace DTAClient.Online
         {
             ConnectAttemptFailed?.Invoke(this, EventArgs.Empty);
 
-            MainChannel.AddMessage(new ChatMessage(Color.Red, "Connecting to CnCNet failed!".L10N("UI:Main:ConnectToCncNetFailed")));
+            MainChannel.AddMessage(new ChatMessage(Color.Red, "连接到CnCNet失败!"));
         }
 
         public void OnConnected()
@@ -421,7 +420,7 @@ namespace DTAClient.Online
         {
             connected = true;
             Connected?.Invoke(this, EventArgs.Empty);
-            MainChannel.AddMessage(new ChatMessage("Connection to CnCNet established.".L10N("UI:Main:ConnectToCncNetSuccess")));
+            MainChannel.AddMessage(new ChatMessage("已连接到CnCNet."));
         }
 
         /// <summary>
@@ -452,7 +451,7 @@ namespace DTAClient.Online
 
             UserList.Clear();
 
-            MainChannel.AddMessage(new ChatMessage(Color.Red, "Connection to CnCNet has been lost.".L10N("UI:Main:ConnectToCncNetHasLost")));
+            MainChannel.AddMessage(new ChatMessage(Color.Red, "CnCNet连接已丢失."));
             connected = false;
         }
 
@@ -471,7 +470,7 @@ namespace DTAClient.Online
         public void Connect()
         {
             disconnect = false;
-            MainChannel.AddMessage(new ChatMessage("Connecting to CnCNet...".L10N("UI:Main:ConnectingToCncNet")));
+            MainChannel.AddMessage(new ChatMessage("正在连接到CnCNet..."));
             connection.ConnectAsync();
         }
 
@@ -498,7 +497,7 @@ namespace DTAClient.Online
                 }
             }
 
-            MainChannel.AddMessage(new ChatMessage("You have disconnected from CnCNet.".L10N("UI:Main:CncNetDisconnected")));
+            MainChannel.AddMessage(new ChatMessage("您已断开CnCNet联机."));
             connected = false;
 
             UserList.Clear();
@@ -560,7 +559,7 @@ namespace DTAClient.Online
         {
             ReconnectAttempt?.Invoke(this, EventArgs.Empty);
 
-            MainChannel.AddMessage(new ChatMessage("Attempting to reconnect to CnCNet...".L10N("UI:Main:ReconnectingCncNet")));
+            MainChannel.AddMessage(new ChatMessage("尝试重新连接到CnCNet..."));
 
             connection.ConnectAsync();
         }
@@ -888,7 +887,7 @@ namespace DTAClient.Online
                 if (lastNonUnderscoreIndex == -1)
                 {
                     MainChannel.AddMessage(new ChatMessage(Color.White,
-                        "Your nickname is invalid or already in use. Please change your nickname in the login screen.".L10N("UI:Main:PickAnotherNickName")));
+                        "您的名称无效或已被使用.请在登入窗口重设名称."));
                     UserINISettings.Instance.SkipConnectDialog.Value = false;
                     Disconnect();
                     return;
@@ -902,7 +901,7 @@ namespace DTAClient.Online
                 sb.Append(c);
 
             MainChannel.AddMessage(new ChatMessage(Color.White,
-                string.Format("Your name is already in use. Retrying with {0}...".L10N("UI:Main:NameInUseRetry"), sb.ToString())));
+                string.Format("您的名称已被使用.重试为{0}...", sb.ToString())));
 
             ProgramConstants.PLAYERNAME = sb.ToString();
             connection.ChangeNickname();
@@ -944,7 +943,7 @@ namespace DTAClient.Online
         {
             MainChannel.AddMessage(new ChatMessage(
                 string.Format(
-                    "Lobby servers: {0} available, {1} fast.".L10N("UI:Main:LobbyServerLatencyTestResult"),
+                    "Lobby servers: {0} available, {1} fast.",
                     candidateCount, closerCount)));
         }
     }

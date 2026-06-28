@@ -5,7 +5,6 @@ using Rampastring.XNAUI.XNAControls;
 using ClientGUI;
 using DTAClient.Domain.Multiplayer;
 using Microsoft.Xna.Framework.Graphics;
-using Localization;
 using System.Linq;
 using System.Collections.Generic;
 using ClientCore;
@@ -80,7 +79,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                         XNADropDownItem item = new XNADropDownItem();
                         if (itemlabels.Length > i && !string.IsNullOrEmpty(itemlabels[i]))
                         {
-                            item.Text = itemlabels[i].L10N("UI:GameOption:" + itemlabels[i]);
+                            item.Text = itemlabels[i];
                             item.Tag = new string[] { items[i] };
                         }
                         else
@@ -94,7 +93,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                     foreach (AI ai in ais)
                     {
                         XNADropDownItem xnadropDownItem = new XNADropDownItem();
-                        xnadropDownItem.Text = StringTranslationLabelExtensions.L10N(ai.DisplayName, "UI:GameOption:" + ai.Name);
+                        xnadropDownItem.Text = ai.DisplayName;
                         xnadropDownItem.Tag = ai;
                         AddItem(xnadropDownItem);
                     }

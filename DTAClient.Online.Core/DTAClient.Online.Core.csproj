@@ -11,6 +11,5 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\ClientCore\ClientCore.csproj" />
-    <ProjectReference Include="..\Localization\Localization.csproj" />
   </ItemGroup>
 </Project>

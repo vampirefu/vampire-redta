@@ -5,7 +5,6 @@ using ClientCore.Extensions;
 using ClientGUI;
 using DTAClient.Online;
 using DTAClient.Online.EventArguments;
-using Localization;
 using Microsoft.Xna.Framework;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
@@ -15,15 +14,15 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 {
     public class GlobalContextMenu : XNAContextMenu
     {
-        private readonly string PRIVATE_MESSAGE = "Private Message".L10N("UI:Main:PrivateMessage");
-        private readonly string ADD_FRIEND = "Add Friend".L10N("UI:Main:AddFriend");
-        private readonly string REMOVE_FRIEND = "Remove Friend".L10N("UI:Main:RemoveFriend");
-        private readonly string BLOCK = "Block".L10N("UI:Main:Block");
-        private readonly string UNBLOCK = "Unblock".L10N("UI:Main:Unblock");
-        private readonly string INVITE = "Invite".L10N("UI:Main:Invite");
-        private readonly string JOIN = "Join".L10N("UI:Main:Join");
-        private readonly string COPY_LINK = "Copy Link".L10N("UI:Main:CopyLink");
-        private readonly string OPEN_LINK = "Open Link".L10N("UI:Main:OpenLink");
+        private readonly string PRIVATE_MESSAGE = "私信";
+        private readonly string ADD_FRIEND = "添加好友";
+        private readonly string REMOVE_FRIEND = "移除好友";
+        private readonly string BLOCK = "屏蔽";
+        private readonly string UNBLOCK = "取消屏蔽";
+        private readonly string INVITE = "邀请";
+        private readonly string JOIN = "加入";
+        private readonly string COPY_LINK = "复制链接";
+        private readonly string OPEN_LINK = "打开链接";
 
         private readonly CnCNetUserData cncnetUserData;
         private readonly PrivateMessagingWindow pmWindow;
@@ -181,7 +180,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             }
             catch (Exception)
             {
-                XNAMessageBox.Show(WindowManager, "Error".L10N("UI:Main:Error"), "Unable to copy link".L10N("UI:Main:ClipboardCopyLinkFailed"));
+                XNAMessageBox.Show(WindowManager, "错误", "无法复制链接");
             }
         }
 

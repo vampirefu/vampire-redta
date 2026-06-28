@@ -1,7 +1,6 @@
 ﻿using ClientCore;
 using ClientGUI;
 using DTAClient.Domain.Multiplayer.CnCNet;
-using Localization;
 using Microsoft.Xna.Framework;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
@@ -61,13 +60,13 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             tbGameName.ClientRectangle = new Rectangle(Width - 150 - UIDesignConstants.EMPTY_SPACE_SIDES -
                 UIDesignConstants.CONTROL_HORIZONTAL_MARGIN, UIDesignConstants.EMPTY_SPACE_TOP +
                 UIDesignConstants.CONTROL_VERTICAL_MARGIN, 150, 21);
-            tbGameName.Text = string.Format("{0}'s Game".L10N("UI:Main:GameOfPlayer"), ProgramConstants.PLAYERNAME);
+            tbGameName.Text = string.Format("{0}的游戏", ProgramConstants.PLAYERNAME);
 
             lblRoomName = new XNALabel(WindowManager);
             lblRoomName.Name = nameof(lblRoomName);
             lblRoomName.ClientRectangle = new Rectangle(UIDesignConstants.EMPTY_SPACE_SIDES +
                 UIDesignConstants.CONTROL_HORIZONTAL_MARGIN, tbGameName.Y + 1, 0, 0);
-            lblRoomName.Text = "Game room name:".L10N("UI:Main:GameRoomName");
+            lblRoomName.Text = "游戏房间名称:";
 
             ddMaxPlayers = new XNAClientDropDown(WindowManager);
             ddMaxPlayers.Name = nameof(ddMaxPlayers);
@@ -81,7 +80,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             lblMaxPlayers.Name = nameof(lblMaxPlayers);
             lblMaxPlayers.ClientRectangle = new Rectangle(UIDesignConstants.EMPTY_SPACE_SIDES +
                 UIDesignConstants.CONTROL_HORIZONTAL_MARGIN, ddMaxPlayers.Y + 1, 0, 0);
-            lblMaxPlayers.Text = "Maximum number of players:".L10N("UI:Main:GameMaxPlayerCount");
+            lblMaxPlayers.Text = "最大玩家数:";
 
             tbPassword = new XNATextBox(WindowManager);
             tbPassword.Name = nameof(tbPassword);
@@ -93,19 +92,19 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             lblPassword.Name = nameof(lblPassword);
             lblPassword.ClientRectangle = new Rectangle(UIDesignConstants.EMPTY_SPACE_SIDES +
                 UIDesignConstants.CONTROL_HORIZONTAL_MARGIN, tbPassword.Y + 1, 0, 0);
-            lblPassword.Text = "Password (leave blank for none):".L10N("UI:Main:PasswordTextBlankForNone");
+            lblPassword.Text = "密码(留空以不设置):";
 
             btnDisplayAdvancedOptions = new XNAClientButton(WindowManager);
             btnDisplayAdvancedOptions.Name = nameof(btnDisplayAdvancedOptions);
             btnDisplayAdvancedOptions.ClientRectangle = new Rectangle(UIDesignConstants.EMPTY_SPACE_SIDES +
                 UIDesignConstants.CONTROL_HORIZONTAL_MARGIN, lblPassword.Bottom + UIDesignConstants.CONTROL_VERTICAL_MARGIN * 3, UIDesignConstants.BUTTON_WIDTH_160, UIDesignConstants.BUTTON_HEIGHT);
-            btnDisplayAdvancedOptions.Text = "Advanced Options".L10N("UI:Main:AdvancedOptions");
+            btnDisplayAdvancedOptions.Text = "更多选项";
             btnDisplayAdvancedOptions.LeftClick += BtnDisplayAdvancedOptions_LeftClick;
 
             chkAuto = new XNACheckBox(WindowManager);
             chkAuto.Name = nameof(chkAuto);
             chkAuto.ClientRectangle = new Rectangle(tbGameName.X, lblPassword.Bottom + UIDesignConstants.CONTROL_VERTICAL_MARGIN * 3, 0, 0);
-            chkAuto.Text = "Auto select servers".L10N("UI:Main:Auto");
+            chkAuto.Text = "自动选择服务器";
             chkAuto.CheckedChanged += (s,e)=> Auto();
             chkAuto.Checked = true;
 
@@ -113,7 +112,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             lblTunnelServer.Name = nameof(lblTunnelServer);
             lblTunnelServer.ClientRectangle = new Rectangle(UIDesignConstants.EMPTY_SPACE_SIDES +
                 UIDesignConstants.CONTROL_HORIZONTAL_MARGIN, lblPassword.Bottom + UIDesignConstants.CONTROL_VERTICAL_MARGIN * 4, 0, 0);
-            lblTunnelServer.Text = "Tunnel server:".L10N("UI:Main:TunnelServer");
+            lblTunnelServer.Text = "Tunnelserver:";
             lblTunnelServer.Enabled = false;
             lblTunnelServer.Visible = false;
 
@@ -128,14 +127,14 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             btnCreateGame.ClientRectangle = new Rectangle(UIDesignConstants.EMPTY_SPACE_SIDES +
                 UIDesignConstants.CONTROL_HORIZONTAL_MARGIN, btnDisplayAdvancedOptions.Bottom + UIDesignConstants.CONTROL_VERTICAL_MARGIN * 3,
                 UIDesignConstants.BUTTON_WIDTH_133, UIDesignConstants.BUTTON_HEIGHT);
-            btnCreateGame.Text = "Create Game".L10N("UI:Main:CreateGame");
+            btnCreateGame.Text = "新建游戏";
             btnCreateGame.LeftClick += BtnCreateGame_LeftClick;
 
             btnCancel = new XNAClientButton(WindowManager);
             btnCancel.Name = nameof(btnCancel);
             btnCancel.ClientRectangle = new Rectangle(Width - UIDesignConstants.BUTTON_WIDTH_133 - UIDesignConstants.EMPTY_SPACE_SIDES -
                 UIDesignConstants.CONTROL_HORIZONTAL_MARGIN, btnCreateGame.Y, UIDesignConstants.BUTTON_WIDTH_133, UIDesignConstants.BUTTON_HEIGHT);
-            btnCancel.Text = "Cancel".L10N("UI:Main:ButtonCancel");
+            btnCancel.Text = "取消";
             btnCancel.LeftClick += BtnCancel_LeftClick;
 
             int btnLoadMPGameX = btnCreateGame.Right + (btnCancel.X - btnCreateGame.Right) / 2 - UIDesignConstants.BUTTON_WIDTH_133 / 2;
@@ -143,7 +142,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             btnLoadMPGame = new XNAClientButton(WindowManager);
             btnLoadMPGame.Name = nameof(btnLoadMPGame);
             btnLoadMPGame.ClientRectangle = new Rectangle(btnLoadMPGameX, btnCreateGame.Y, UIDesignConstants.BUTTON_WIDTH_133, UIDesignConstants.BUTTON_HEIGHT);
-            btnLoadMPGame.Text = "Load Game".L10N("UI:Main:LoadGame");
+            btnLoadMPGame.Text = "载入存档";
             btnLoadMPGame.LeftClick += BtnLoadMPGame_LeftClick;
 
             AddChild(tbGameName);
@@ -198,7 +197,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
         private void Instance_SettingsSaved(object sender, EventArgs e)
         {
-            tbGameName.Text = string.Format("{0}'s Game".L10N("UI:Main:GameOfPlayer"), UserINISettings.Instance.PlayerName.Value);
+            tbGameName.Text = string.Format("{0}的游戏", UserINISettings.Instance.PlayerName.Value);
         }
 
         private void BtnCancel_LeftClick(object sender, EventArgs e)
@@ -237,8 +236,8 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
             if (new ProfanityFilter().IsOffensive(gameName))
             {
-                XNAMessageBox.Show(WindowManager, "Offensive game name".L10N("UI:Main:GameNameOffensiveTitle"),
-                    "Please enter a less offensive game name.".L10N("UI:Main:GameNameOffensiveText"));
+                XNAMessageBox.Show(WindowManager, "侵犯性游戏名称",
+                    "请更换为友好地游戏名称.");
                 return;
             }
 

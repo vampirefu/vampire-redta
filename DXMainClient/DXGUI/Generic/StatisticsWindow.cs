@@ -2,7 +2,6 @@
 using ClientCore.Statistics;
 using ClientGUI;
 using DTAClient.Domain.Multiplayer;
-using Localization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Rampastring.Tools;
@@ -111,12 +110,12 @@ namespace DTAClient.DXGUI.Generic
         {
             sm = StatisticsManager.Instance;
 
-            string strLblEconomy = "ECONOMY".L10N("UI:Main:StatisticEconomy");
-            string strLblAvgEconomy = "Average economy:".L10N("UI:Main:StatisticEconomyAvg");
+            string strLblEconomy = "经济";
+            string strLblAvgEconomy = "平均经济:";
             if (ClientConfiguration.Instance.UseBuiltStatistic)
             {
-                strLblEconomy = "BUILT".L10N("UI:Main:StatisticBuildCount");
-                strLblAvgEconomy = "Avg. number of objects built:".L10N("UI:Main:StatisticBuildCountAvg");
+                strLblEconomy = "建造数";
+                strLblAvgEconomy = "平均建造数:";
             }
 
             Name = "StatisticsWindow";
@@ -128,32 +127,32 @@ namespace DTAClient.DXGUI.Generic
             tabControl.ClientRectangle = new Rectangle(12, 10, 0, 0);
             tabControl.ClickSound = new EnhancedSoundEffect("button.wav");
             tabControl.FontIndex = 1;
-            tabControl.AddTab("Game Statistics".L10N("UI:Main:GameStatistic"), UIDesignConstants.BUTTON_WIDTH_133);
-            tabControl.AddTab("Total Statistics".L10N("UI:Main:TotalStatistic"), UIDesignConstants.BUTTON_WIDTH_133);
-            tabControl.AddTab("Achievement".L10N("UI:Main:Ach"), UIDesignConstants.BUTTON_WIDTH_133);
+            tabControl.AddTab("游戏统计数据", UIDesignConstants.BUTTON_WIDTH_133);
+            tabControl.AddTab("全部统计数据", UIDesignConstants.BUTTON_WIDTH_133);
+            tabControl.AddTab("成就", UIDesignConstants.BUTTON_WIDTH_133);
             tabControl.SelectedIndexChanged += TabControl_SelectedIndexChanged;
 
             XNALabel lblFilter = new XNALabel(WindowManager);
             lblFilter.Name = "lblFilter";
             lblFilter.FontIndex = 1;
-            lblFilter.Text = "FILTER:".L10N("UI:Main:Filter");
+            lblFilter.Text = "筛选:";
             lblFilter.ClientRectangle = new Rectangle(550, 12, 0, 0);
 
             cmbGameClassFilter = new XNAClientDropDown(WindowManager);
             cmbGameClassFilter.ClientRectangle = new Rectangle(585, 11, 105, 21);
             cmbGameClassFilter.Name = "cmbGameClassFilter";
-            cmbGameClassFilter.AddItem("All games".L10N("UI:Main:FilterAll"));
-            cmbGameClassFilter.AddItem("Online games".L10N("UI:Main:FilterOnline"));
-            cmbGameClassFilter.AddItem("Online PvP".L10N("UI:Main:FilterPvP"));
-            cmbGameClassFilter.AddItem("Online Co-Op".L10N("UI:Main:FilterCoOp"));
-            cmbGameClassFilter.AddItem("Skirmish".L10N("UI:Main:FilterSkirmish"));
+            cmbGameClassFilter.AddItem("所有游戏");
+            cmbGameClassFilter.AddItem("在线游戏");
+            cmbGameClassFilter.AddItem("在线PvP");
+            cmbGameClassFilter.AddItem("合作战役");
+            cmbGameClassFilter.AddItem("遭遇战");
             cmbGameClassFilter.SelectedIndex = 0;
             cmbGameClassFilter.SelectedIndexChanged += CmbGameClassFilter_SelectedIndexChanged;
 
             XNALabel lblGameMode = new XNALabel(WindowManager);
             lblGameMode.Name = nameof(lblGameMode);
             lblGameMode.FontIndex = 1;
-            lblGameMode.Text = "GAME MODE:".L10N("UI:Main:GameMode");
+            lblGameMode.Text = "游戏模式:";
             lblGameMode.ClientRectangle = new Rectangle(420, 12, 0, 0);
 
             cmbGameModeFilter = new XNAClientDropDown(WindowManager);
@@ -164,13 +163,13 @@ namespace DTAClient.DXGUI.Generic
             var btnReturnToMenu = new XNAClientButton(WindowManager);
             btnReturnToMenu.Name = nameof(btnReturnToMenu);
             btnReturnToMenu.ClientRectangle = new Rectangle(700, 486, UIDesignConstants.BUTTON_WIDTH_160, UIDesignConstants.BUTTON_HEIGHT);
-            btnReturnToMenu.Text = "Return to Main Menu".L10N("UI:Main:ReturnToMainMenu");
+            btnReturnToMenu.Text = "返回到首页";
             btnReturnToMenu.LeftClick += BtnReturnToMenu_LeftClick;
 
             var btnClearStatistics = new XNAClientButton(WindowManager);
             btnClearStatistics.Name = nameof(btnClearStatistics);
             btnClearStatistics.ClientRectangle = new Rectangle(12, 486, UIDesignConstants.BUTTON_WIDTH_160, UIDesignConstants.BUTTON_HEIGHT);
-            btnClearStatistics.Text = "Clear Statistics".L10N("UI:Main:ClearStatistics");
+            btnClearStatistics.Text = "清除统计数据";
             btnClearStatistics.LeftClick += BtnClearStatistics_LeftClick;
             btnClearStatistics.Visible = false;
 
@@ -178,7 +177,7 @@ namespace DTAClient.DXGUI.Generic
 
             AddChild(chkIncludeSpectatedGames);
             chkIncludeSpectatedGames.Name = nameof(chkIncludeSpectatedGames);
-            chkIncludeSpectatedGames.Text = "Include spectated games".L10N("UI:Main:IncludeSpectated");
+            chkIncludeSpectatedGames.Text = "包含观战";
             chkIncludeSpectatedGames.Checked = true;
             chkIncludeSpectatedGames.ClientRectangle = new Rectangle(
                 Width - chkIncludeSpectatedGames.Width - 12,
@@ -198,7 +197,7 @@ namespace DTAClient.DXGUI.Generic
 
             XNALabel lblGames = new XNALabel(WindowManager);
             lblGames.Name = nameof(lblGames);
-            lblGames.Text = "GAMES:".L10N("UI:Main:GameMatches");
+            lblGames.Text = "游戏:";
             lblGames.FontIndex = 1;
             lblGames.ClientRectangle = new Rectangle(4, 2, 0, 0);
 
@@ -207,12 +206,12 @@ namespace DTAClient.DXGUI.Generic
             lbGameList.ClientRectangle = new Rectangle(2, 25, 876, 250);
             lbGameList.BackgroundTexture = AssetLoader.CreateTexture(new Color(0, 0, 0, 128), 1, 1);
             lbGameList.PanelBackgroundDrawMode = PanelBackgroundImageDrawMode.STRETCHED;
-            lbGameList.AddColumn("DATE / TIME".L10N("UI:Main:GameMatchDateTimeColumnHeader"), 130);
-            lbGameList.AddColumn("MAP".L10N("UI:Main:GameMatchMapColumnHeader"), 200);
-            lbGameList.AddColumn("GAME MODE".L10N("UI:Main:GameMatchGameModeColumnHeader"), 130);
-            lbGameList.AddColumn("FPS".L10N("UI:Main:GameMatchFPSColumnHeader"), 50);
-            lbGameList.AddColumn("DURATION".L10N("UI:Main:GameMatchDurationColumnHeader"), 76);
-            lbGameList.AddColumn("COMPLETED".L10N("UI:Main:GameMatchCompletedColumnHeader"), 90);
+            lbGameList.AddColumn("日期/时间", 130);
+            lbGameList.AddColumn("地图", 200);
+            lbGameList.AddColumn("游戏模式", 130);
+            lbGameList.AddColumn("FPS", 50);
+            lbGameList.AddColumn("时长", 76);
+            lbGameList.AddColumn("完成度", 90);
             lbGameList.SelectedIndexChanged += LbGameList_SelectedIndexChanged;
             lbGameList.AllowKeyboardInput = true;
 
@@ -221,14 +220,14 @@ namespace DTAClient.DXGUI.Generic
             lbGameStatistics.ClientRectangle = new Rectangle(2, 280, 676, 143);
             lbGameStatistics.BackgroundTexture = AssetLoader.CreateTexture(new Color(0, 0, 0, 128), 1, 1);
             lbGameStatistics.PanelBackgroundDrawMode = PanelBackgroundImageDrawMode.STRETCHED;
-            lbGameStatistics.AddColumn("NAME".L10N("UI:Main:StatisticsName"), 130);
-            lbGameStatistics.AddColumn("KILLS".L10N("UI:Main:StatisticsKills"), 78);
-            lbGameStatistics.AddColumn("LOSSES".L10N("UI:Main:StatisticsLosses"), 78);
+            lbGameStatistics.AddColumn("名称", 130);
+            lbGameStatistics.AddColumn("摧毁数", 78);
+            lbGameStatistics.AddColumn("损失数", 78);
             lbGameStatistics.AddColumn(strLblEconomy, 80);
-            lbGameStatistics.AddColumn("SCORE".L10N("UI:Main:StatisticsScore"), 100);
-            lbGameStatistics.AddColumn("WON".L10N("UI:Main:StatisticsWon"), 50);
-            lbGameStatistics.AddColumn("SIDE".L10N("UI:Main:StatisticsSide"), 100);
-            lbGameStatistics.AddColumn("TEAM".L10N("UI:Main:StatisticsTeam"), 60);
+            lbGameStatistics.AddColumn("分数", 100);
+            lbGameStatistics.AddColumn("胜利", 50);
+            lbGameStatistics.AddColumn("国家", 100);
+            lbGameStatistics.AddColumn("小队", 60);
 
             panelGameStatistics.AddChild(lblGames);
             panelGameStatistics.AddChild(lbGameList);
@@ -249,7 +248,7 @@ namespace DTAClient.DXGUI.Generic
 
             int locationY = TOTAL_STATS_FIRST_ITEM_Y;
 
-            AddTotalStatisticsLabel("lblGamesStarted", "Games started:".L10N("UI:Main:StatisticsGamesStarted"), new Point(TOTAL_STATS_LOCATION_X1, locationY));
+            AddTotalStatisticsLabel("lblGamesStarted", "开局场数:", new Point(TOTAL_STATS_LOCATION_X1, locationY));
 
             lblGamesStartedValue = new XNALabel(WindowManager);
             lblGamesStartedValue.Name = "lblGamesStartedValue";
@@ -257,7 +256,7 @@ namespace DTAClient.DXGUI.Generic
             lblGamesStartedValue.RemapColor = UISettings.ActiveSettings.AltColor;
             locationY += TOTAL_STATS_Y_INCREASE;
 
-            AddTotalStatisticsLabel("lblGamesFinished", "Games finished:".L10N("UI:Main:StatisticsGamesFinished"), new Point(TOTAL_STATS_LOCATION_X1, locationY));
+            AddTotalStatisticsLabel("lblGamesFinished", "完成场数:", new Point(TOTAL_STATS_LOCATION_X1, locationY));
 
             lblGamesFinishedValue = new XNALabel(WindowManager);
             lblGamesFinishedValue.Name = "lblGamesFinishedValue";
@@ -265,7 +264,7 @@ namespace DTAClient.DXGUI.Generic
             lblGamesFinishedValue.RemapColor = UISettings.ActiveSettings.AltColor;
             locationY += TOTAL_STATS_Y_INCREASE;
 
-            AddTotalStatisticsLabel("lblWins", "Wins:".L10N("UI:Main:StatisticsGamesWins"), new Point(TOTAL_STATS_LOCATION_X1, locationY));
+            AddTotalStatisticsLabel("lblWins", "胜场:", new Point(TOTAL_STATS_LOCATION_X1, locationY));
 
             lblWinsValue = new XNALabel(WindowManager);
             lblWinsValue.Name = "lblWinsValue";
@@ -273,7 +272,7 @@ namespace DTAClient.DXGUI.Generic
             lblWinsValue.RemapColor = UISettings.ActiveSettings.AltColor;
             locationY += TOTAL_STATS_Y_INCREASE;
 
-            AddTotalStatisticsLabel("lblLosses", "Losses:".L10N("UI:Main:StatisticsGamesLosses"), new Point(TOTAL_STATS_LOCATION_X1, locationY));
+            AddTotalStatisticsLabel("lblLosses", "负场:", new Point(TOTAL_STATS_LOCATION_X1, locationY));
 
             lblLossesValue = new XNALabel(WindowManager);
             lblLossesValue.Name = "lblLossesValue";
@@ -281,7 +280,7 @@ namespace DTAClient.DXGUI.Generic
             lblLossesValue.RemapColor = UISettings.ActiveSettings.AltColor;
             locationY += TOTAL_STATS_Y_INCREASE;
 
-            AddTotalStatisticsLabel("lblWinLossRatio", "Win / Loss ratio:".L10N("UI:Main:StatisticsGamesWinLossRatio"), new Point(TOTAL_STATS_LOCATION_X1, locationY));
+            AddTotalStatisticsLabel("lblWinLossRatio", "胜/负比:", new Point(TOTAL_STATS_LOCATION_X1, locationY));
 
             lblWinLossRatioValue = new XNALabel(WindowManager);
             lblWinLossRatioValue.Name = "lblWinLossRatioValue";
@@ -289,7 +288,7 @@ namespace DTAClient.DXGUI.Generic
             lblWinLossRatioValue.RemapColor = UISettings.ActiveSettings.AltColor;
             locationY += TOTAL_STATS_Y_INCREASE;
 
-            AddTotalStatisticsLabel("lblAverageGameLength", "Average game length:".L10N("UI:Main:StatisticsGamesLengthAvg"), new Point(TOTAL_STATS_LOCATION_X1, locationY));
+            AddTotalStatisticsLabel("lblAverageGameLength", "平均游戏时长:", new Point(TOTAL_STATS_LOCATION_X1, locationY));
 
             lblAverageGameLengthValue = new XNALabel(WindowManager);
             lblAverageGameLengthValue.Name = "lblAverageGameLengthValue";
@@ -297,7 +296,7 @@ namespace DTAClient.DXGUI.Generic
             lblAverageGameLengthValue.RemapColor = UISettings.ActiveSettings.AltColor;
             locationY += TOTAL_STATS_Y_INCREASE;
 
-            AddTotalStatisticsLabel("lblTotalTimePlayed", "Total time played:".L10N("UI:Main:StatisticsTotalTimePlayed"), new Point(TOTAL_STATS_LOCATION_X1, locationY));
+            AddTotalStatisticsLabel("lblTotalTimePlayed", "游戏总时长:", new Point(TOTAL_STATS_LOCATION_X1, locationY));
 
             lblTotalTimePlayedValue = new XNALabel(WindowManager);
             lblTotalTimePlayedValue.Name = "lblTotalTimePlayedValue";
@@ -305,7 +304,7 @@ namespace DTAClient.DXGUI.Generic
             lblTotalTimePlayedValue.RemapColor = UISettings.ActiveSettings.AltColor;
             locationY += TOTAL_STATS_Y_INCREASE;
 
-            AddTotalStatisticsLabel("lblAverageEnemyCount", "Average number of enemies:".L10N("UI:Main:StatisticsEnemiesAvg"), new Point(TOTAL_STATS_LOCATION_X1, locationY));
+            AddTotalStatisticsLabel("lblAverageEnemyCount", "平均敌人数:", new Point(TOTAL_STATS_LOCATION_X1, locationY));
 
             lblAverageEnemyCountValue = new XNALabel(WindowManager);
             lblAverageEnemyCountValue.Name = "lblAverageEnemyCountValue";
@@ -313,7 +312,7 @@ namespace DTAClient.DXGUI.Generic
             lblAverageEnemyCountValue.RemapColor = UISettings.ActiveSettings.AltColor;
             locationY += TOTAL_STATS_Y_INCREASE;
 
-            AddTotalStatisticsLabel("lblAverageAllyCount", "Average number of allies:".L10N("UI:Main:StatisticsAlliesAvg"), new Point(TOTAL_STATS_LOCATION_X1, locationY));
+            AddTotalStatisticsLabel("lblAverageAllyCount", "平均盟友数:", new Point(TOTAL_STATS_LOCATION_X1, locationY));
 
             lblAverageAllyCountValue = new XNALabel(WindowManager);
             lblAverageAllyCountValue.Name = "lblAverageAllyCountValue";
@@ -325,7 +324,7 @@ namespace DTAClient.DXGUI.Generic
 
             locationY = TOTAL_STATS_FIRST_ITEM_Y;
 
-            AddTotalStatisticsLabel("lblTotalKills", "Total kills:".L10N("UI:Main:StatisticsTotalKills"), new Point(TOTAL_STATS_LOCATION_X2, locationY));
+            AddTotalStatisticsLabel("lblTotalKills", "总摧毁数:", new Point(TOTAL_STATS_LOCATION_X2, locationY));
 
             lblTotalKillsValue = new XNALabel(WindowManager);
             lblTotalKillsValue.Name = "lblTotalKillsValue";
@@ -333,7 +332,7 @@ namespace DTAClient.DXGUI.Generic
             lblTotalKillsValue.RemapColor = UISettings.ActiveSettings.AltColor;
             locationY += TOTAL_STATS_Y_INCREASE;
 
-            AddTotalStatisticsLabel("lblKillsPerGame", "Kills / game:".L10N("UI:Main:StatisticsKillsPerGame"), new Point(TOTAL_STATS_LOCATION_X2, locationY));
+            AddTotalStatisticsLabel("lblKillsPerGame", "平均每局摧毁数:", new Point(TOTAL_STATS_LOCATION_X2, locationY));
 
             lblKillsPerGameValue = new XNALabel(WindowManager);
             lblKillsPerGameValue.Name = "lblKillsPerGameValue";
@@ -341,7 +340,7 @@ namespace DTAClient.DXGUI.Generic
             lblKillsPerGameValue.RemapColor = UISettings.ActiveSettings.AltColor;
             locationY += TOTAL_STATS_Y_INCREASE;
 
-            AddTotalStatisticsLabel("lblTotalLosses", "Total losses:".L10N("UI:Main:StatisticsTotalLosses"), new Point(TOTAL_STATS_LOCATION_X2, locationY));
+            AddTotalStatisticsLabel("lblTotalLosses", "总损失数:", new Point(TOTAL_STATS_LOCATION_X2, locationY));
 
             lblTotalLossesValue = new XNALabel(WindowManager);
             lblTotalLossesValue.Name = "lblTotalLossesValue";
@@ -349,7 +348,7 @@ namespace DTAClient.DXGUI.Generic
             lblTotalLossesValue.RemapColor = UISettings.ActiveSettings.AltColor;
             locationY += TOTAL_STATS_Y_INCREASE;
 
-            AddTotalStatisticsLabel("lblLossesPerGame", "Losses / game:".L10N("UI:Main:StatisticsLossesPerGame"), new Point(TOTAL_STATS_LOCATION_X2, locationY));
+            AddTotalStatisticsLabel("lblLossesPerGame", "平均每局损失数:", new Point(TOTAL_STATS_LOCATION_X2, locationY));
 
             lblLossesPerGameValue = new XNALabel(WindowManager);
             lblLossesPerGameValue.Name = "lblLossesPerGameValue";
@@ -357,7 +356,7 @@ namespace DTAClient.DXGUI.Generic
             lblLossesPerGameValue.RemapColor = UISettings.ActiveSettings.AltColor;
             locationY += TOTAL_STATS_Y_INCREASE;
 
-            AddTotalStatisticsLabel("lblKillLossRatio", "Kill / loss ratio:".L10N("UI:Main:StatisticsKillLossRatio"), new Point(TOTAL_STATS_LOCATION_X2, locationY));
+            AddTotalStatisticsLabel("lblKillLossRatio", "摧毁/损失比:", new Point(TOTAL_STATS_LOCATION_X2, locationY));
 
             lblKillLossRatioValue = new XNALabel(WindowManager);
             lblKillLossRatioValue.Name = "lblKillLossRatioValue";
@@ -365,7 +364,7 @@ namespace DTAClient.DXGUI.Generic
             lblKillLossRatioValue.RemapColor = UISettings.ActiveSettings.AltColor;
             locationY += TOTAL_STATS_Y_INCREASE;
 
-            AddTotalStatisticsLabel("lblTotalScore", "Total score:".L10N("UI:Main:TotalScore"), new Point(TOTAL_STATS_LOCATION_X2, locationY));
+            AddTotalStatisticsLabel("lblTotalScore", "总分数:", new Point(TOTAL_STATS_LOCATION_X2, locationY));
 
             lblTotalScoreValue = new XNALabel(WindowManager);
             lblTotalScoreValue.Name = "lblTotalScoreValue";
@@ -381,7 +380,7 @@ namespace DTAClient.DXGUI.Generic
             lblAverageEconomyValue.RemapColor = UISettings.ActiveSettings.AltColor;
             locationY += TOTAL_STATS_Y_INCREASE;
 
-            AddTotalStatisticsLabel("lblFavouriteSide", "Favourite side:".L10N("UI:Main:FavouriteSide"), new Point(TOTAL_STATS_LOCATION_X2, locationY));
+            AddTotalStatisticsLabel("lblFavouriteSide", "最喜爱的国家:", new Point(TOTAL_STATS_LOCATION_X2, locationY));
 
             lblFavouriteSideValue = new XNALabel(WindowManager);
             lblFavouriteSideValue.Name = "lblFavouriteSideValue";
@@ -389,7 +388,7 @@ namespace DTAClient.DXGUI.Generic
             lblFavouriteSideValue.RemapColor = UISettings.ActiveSettings.AltColor;
             locationY += TOTAL_STATS_Y_INCREASE;
 
-            AddTotalStatisticsLabel("lblAverageAILevel", "Average AI level:".L10N("UI:Main:AvgAILevel"), new Point(TOTAL_STATS_LOCATION_X2, locationY));
+            AddTotalStatisticsLabel("lblAverageAILevel", "平均AI难度:", new Point(TOTAL_STATS_LOCATION_X2, locationY));
 
             lblAverageAILevelValue = new XNALabel(WindowManager);
             lblAverageAILevelValue.Name = "lblAverageAILevelValue";
@@ -611,35 +610,35 @@ namespace DTAClient.DXGUI.Generic
             StatisticsManager.Instance.GameAdded += Instance_GameAdded;
 
             locationY = TOTAL_STATS_FIRST_ITEM_Y;
-            AddAchBtn("btnhardened", "Battle-hardened".L10N("UI:Main:hardenedTitle"), "Ten years old players, what do not understand can ask me! : Complete 2000 matches".L10N("UI:Main:hardenedText"), new Point(TOTAL_STATS_LOCATION_X1, locationY), 0);
+            AddAchBtn("btnhardened", "久经沙场", "十年老玩家，有什么不懂的可以问我！：完成2000场对局", new Point(TOTAL_STATS_LOCATION_X1, locationY), 0);
             locationY += TOTAL_STATS_Y_INCREASE;
-            AddAchBtn("lblkillValue", "Kill like a stone".L10N("UI:Main:killTitle"), "I said I would kill. You asked me if my eyes were dry? Cumulative destruction reached 1,000,000".L10N("UI:Main:killText"), new Point(TOTAL_STATS_LOCATION_X1, locationY), 1);
+            AddAchBtn("lblkillValue", "杀人如麻", "我说我杀人不眨眼，你问我眼睛干不干？：累计摧毁数到达1000000", new Point(TOTAL_STATS_LOCATION_X1, locationY), 1);
             locationY += TOTAL_STATS_Y_INCREASE;
-            AddAchBtn("PrgVictorValue", "Always victorious general".L10N("UI:Main:VictorTitle"), "Just a stroke of luck! Win/loss ratio reached 10 (0.9 win percentage)".L10N("UI:Main:VictorText"), new Point(TOTAL_STATS_LOCATION_X1, locationY), 2);
+            AddAchBtn("PrgVictorValue", "常胜将军", "运气好而已啦！：胜场/负场比到达10（胜率0.9）", new Point(TOTAL_STATS_LOCATION_X1, locationY), 2);
             locationY += TOTAL_STATS_Y_INCREASE;
-            AddAchBtn("PrgLongValue", "Boil eagle".L10N("UI:Main:LongTitle"), "I have two computers. Who's afraid of who? : Complete 200 45 minute matches".L10N("UI:Main:LongText"), new Point(TOTAL_STATS_LOCATION_X1, locationY), 3);
+            AddAchBtn("PrgLongValue", "熬鹰", "我有两台电脑谁怕谁？：完成200场45分钟的对局", new Point(TOTAL_STATS_LOCATION_X1, locationY), 3);
             locationY += TOTAL_STATS_Y_INCREASE;
-            AddAchBtn("PrgShortValue", "blitzkrieg".L10N("UI:Main:ShortTitle"), "Throw punches and kill the old master. : Complete 200 matches under 10 minutes".L10N("UI:Main:ShortText"), new Point(TOTAL_STATS_LOCATION_X1, locationY), 4);
+            AddAchBtn("PrgShortValue", "闪电战", "乱拳打死老师傅。：完成200场10分钟以内的对局", new Point(TOTAL_STATS_LOCATION_X1, locationY), 4);
             locationY += TOTAL_STATS_Y_INCREASE;
-            AddAchBtn("PrgSoldierValue", "Love soldiers like sons".L10N("UI:Main:SoldierTitle"), "We have very precise blood volume control. : Complete 200 matches with less than 10 losses".L10N("UI:Main:SoldierText"), new Point(TOTAL_STATS_LOCATION_X1, locationY), 5);
+            AddAchBtn("PrgSoldierValue", "爱兵如子", "我们对血量的把控十分精准。：完成200场损失数小于10的对局", new Point(TOTAL_STATS_LOCATION_X1, locationY), 5);
             locationY += TOTAL_STATS_Y_INCREASE;
-            AddAchBtn("PrgNavalValue", "One Piece".L10N("UI:Main:NavalTitle"), "I want to be One Piece, not One Piece! Complete 10 naval battles".L10N("UI:Main:NavalText"), new Point(TOTAL_STATS_LOCATION_X1, locationY), 6);
+            AddAchBtn("PrgNavalValue", "海贼王", "我要当上海贼王，不是上海贼王！，完成10场海战", new Point(TOTAL_STATS_LOCATION_X1, locationY), 6);
             locationY += TOTAL_STATS_Y_INCREASE;
-            AddAchBtn("PrgGermanyValue", "Convince others by virtue".L10N("UI:Main:GermanyTitle"), "Persuade by virtue (physics). Win 20 matches with Germany".L10N("UI:Main:GermanyText"), new Point(TOTAL_STATS_LOCATION_X1, locationY), 7);
+            AddAchBtn("PrgGermanyValue", "以德服人", "以德服人（物理）。：使用德国胜利20场", new Point(TOTAL_STATS_LOCATION_X1, locationY), 7);
             locationY += TOTAL_STATS_Y_INCREASE;
-            AddAchBtn(" PrgOneValue", "Please call me the King of singles".L10N("UI:Main:OneTitle"), "The single king is back. Win 200 singles matches".L10N("UI:Main:OneText"), new Point(TOTAL_STATS_LOCATION_X1, locationY), 8);
+            AddAchBtn(" PrgOneValue", "请叫我单挑王", "单挑王重出江湖。：单挑获胜200场", new Point(TOTAL_STATS_LOCATION_X1, locationY), 8);
             locationY = TOTAL_STATS_FIRST_ITEM_Y;
-            AddAchBtn("PrgBulletsValue", "Bullets rained down".L10N("UI:Main:BulletsTitle"), "Report! Pilot's back with a steering wheel! : Complete 200 matches with damage + Destruction greater than 100".L10N("UI:Main:BulletsText"), new Point(TOTAL_STATS_LOCATION_X2 + 10, locationY), 9);
+            AddAchBtn("PrgBulletsValue", "枪林弹雨", "报告，驾驶员抱着一个方向盘回来了！：完成损失数+摧毁数大于100的对局200场", new Point(TOTAL_STATS_LOCATION_X2 + 10, locationY), 9);
             locationY += TOTAL_STATS_Y_INCREASE;
-            AddAchBtn("PrgFkyValue", "Fakew".L10N("UI:Main:FkyTitle"), "This is destiny: Use France to win 20 games against Yuri in a single match".L10N("UI:Main:FkyText"), new Point(TOTAL_STATS_LOCATION_X2 + 10, locationY), 10);
+            AddAchBtn("PrgFkyValue", "法克尤", "天命如此：使用法国在单挑中获胜尤里20局", new Point(TOTAL_STATS_LOCATION_X2 + 10, locationY), 10);
             locationY += TOTAL_STATS_Y_INCREASE;
-            AddAchBtn("PrgMaxValue", "Secretary for Endeavour".L10N("UI:Main:MaxTitle"), "How can you play when all your teammates are cute? : Top rated but lost 100 games".L10N("UI:Main:MaxText"), new Point(TOTAL_STATS_LOCATION_X2 + 10, locationY), 11);
+            AddAchBtn("PrgMaxValue", "尽力局局长", "队友都是萌新宝宝怎么打？：评分最高却失败100场", new Point(TOTAL_STATS_LOCATION_X2 + 10, locationY), 11);
             locationY += TOTAL_STATS_Y_INCREASE;
-            AddAchBtn("PrgMinValue", "Lie down and win the game".L10N("UI:Main:MinTitle"), "Beneficiaries of the ELO mechanism. Lowest rating yet 100 wins".L10N("UI:Main:MinText"), new Point(TOTAL_STATS_LOCATION_X2 + 10, locationY), 12);
+            AddAchBtn("PrgMinValue", "躺赢局局长", "ELO机制受益者。：评分最低却获胜100场", new Point(TOTAL_STATS_LOCATION_X2 + 10, locationY), 12);
             locationY += TOTAL_STATS_Y_INCREASE;
-            AddAchBtn("PrgMaginotValue", "Maginot line".L10N("UI:Main:MaginotTitle"), "Why don't you come at me? : Use France and reach 400 to build 20 matches".L10N("UI:Main:MaginotText"), new Point(TOTAL_STATS_LOCATION_X2 + 10, locationY), 13);
+            AddAchBtn("PrgMaginotValue", "马奇诺防线", "有本身你来冲我啊？：使用法国且到达400建造数20场", new Point(TOTAL_STATS_LOCATION_X2 + 10, locationY), 13);
             locationY += TOTAL_STATS_Y_INCREASE;
-            AddAchBtn("PrgBtValue", "See the ice and know the tree".L10N("UI:Main:BtTitle"), "I know how many trees there are in the ice and snow: play ice (big) snow 20 times".L10N("UI:Main:BtText"), new Point(TOTAL_STATS_LOCATION_X2 + 10, locationY), 14);
+            AddAchBtn("PrgBtValue", "见冰天知树目", "冰天雪地里有多少棵树我都知道：游玩冰天(大)雪地20场", new Point(TOTAL_STATS_LOCATION_X2 + 10, locationY), 14);
             locationY += TOTAL_STATS_Y_INCREASE;
             //冰天雪地里有多少棵树我都知道
 
@@ -676,7 +675,7 @@ namespace DTAClient.DXGUI.Generic
             if (Value[i, 0] <= Value[i, 1])
                 Content += "          " + Value[i, 0].ToString() + "/" + Value[i, 1].ToString();
             else
-                Content += "          Completed".L10N("UI:Main:100%");
+                Content += "已完成";
             btn.LeftClick += (s, e) => Messagebox(Title, Content);
             panelAchStatistics.AddChild(btn);
 
@@ -775,7 +774,7 @@ namespace DTAClient.DXGUI.Generic
                     items.Add(new XNAListBoxItem("-", textColor));
                     items.Add(new XNAListBoxItem("-", textColor));
                     XNAListBoxItem spectatorItem = new XNAListBoxItem();
-                    spectatorItem.Text = "Spectator".L10N("UI:Main:Spectator");
+                    spectatorItem.Text = "观战";
                     spectatorItem.TextColor = textColor;
                     spectatorItem.Texture = sideTextures[sideTextures.Length - 1];
                     items.Add(spectatorItem);
@@ -804,7 +803,7 @@ namespace DTAClient.DXGUI.Generic
                     }
 
                     if (ps.Side == 0 || ps.Side > sides.Length)
-                        items.Add(new XNAListBoxItem("Unknown".L10N("UI:Main:UnknownSide"), textColor));
+                        items.Add(new XNAListBoxItem("位置", textColor));
                     else
                     {
                         XNAListBoxItem sideItem = new XNAListBoxItem();
@@ -857,7 +856,7 @@ namespace DTAClient.DXGUI.Generic
 
             cmbGameModeFilter.Items.Clear();
 
-            cmbGameModeFilter.AddItem("All".L10N("UI:Main:All"));
+            cmbGameModeFilter.AddItem("所有");
 
             for (int i = 0; i < gameCount; i++)
             {
@@ -1314,11 +1313,11 @@ namespace DTAClient.DXGUI.Generic
             lblFavouriteSideValue.Text = sides[GetHighestIndex(sideGameCounts)];
 
             if (numEasyAIs >= numMediumAIs && numEasyAIs >= numHardAIs)
-                lblAverageAILevelValue.Text = "Easy".L10N("UI:Main:EasyAI");
+                lblAverageAILevelValue.Text = "简单";
             else if (numMediumAIs >= numEasyAIs && numMediumAIs >= numHardAIs)
-                lblAverageAILevelValue.Text = "Medium".L10N("UI:Main:MediumAI");
+                lblAverageAILevelValue.Text = "中等";
             else
-                lblAverageAILevelValue.Text = "Hard".L10N("UI:Main:HardAI");
+                lblAverageAILevelValue.Text = "困难";
         }
 
         private PlayerStatistics FindLocalPlayer(MatchStatistics ms)
@@ -1372,10 +1371,10 @@ namespace DTAClient.DXGUI.Generic
 
         private void BtnClearStatistics_LeftClick(object sender, EventArgs e)
         {
-            var msgBox = new XNAMessageBox(WindowManager, "Clear all statistics".L10N("UI:Main:ClearStatisticsTitle"),
-                ("All statistics data will be cleared from the database." +
+            var msgBox = new XNAMessageBox(WindowManager, "清除全部统计数据",
+                ("所有统计数据将被清空." +
                 Environment.NewLine + Environment.NewLine +
-                "Are you sure you want to continue?").L10N("UI:Main:ClearStatisticsText"), XNAMessageBoxButtons.YesNo);
+                "您确定要继续吗?"), XNAMessageBoxButtons.YesNo);
             msgBox.Show();
             msgBox.YesClickedAction = ClearStatisticsConfirmation_YesClicked;
         }

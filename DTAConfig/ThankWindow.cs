@@ -1,5 +1,4 @@
 ﻿using ClientGUI;
-using Localization;
 using Microsoft.Xna.Framework;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
@@ -26,7 +25,7 @@ namespace DTAClient.DXGUI.Generic
             lblCheater.Name = "lblCheater";
             lblCheater.ClientRectangle = new Rectangle(0, 0, 0, 0);
             lblCheater.FontIndex = 1;
-            lblCheater.Text = "鸣谢列表".L10N("UI:DTAConfig:ButtonThanks");
+            lblCheater.Text = "鸣谢列表";
 
             lblThankList = new XNAListBox(WindowManager);
             lblThankList.Name = nameof(lblThankList);
@@ -36,20 +35,20 @@ namespace DTAClient.DXGUI.Generic
 
             lblThankList.AddItem("首先，由衷的感谢各位玩家能体验我们制作的新共辉版本，希望能给大家带来良好的体验。");
             
-            lblThankList.AddItem("CNC平台".L10N("UI:Thank:CNCNet") + "：CNCNet");
-            lblThankList.AddItem("游戏平台".L10N("UI:Thank:AP") + "：Ares，Phobos");
-            lblThankList.AddItem("随机地图".L10N("UI:Thank:RanMap") + "：韩方序");
-            //lblThankList.AddItem("自动更新".L10N("UI:Thank:RanMap") + "：记录微笑");
-            //lblThankList.AddItem("重置战役".L10N("UI:Thank:ButtonThanks") + "：MadHQ");
-            //lblThankList.AddItem("地图".L10N("UI:Thank:ButtonThanks") + "：MadHQ");
+            lblThankList.AddItem("CNC平台" + "：CNCNet");
+            lblThankList.AddItem("游戏平台" + "：Ares，Phobos");
+            lblThankList.AddItem("随机地图" + "：韩方序");
+            //lblThankList.AddItem("自动更新" + "：记录微笑");
+            //lblThankList.AddItem("重置战役" + "：MadHQ");
+            //lblThankList.AddItem("地图" + "：MadHQ");
 
             //lblThankList.AddItem("地图：壕做友");
             //lblThankList.AddItem("地图：chen371287536");
-            //lblThankList.AddItem("二次元主题".L10N("UI:Thank:ButtonThanks") + "：Blue623");
-            //lblThankList.AddItem("原版模式".L10N("UI:Thank:ButtonThanks") + "：泳池里的潜艇");
-            //lblThankList.AddItem("第三帝国模式".L10N("UI:Thank:ButtonThanks") + "：疾风丶Yy5871");
-            lblThankList.AddItem("地图编辑器".L10N("UI:Thank:ButtonThanks") + "：FA2SP制作组");
-            //lblThankList.AddItem("中文语音包".L10N("UI:Thank:ButtonThanks") + "：蚂蚁制作组");
+            //lblThankList.AddItem("二次元主题" + "：Blue623");
+            //lblThankList.AddItem("原版模式" + "：泳池里的潜艇");
+            //lblThankList.AddItem("第三帝国模式" + "：疾风丶Yy5871");
+            lblThankList.AddItem("地图编辑器" + "：FA2SP制作组");
+            //lblThankList.AddItem("中文语音包" + "：蚂蚁制作组");
 
             //lblThankList.AddItem("(皮肤)雷达样式2：=Star=");
             //lblThankList.AddItem("(皮肤)血条：雷德克里莫");
@@ -118,7 +117,7 @@ namespace DTAClient.DXGUI.Generic
             btnYes.Name = "btnYes";
             btnYes.ClientRectangle = new Rectangle((Width - UIDesignConstants.BUTTON_WIDTH_92) / 2,
                 Height - 35, UIDesignConstants.BUTTON_WIDTH_92, UIDesignConstants.BUTTON_HEIGHT);
-            btnYes.Text = "是".L10N("UI:Main:Yes");
+            btnYes.Text = "是";
             btnYes.LeftClick += BtnYes_LeftClick;
 
             AddChild(lblThankList);

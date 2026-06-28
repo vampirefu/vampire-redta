@@ -3,8 +3,6 @@ using System;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 using Microsoft.Xna.Framework;
-using Localization;
-
 namespace DTAClient.DXGUI.Generic
 {
     public class CheaterWindow : XNAWindow
@@ -25,15 +23,12 @@ namespace DTAClient.DXGUI.Generic
             lblCheater.Name = "lblCheater";
             lblCheater.ClientRectangle = new Rectangle(0, 0, 0, 0);
             lblCheater.FontIndex = 1;
-      //      lblCheater.Text = "CHEATER!".L10N("UI:Main:Cheater");
+      //      lblCheater.Text = "作弊者";
 
             var lblDescription = new XNALabel(WindowManager);
             lblDescription.Name = "lblDescription";
             lblDescription.ClientRectangle = new Rectangle(12, 40, 0, 0);
-            // lblDescription.Text = ("Modified game files have been detected. They could affect" + Environment.NewLine + 
-          //      "the game experience." +
-        //        Environment.NewLine + Environment.NewLine +
-        //        "Do you really lack the skill for winning the mission without" + Environment.NewLine + "cheating?").L10N("UI:Main:CheaterText");
+            // lblDescription.Text = "游戏文件被修改,有作弊嫌疑！";
 
             var imagePanel = new XNAPanel(WindowManager);
             imagePanel.Name = "imagePanel";
@@ -47,14 +42,14 @@ namespace DTAClient.DXGUI.Generic
             btnCancel.Name = "btnCancel";
             btnCancel.ClientRectangle = new Rectangle(Width - 104,
                 Height - 35, UIDesignConstants.BUTTON_WIDTH_92, UIDesignConstants.BUTTON_HEIGHT);
-            btnCancel.Text = "Cancel".L10N("UI:Main:ButtonCancel");
+            btnCancel.Text = "取消";
             btnCancel.LeftClick += BtnCancel_LeftClick;
 
             var btnYes = new XNAClientButton(WindowManager);
             btnYes.Name = "btnYes";
             btnYes.ClientRectangle = new Rectangle(12, btnCancel.Y,
                 btnCancel.Width, btnCancel.Height);
-            btnYes.Text = "Yes".L10N("UI:Main:ButtonYes");
+            btnYes.Text = "确定";
             btnYes.LeftClick += BtnYes_LeftClick;
 
             AddChild(lblCheater);

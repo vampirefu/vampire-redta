@@ -2,8 +2,6 @@
 using DTAClient.Online.EventArguments;
 using System;
 using System.Collections.Generic;
-using Localization;
-
 namespace DTAClient.Online
 {
     public class Channel : IMessageView
@@ -82,7 +80,7 @@ namespace DTAClient.Online
                 _topic = value;
                 if (Persistent)
                     AddMessage(new ChatMessage(
-                        string.Format("Topic for {0} is: {1}".L10N("UI:Main:ChannelTopic"), UIName, _topic)));
+                        string.Format("{0}话题是:{1}", UIName, _topic)));
             }
         }
 
@@ -118,7 +116,7 @@ namespace DTAClient.Online
             if (notifyOnUserListChange)
             {
                 AddMessage(new ChatMessage(
-                    string.Format("{0} has joined {1}.".L10N("UI:Main:PlayerJoinChannel"), user.IRCUser.Name, UIName)));
+                    string.Format("{0}已加入{1}.", user.IRCUser.Name, UIName)));
             }
 
 #if !YR
@@ -161,7 +159,7 @@ namespace DTAClient.Online
                 }
 
                 AddMessage(new ChatMessage(
-                    string.Format("{0} has been kicked from {1}.".L10N("UI:Main:PlayerKickedFromChannel"), userName, UIName)));
+                    string.Format("{0}被踢出{1}.", userName, UIName)));
 
                 UserKicked?.Invoke(this, new UserNameEventArgs(userName));
             }
@@ -174,7 +172,7 @@ namespace DTAClient.Online
                 if (notifyOnUserListChange)
                 {
                     AddMessage(new ChatMessage(
-                         string.Format("{0} has left from {1}.".L10N("UI:Main:PlayerLeftFromChannel"), userName, UIName)));
+                         string.Format("{0}已离开{1}.", userName, UIName)));
                 }
 
                 UserLeft?.Invoke(this, new UserNameEventArgs(userName));
@@ -188,7 +186,7 @@ namespace DTAClient.Online
                 if (notifyOnUserListChange)
                 {
                     AddMessage(new ChatMessage(
-                        string.Format("{0} has quit from CnCNet.".L10N("UI:Main:PlayerQuitCncNet"), userName)));
+                        string.Format("{0}已退出CnCNet.", userName)));
                 }
 
                 UserQuitIRC?.Invoke(this, new UserNameEventArgs(userName));

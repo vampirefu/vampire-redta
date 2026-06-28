@@ -12,7 +12,6 @@ using SixLabors.ImageSharp;
 using Color = Microsoft.Xna.Framework.Color;
 using Point = Microsoft.Xna.Framework.Point;
 using Utilities = Rampastring.Tools.Utilities;
-using Localization;
 using Microsoft.Win32;
 
 namespace DTAClient.Domain.Multiplayer
