@@ -76,7 +76,7 @@ namespace DTAClient.DXGUI.Generic
         private XNALabel lblCnCNetPlayerCount;
         private XNALinkLabel lblVersion;
         /// <summary>
-        /// ƽ̨����
+        /// 平台声明
         /// </summary>
         private XNALabel lblSoftState;
 
@@ -254,7 +254,7 @@ namespace DTAClient.DXGUI.Generic
             lblVersion.Name = nameof(lblVersion);
             lblVersion.LeftClick += LblVersion_LeftClick;
 
-            //��������
+            //软件声明
             lblSoftState = new XNALabel(WindowManager);
             lblSoftState.Name = nameof(lblSoftState);
 
@@ -284,19 +284,19 @@ namespace DTAClient.DXGUI.Generic
             string FA2Path = ProgramConstants.GamePath + ClientConfiguration.Instance.MapEditorExePath;
             if (!File.Exists(FA2Path))
             {
-                Logger.Log("û���ҵ��ر�");
+                Logger.Log("未找到编辑器");
                 btnMapEditor.Enabled = false;
             }
             else
             {
                 IniFile ini = new IniFile(ProgramConstants.GamePath + ClientConfiguration.Instance.FinalSunIniPath, Encoding.GetEncoding("GBK"));
-                ini.SetStringValue("TS", "Exe", (Encoding.GetEncoding("GBK").GetString(Encoding.Default.GetBytes(ProgramConstants.GamePath)) + "gamemd.exe").Replace('/', '\\')); //�ر�·��������\������д��������Ϊ��һ����ת���
+                ini.SetStringValue("TS", "Exe", (Encoding.GetEncoding("GBK").GetString(Encoding.Default.GetBytes(ProgramConstants.GamePath)) + "gamemd.exe").Replace('/', '\\')); //编辑器路径中/替换为\，因为写入INI时需要用反斜杠转义
                 ini.WriteIniFile();
             }
 
 
             base.Initialize(); // Read control attributes from INI
-            lblSoftState.Text = "��ƽ̨��Mod�����շ�";
+            lblSoftState.Text = "本平台及Mod均不收费";
             lblSoftState.ClientRectangle = new Rectangle(1000, 740, lblSoftState.Width, lblSoftState.Height);
 
             innerPanel = new MainMenuDarkeningPanel(WindowManager, discordHandler);
@@ -890,10 +890,10 @@ namespace DTAClient.DXGUI.Generic
 
             mapEditorProcess.StartInfo.FileName = "cmd.exe";
             mapEditorProcess.StartInfo.Arguments = strCmdText;
-            mapEditorProcess.StartInfo.UseShellExecute = false;   //�Ƿ�ʹ�ò���ϵͳshell���� 
-            mapEditorProcess.StartInfo.CreateNoWindow = true;   //�Ƿ����´����������ý��̵�ֵ (����ʾ���򴰿�)
+            mapEditorProcess.StartInfo.UseShellExecute = false;   //是否使用操作系统shell启动
+            mapEditorProcess.StartInfo.CreateNoWindow = true;   //是否在新窗口中启动该进程的值 (不显示程序窗口)
             mapEditorProcess.Start();
-            mapEditorProcess.WaitForExit();  //�ȴ�����ִ�����˳�����
+            mapEditorProcess.WaitForExit();  //等待程序执行完退出进程
             mapEditorProcess.Close();
         }
 
