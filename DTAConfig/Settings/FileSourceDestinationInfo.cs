@@ -138,8 +138,6 @@ namespace DTAConfig.Settings
                         var dir = Path.GetDirectoryName(CachedPath);
                         if (!Directory.Exists(dir))
                             Directory.CreateDirectory(dir);
-                        if (!File.Exists(CachedPath))
-                            File.Create(CachedPath);
                         File.Copy(DestinationPath, CachedPath, true);
                         File.Delete(DestinationPath);
                     }
