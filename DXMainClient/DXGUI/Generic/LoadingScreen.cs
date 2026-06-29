@@ -68,6 +68,8 @@ namespace DTAClient.DXGUI.Generic
         private bool hasReceivedFirstVideoFrame;
         private bool hasDrawnFirstVideoFrame;
         private double minimumVideoDisplaySeconds = 4.0;
+        private double loadingVideoVolumePercent = 100.0;
+        private string loadingVideoAudioOutput = "directsound";
         private DateTime loadingScreenStartedAtUtc;
         private DateTime firstVideoFrameUploadedAtUtc;
         private bool loggedWaitingForFirstVideoFrame;
@@ -130,6 +132,36 @@ namespace DTAClient.DXGUI.Generic
                 else
                 {
                     Logger.Log("LoadingScreen: Invalid MinimumVideoDisplaySeconds value: " + value);
+                }
+
+                return;
+            }
+
+            if (key == "LoadingVideoAudioOutput")
+            {
+                // LibVLC 在 Windows 下有多个音频输出模块，例如 directsound、mmdevice、waveout。
+                // 之前只设置了音量，实际使用哪个输出模块完全交给 LibVLC 自动选择；
+                // 这样在某些机器上可能视频帧正常解码，但音频没有送到系统默认设备。
+                // 这里允许 INI 覆盖，默认值在字段里是 directsound，方便无需重新编译就切换模块排查。
+                loadingVideoAudioOutput = value.Trim();
+                Logger.Log("LoadingScreen: Loading video audio output configured: " + loadingVideoAudioOutput);
+                return;
+            }
+
+            if (key == "LoadingVideoVolumePercent")
+            {
+                // 载入视频是 LoadingScreen.ini 配置的素材，和客户端 UI 音效不是同一个用途。
+                // 之前直接套用 ClientVolume；日志里看到 ClientVolume=0.1 时，VLC 音量只有 10，
+                // 对很多开场视频来说会接近听不到。这里给载入视频单独的百分比音量，
+                // 默认值在字段里是 100，需要静音或降低音量时可在 INI 里显式配置 0-100。
+                if (double.TryParse(value, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out double parsedPercent))
+                {
+                    loadingVideoVolumePercent = Math.Clamp(parsedPercent, 0.0, 100.0);
+                    Logger.Log("LoadingScreen: Loading video volume percent configured: " + loadingVideoVolumePercent);
+                }
+                else
+                {
+                    Logger.Log("LoadingScreen: Invalid LoadingVideoVolumePercent value: " + value);
                 }
 
                 return;
@@ -319,10 +351,47 @@ namespace DTAClient.DXGUI.Generic
                 InitializeVideoFrameBuffers();
 
                 loadingVideoLibVlc = new LibVLC("--no-video-title-show", "--quiet");
-                loadingVideoPlayer = new MediaPlayer(loadingVideoLibVlc)
+                LogAvailableLoadingVideoAudioOutputs();
+
+                int loadingVideoVolume = Math.Clamp((int)Math.Round(loadingVideoVolumePercent), 0, 100);
+                loadingVideoPlayer = new MediaPlayer(loadingVideoLibVlc);
+                loadingVideoPlayer.EncounteredError += (sender, args) => Logger.Log("LoadingScreen: LibVLC media player encountered an error during loading video playback.");
+                loadingVideoPlayer.Playing += (sender, args) =>
                 {
-                    Volume = Math.Clamp((int)(UserINISettings.Instance.ClientVolume * 100.0), 0, 100)
+                    // 有些音频后端在真正开始播放前还没有活动音频流，Mute/Volume 读取值可能不可靠。
+                    // 播放事件触发后再补一次音量和静音状态，保证音频流建立后仍然使用客户端音量。
+                    MediaPlayer player = loadingVideoPlayer;
+                    if (player == null)
+                        return;
+
+                    player.Mute = false;
+                    player.Volume = loadingVideoVolume;
+                    Logger.Log($"LoadingScreen: LibVLC loading video is playing. audioTrackCount={player.AudioTrackCount}, audioTrack={player.AudioTrack}, muted={player.Mute}, volume={player.Volume}");
                 };
+                loadingVideoPlayer.Muted += (sender, args) => Logger.Log("LoadingScreen: LibVLC loading video reported muted.");
+                loadingVideoPlayer.VolumeChanged += (sender, args) =>
+                {
+                    // VolumeChanged 也来自 LibVLC 线程，载入界面结束时播放器可能已经被释放。
+                    // 这里用本地引用做保护，只记录仍然存活的播放器状态。
+                    MediaPlayer player = loadingVideoPlayer;
+                    if (player != null)
+                        Logger.Log("LoadingScreen: LibVLC loading video volume changed to: " + player.Volume);
+                };
+
+                // SetAudioOutput 必须在 Play() 之前调用；LibVLC 文档明确说明播放中切换不会立刻生效。
+                // 默认使用 directsound，因为它在旧 DirectX/XNA 客户端环境里通常比自动选择更稳定。
+                bool audioOutputSelected = !string.IsNullOrWhiteSpace(loadingVideoAudioOutput) &&
+                    loadingVideoPlayer.SetAudioOutput(loadingVideoAudioOutput);
+                if (!audioOutputSelected && !loadingVideoAudioOutput.Equals("mmdevice", StringComparison.OrdinalIgnoreCase))
+                {
+                    // 如果 INI 指定的模块不可用，回退到 Windows 默认设备模块 mmdevice，避免因为配置拼错直接无声。
+                    audioOutputSelected = loadingVideoPlayer.SetAudioOutput("mmdevice");
+                    Logger.Log("LoadingScreen: Falling back to LibVLC loading video audio output: mmdevice, success=" + audioOutputSelected);
+                }
+
+                loadingVideoPlayer.Mute = false;
+                loadingVideoPlayer.Volume = loadingVideoVolume;
+                Logger.Log($"LoadingScreen: LibVLC loading video audio configured. requestedOutput={loadingVideoAudioOutput}, selected={audioOutputSelected}, clientVolume={UserINISettings.Instance.ClientVolume:0.###}, loadingVideoVolumePercent={loadingVideoVolumePercent:0.###}, vlcVolume={loadingVideoVolume}, muted={loadingVideoPlayer.Mute}");
 
                 loadingVideoLockCallback = LockVideoFrame;
                 loadingVideoUnlockCallback = UnlockVideoFrame;
@@ -338,6 +407,7 @@ namespace DTAClient.DXGUI.Generic
                 loadingVideoMedia = new Media(loadingVideoLibVlc, new Uri(configuredBackgroundPath));
                 loadingVideoMedia.AddOption(":input-repeat=65535");
                 loadingVideoMedia.AddOption(":no-video-title-show");
+                StartLoadingVideoMediaDiagnostics(loadingVideoMedia);
 
                 if (!loadingVideoPlayer.Play(loadingVideoMedia))
                 {
@@ -354,6 +424,75 @@ namespace DTAClient.DXGUI.Generic
                 Logger.Log("LoadingScreen: Initializing LibVLC callback video background failed! " + ex);
                 StopLoadingVideo();
                 return false;
+            }
+        }
+
+        private void LogAvailableLoadingVideoAudioOutputs()
+        {
+            try
+            {
+                foreach (var audioOutput in loadingVideoLibVlc.AudioOutputs)
+                {
+                    // 记录 LibVLC 当前实际枚举到的音频输出模块。仅检查 plugins 目录存在还不够；
+                    // 如果模块没有被 LibVLC 成功加载，这里就不会出现对应名称。
+                    Logger.Log($"LoadingScreen: LibVLC audio output available: {audioOutput.Name} ({audioOutput.Description})");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log("LoadingScreen: Enumerating LibVLC audio outputs failed! " + ex.Message);
+            }
+        }
+
+        private void StartLoadingVideoMediaDiagnostics(Media media)
+        {
+            try
+            {
+                // ffprobe 不一定存在于玩家机器上，所以用 LibVLC 自己解析 mp4 轨道。
+                // 解析放到后台任务，不阻塞载入界面；日志会告诉我们素材是否真的包含 Audio track。
+                _ = media.Parse(MediaParseOptions.ParseLocal, 1500)
+                    .ContinueWith(task => LogLoadingVideoMediaTracks(media, task), TaskScheduler.Default);
+            }
+            catch (Exception ex)
+            {
+                Logger.Log("LoadingScreen: Starting LibVLC media diagnostics failed! " + ex.Message);
+            }
+        }
+
+        private void LogLoadingVideoMediaTracks(Media media, Task<MediaParsedStatus> parseTask)
+        {
+            try
+            {
+                if (parseTask.IsFaulted)
+                {
+                    Logger.Log("LoadingScreen: LibVLC media track parsing failed! " + parseTask.Exception?.GetBaseException().Message);
+                    return;
+                }
+
+                int audioTrackCount = 0;
+                int videoTrackCount = 0;
+                Logger.Log("LoadingScreen: LibVLC media parse status: " + parseTask.Result);
+
+                foreach (MediaTrack track in media.Tracks)
+                {
+                    string codecDescription = media.CodecDescription(track.TrackType, track.Codec);
+                    if (track.TrackType == TrackType.Audio)
+                    {
+                        audioTrackCount++;
+                        Logger.Log($"LoadingScreen: LibVLC media audio track detected. id={track.Id}, codec={codecDescription}, channels={track.Data.Audio.Channels}, rate={track.Data.Audio.Rate}, bitrate={track.Bitrate}, language={track.Language}");
+                    }
+                    else if (track.TrackType == TrackType.Video)
+                    {
+                        videoTrackCount++;
+                        Logger.Log($"LoadingScreen: LibVLC media video track detected. id={track.Id}, codec={codecDescription}, bitrate={track.Bitrate}");
+                    }
+                }
+
+                Logger.Log($"LoadingScreen: LibVLC media track summary. audioTracks={audioTrackCount}, videoTracks={videoTrackCount}");
+            }
+            catch (Exception ex)
+            {
+                Logger.Log("LoadingScreen: Logging LibVLC media tracks failed! " + ex.Message);
             }
         }
 
