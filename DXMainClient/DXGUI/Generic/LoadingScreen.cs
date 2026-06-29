@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -18,6 +18,7 @@ using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Input;
 using XnaColor = Microsoft.Xna.Framework.Color;
 
 namespace DTAClient.DXGUI.Generic
@@ -67,7 +68,10 @@ namespace DTAClient.DXGUI.Generic
         private bool hasPendingVideoFrame;
         private bool hasReceivedFirstVideoFrame;
         private bool hasDrawnFirstVideoFrame;
-        private double minimumVideoDisplaySeconds = 4.0;
+        private double minimumVideoDisplaySeconds = -1.0; // -1 表示未设置，将从视频时长自动获取
+        private bool minimumVideoDisplaySecondsSetFromIni;
+        private bool skipRequested;
+        private KeyboardState lastKeyboardState;
         private double loadingVideoVolumePercent = 100.0;
         private string loadingVideoAudioOutput = "directsound";
         private DateTime loadingScreenStartedAtUtc;
@@ -122,12 +126,13 @@ namespace DTAClient.DXGUI.Generic
             {
                 // 现在视频帧已经能进 XNA 纹理，但 AGWar 的地图和统计加载很快，
                 // 载入界面可能在第一帧刚画出来后立刻 Finish()，视觉上就是“一闪而过”。
-                // 这个参数用于保证视频背景至少展示一段时间；默认值在字段里是 4 秒，
-                // INI 可覆盖，方便以后按素材时长或启动速度调整。
+                // 这个参数用于保证视频背景至少展示一段时间；
+                // 默认值 -1 表示自动从视频时长获取，INI 可覆盖为具体秒数。
                 if (double.TryParse(value, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out double parsedSeconds))
                 {
                     minimumVideoDisplaySeconds = Math.Max(0.0, parsedSeconds);
-                    Logger.Log("LoadingScreen: Minimum video display seconds configured: " + minimumVideoDisplaySeconds);
+                    minimumVideoDisplaySecondsSetFromIni = true;
+                    Logger.Log("LoadingScreen: Minimum video display seconds configured from INI: " + minimumVideoDisplaySeconds);
                 }
                 else
                 {
@@ -202,6 +207,25 @@ namespace DTAClient.DXGUI.Generic
         {
             base.Update(gameTime);
 
+            // 检测任意键按下以跳过载入画面
+            if (!skipRequested)
+            {
+                KeyboardState currentKeyboardState = Keyboard.KeyboardState;
+                if (lastKeyboardState != null)
+                {
+                    foreach (var key in currentKeyboardState.GetPressedKeys())
+                    {
+                        if (lastKeyboardState.IsKeyUp(key))
+                        {
+                            skipRequested = true;
+                            Logger.Log("LoadingScreen: Skip requested by key press: " + key);
+                            break;
+                        }
+                    }
+                }
+                lastKeyboardState = currentKeyboardState;
+            }
+
             if (mapLoadTask.Status == TaskStatus.RanToCompletion && CanFinishLoadingScreen())
                 Finish();
         }
@@ -209,7 +233,31 @@ namespace DTAClient.DXGUI.Generic
 
         private bool CanFinishLoadingScreen()
         {
-            if (loadingVideoPlayer == null || minimumVideoDisplaySeconds <= 0.0)
+            // 按任意键跳过：用户主动跳过时，不再等待最短展示时间
+            if (skipRequested)
+            {
+                Logger.Log("LoadingScreen: Skipping loading screen by user key press.");
+                return true;
+            }
+
+            if (loadingVideoPlayer == null)
+                return true;
+
+            // minimumVideoDisplaySeconds 为 -1 时表示还没获取到视频时长，
+            // 需要等待 Playing 事件中获取时长后设置，或等超时后放行
+            if (minimumVideoDisplaySeconds < 0.0)
+            {
+                // 视频时长还未获取到，但地图已加载完。
+                // 短暂等待以避免一闪而过，2 秒后如果还没有时长信息就放行。
+                double secondsSinceStart = (DateTime.UtcNow - loadingScreenStartedAtUtc).TotalSeconds;
+                if (secondsSinceStart < 2.0)
+                    return false;
+
+                Logger.Log("LoadingScreen: Video duration not available before timeout; finishing without minimum video delay.");
+                return true;
+            }
+
+            if (minimumVideoDisplaySeconds <= 0.0)
                 return true;
 
             DateTime now = DateTime.UtcNow;
@@ -366,6 +414,42 @@ namespace DTAClient.DXGUI.Generic
 
                     player.Mute = false;
                     player.Volume = loadingVideoVolume;
+
+                    // 从视频时长自动设置 minimumVideoDisplaySeconds
+                    // MediaPlayer.Length 在 Playing 事件触发后可用，返回毫秒
+                    if (!minimumVideoDisplaySecondsSetFromIni && minimumVideoDisplaySeconds < 0.0)
+                    {
+                        long durationMs = player.Length;
+                        if (durationMs > 0)
+                        {
+                            minimumVideoDisplaySeconds = durationMs / 1000.0;
+                            Logger.Log($"LoadingScreen: Auto-detected video duration: {minimumVideoDisplaySeconds:0.###} seconds ({durationMs} ms)");
+                        }
+                        else
+                        {
+                            // Length 有时在 Playing 事件中还不一定就绪，延迟一帧再取
+                            _ = System.Threading.Tasks.Task.Run(async () =>
+                            {
+                                await System.Threading.Tasks.Task.Delay(200);
+                                MediaPlayer p = loadingVideoPlayer;
+                                if (p != null && !minimumVideoDisplaySecondsSetFromIni && minimumVideoDisplaySeconds < 0.0)
+                                {
+                                    long d = p.Length;
+                                    if (d > 0)
+                                    {
+                                        minimumVideoDisplaySeconds = d / 1000.0;
+                                        Logger.Log($"LoadingScreen: Auto-detected video duration (delayed): {minimumVideoDisplaySeconds:0.###} seconds ({d} ms)");
+                                    }
+                                    else
+                                    {
+                                        minimumVideoDisplaySeconds = 4.0; // 回退默认值
+                                        Logger.Log("LoadingScreen: Could not detect video duration, using fallback: 4 seconds");
+                                    }
+                                }
+                            });
+                        }
+                    }
+
                     Logger.Log($"LoadingScreen: LibVLC loading video is playing. audioTrackCount={player.AudioTrackCount}, audioTrack={player.AudioTrack}, muted={player.Mute}, volume={player.Volume}");
                 };
                 loadingVideoPlayer.Muted += (sender, args) => Logger.Log("LoadingScreen: LibVLC loading video reported muted.");
