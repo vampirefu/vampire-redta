@@ -18,13 +18,50 @@ using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Input;
+using System.Runtime.InteropServices;
 using XnaColor = Microsoft.Xna.Framework.Color;
 
 namespace DTAClient.DXGUI.Generic
 {
     public class LoadingScreen : XNAWindow
     {
+        // 使用 Win32 GetAsyncKeyState 读取物理按键状态，避免 Keyboard.GetState() 触发 Windows IME 切换
+        [DllImport("user32.dll")]
+        private static extern short GetAsyncKeyState(int vKey);
+
+        // 使用 LoadKeyboardLayout 强制切换键盘布局到英文，防止 Windows 在窗口获焦时自动切换到中文输入法
+        // ImmAssociateContext 在 Windows 10/11 的 TSF 框架下无效，必须直接操作键盘布局
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        private static extern IntPtr LoadKeyboardLayout(string pwszKLID, uint Flags);
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetKeyboardLayout(uint idThread);
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr ActivateKeyboardLayout(IntPtr hkl, uint Flags);
+
+        private const uint KLF_ACTIVATE = 0x00000001;
+        private const string KLID_ENGLISH_US = "00000409";
+
+        // 只监测常用的跳过按键，避免轮询过多虚拟键码
+        private static readonly int[] SkipKeyCodes = new int[]
+        {
+            0x08,       // Backspace
+            0x0D,       // Enter
+            0x1B,       // Escape
+            0x20,       // Space
+            0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, // PageUp/Down, End, Home, 方向键
+            0x2D, 0x2E, // Insert, Delete
+            // A-Z (0x41-0x5A)
+            0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A,
+            0x4B, 0x4C, 0x4D, 0x4E, 0x4F, 0x50, 0x51, 0x52, 0x53, 0x54,
+            0x55, 0x56, 0x57, 0x58, 0x59, 0x5A,
+            // 0-9 (0x30-0x39)
+            0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39,
+            // F1-F12 (0x70-0x7B)
+            0x70, 0x71, 0x72, 0x73, 0x74, 0x75, 0x76, 0x77,
+            0x78, 0x79, 0x7A, 0x7B,
+        };
         public LoadingScreen(
             CnCNetManager cncnetManager,
             WindowManager windowManager,
@@ -71,7 +108,8 @@ namespace DTAClient.DXGUI.Generic
         private double minimumVideoDisplaySeconds = -1.0; // -1 表示未设置，将从视频时长自动获取
         private bool minimumVideoDisplaySecondsSetFromIni;
         private bool skipRequested;
-        private KeyboardState lastKeyboardState;
+        private bool[] previousKeyStates = new bool[0x100];
+        private IntPtr originalKeyboardLayout = IntPtr.Zero;
         private double loadingVideoVolumePercent = 100.0;
         private string loadingVideoAudioOutput = "directsound";
         private DateTime loadingScreenStartedAtUtc;
@@ -90,6 +128,20 @@ namespace DTAClient.DXGUI.Generic
             loadingScreenStartedAtUtc = DateTime.UtcNow;
 
             base.Initialize();
+
+            // 保存当前键盘布局，然后强制切换到英文（美式）布局
+            // 防止 Windows 在游戏窗口获取焦点时自动切换到中文输入法
+            // ImmAssociateContext 在 Win10/11 的 TSF 下无效，必须用 LoadKeyboardLayout
+            try
+            {
+                originalKeyboardLayout = GetKeyboardLayout(0);
+                LoadKeyboardLayout(KLID_ENGLISH_US, KLF_ACTIVATE);
+                Logger.Log("LoadingScreen: Keyboard layout forced to English US.");
+            }
+            catch (Exception ex)
+            {
+                Logger.Log("LoadingScreen: Failed to set keyboard layout: " + ex.Message);
+            }
 
             configuredBackgroundPath ??= GetConfiguredBackgroundPath();
             CenterOnParent();
@@ -177,6 +229,19 @@ namespace DTAClient.DXGUI.Generic
 
         private void Finish()
         {
+            // 恢复原始键盘布局。加载界面显示期间由 Update() 持续保持英文输入法，
+            // 离开加载界面后恢复用户进入前的输入法，避免影响后续正常切换。
+            try
+            {
+                if (originalKeyboardLayout != IntPtr.Zero)
+                    ActivateKeyboardLayout(originalKeyboardLayout, 0);
+                Logger.Log("LoadingScreen: Original keyboard layout restored.");
+            }
+            catch (Exception ex)
+            {
+                Logger.Log("LoadingScreen: Failed to restore keyboard layout: " + ex.Message);
+            }
+
             StopLoadingVideo();
 
             ProgramConstants.GAME_VERSION = ClientConfiguration.Instance.ModMode ?
@@ -207,23 +272,36 @@ namespace DTAClient.DXGUI.Generic
         {
             base.Update(gameTime);
 
-            // 检测任意键按下以跳过载入画面
+            // 持续检查键盘布局，如果被 Windows 切回中文则强制切回英文
+            // Windows 可能在 WM_SETFOCUS、WM_INPUTLANGCHANGE 等消息中切换布局
+            try
+            {
+                IntPtr currentLayout = GetKeyboardLayout(0);
+                if ((currentLayout.ToInt64() & 0xFFFF) != 0x0409)
+                {
+                    LoadKeyboardLayout(KLID_ENGLISH_US, KLF_ACTIVATE);
+                }
+            }
+            catch { }
+
+            // 使用 GetAsyncKeyState 检测任意键按下以跳过载入画面
+            // 不使用 Keyboard.GetState()，因为它会触发 Windows IME 切换
             if (!skipRequested)
             {
-                KeyboardState currentKeyboardState = Keyboard.KeyboardState;
-                if (lastKeyboardState != null)
+                foreach (int vk in SkipKeyCodes)
                 {
-                    foreach (var key in currentKeyboardState.GetPressedKeys())
+                    short state = GetAsyncKeyState(vk);
+                    bool isDown = (state & 0x8000) != 0;
+
+                    if (isDown && !previousKeyStates[vk])
                     {
-                        if (lastKeyboardState.IsKeyUp(key))
-                        {
-                            skipRequested = true;
-                            Logger.Log("LoadingScreen: Skip requested by key press: " + key);
-                            break;
-                        }
+                        skipRequested = true;
+                        Logger.Log("LoadingScreen: Skip requested by key press: VK=0x" + vk.ToString("X2"));
+                        break;
                     }
+
+                    previousKeyStates[vk] = isDown;
                 }
-                lastKeyboardState = currentKeyboardState;
             }
 
             if (mapLoadTask.Status == TaskStatus.RanToCompletion && CanFinishLoadingScreen())
@@ -231,11 +309,27 @@ namespace DTAClient.DXGUI.Generic
         }
 
 
+        private static bool AreSkipKeysReleased()
+        {
+            foreach (int vk in SkipKeyCodes)
+            {
+                if ((GetAsyncKeyState(vk) & 0x8000) != 0)
+                    return false;
+            }
+
+            return true;
+        }
+
         private bool CanFinishLoadingScreen()
         {
-            // 按任意键跳过：用户主动跳过时，不再等待最短展示时间
+            // 按任意键跳过：用户主动跳过时，不再等待最短展示时间。
+            // 但必须等触发跳过的按键全部松开后再离开 LoadingScreen，
+            // 否则恢复原输入法后，这次按键会继续传到主菜单或输入框。
             if (skipRequested)
             {
+                if (!AreSkipKeysReleased())
+                    return false;
+
                 Logger.Log("LoadingScreen: Skipping loading screen by user key press.");
                 return true;
             }

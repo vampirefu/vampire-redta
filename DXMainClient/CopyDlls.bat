@@ -16,6 +16,7 @@ if exist %dtaDllDir% xcopy /y /e /d /f %TargetDir%\ClientCore.dll %dtaDllDir%
 if exist %dtaDllDir% xcopy /y /e /d /f %TargetDir%\ClientGUI.dll %dtaDllDir%
 if exist %dtaDllDir% xcopy /y /e /d /f %TargetDir%\DTAConfig.dll %dtaDllDir%
 if exist %dtaDllDir% xcopy /y /e /d /f %TargetDir%\DTAClient.Online.Core.dll %dtaDllDir%
+if exist %dtaDllDir% xcopy /y /e /d /f %TargetDir%\MapGenerator.Core.dll %dtaDllDir%
 rem LoadingScreen 的视频背景使用 LibVLCSharp.WinForms 播放 mp4。
 rem clientdx.dll 运行在 %dtaDllDir%，所以托管 DLL 必须跟 clientdx.dll 放在同一目录，
 rem 否则 CLR 加载 LoadingScreen 时会找不到 LibVLCSharp.dll / LibVLCSharp.WinForms.dll。
