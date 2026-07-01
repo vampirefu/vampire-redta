@@ -831,7 +831,7 @@ namespace DTAClient.DXGUI.Generic
             if (UserINISettings.Instance.StopMusicOnMenu)
                 PlayMusic();
 
-            if (!ClientConfiguration.Instance.ModMode && UserINISettings.Instance.CheckForUpdates)
+            if (!ClientConfiguration.Instance.ModMode)
             {
                 // Re-check for updates
 
