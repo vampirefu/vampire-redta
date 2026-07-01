@@ -1,4 +1,4 @@
-using ClientCore;
+﻿using ClientCore;
 using DTAClient.Domain;
 using DTAClient.Domain.LAN;
 using DTAClient.Domain.Multiplayer;
@@ -6,7 +6,6 @@ using DTAClient.Domain.Multiplayer.LAN;
 using DTAClient.DXGUI.Generic;
 using DTAClient.DXGUI.Multiplayer.GameLobby.CommandHandlers;
 using DTAClient.Online;
-using Localization;
 using Microsoft.Xna.Framework;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
@@ -87,7 +86,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         private void HandleFileHashCommand(string sender, string fileHash)
         {
             if (fileHash != localFileHash)
-                AddNotice(string.Format("{0} has modified game files! They could be cheating!".L10N("UI:Main:PlayerModifiedFiles"), sender));
+                AddNotice(string.Format("{0}修改了游戏文件!他们可能企图作弊!", sender));
 
             PlayerInfo pInfo = Players.Find(p => p.Name == sender);
 
@@ -150,7 +149,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 this.client.GetStream().Flush();
 
                 var fhc = new FileHashCalculator();
-                fhc.CalculateHashes(GameModeMaps.GameModes);
+                fhc.CalculateHashes();
                 localFileHash = fhc.GetCompleteHash();
 
                 RefreshMapSelectionUI();
@@ -171,7 +170,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         public void PostJoin()
         {
             var fhc = new FileHashCalculator();
-            fhc.CalculateHashes(GameModeMaps.GameModes);
+            fhc.CalculateHashes();
             SendMessageToHost(FILE_HASH_COMMAND + " " + fhc.GetCompleteHash());
             ResetAutoReadyCheckbox();
         }
@@ -287,7 +286,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             lpInfo.MessageReceived += LpInfo_MessageReceived;
             lpInfo.ConnectionLost += LpInfo_ConnectionLost;
 
-            AddNotice(string.Format("{0} connected from {1}".L10N("UI:Main:PlayerFromIP"), lpInfo.Name, lpInfo.IPAddress));
+            AddNotice(string.Format("{0}已连接自{1}", lpInfo.Name, lpInfo.IPAddress));
             lpInfo.StartReceiveLoop();
 
             CopyPlayerDataToUI();
@@ -303,7 +302,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             CleanUpPlayer(lpInfo);
             Players.Remove(lpInfo);
 
-            AddNotice(string.Format("{0} has left the game.".L10N("UI:Main:PlayerLeftGame"), lpInfo.Name));
+            AddNotice(string.Format("{0}离开了游戏.", lpInfo.Name));
 
             CopyPlayerDataToUI();
             BroadcastPlayerOptions();
@@ -474,7 +473,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             tbChatInput.TextColor = chatColors[colorIndex].XNAColor;
         }
 
-        public override string GetSwitchName() => "LAN Game Lobby".L10N("UI:Main:LANGameLobby");
+        public override string GetSwitchName() => "局域网大厅";
 
         protected override void AddNotice(string message, Color color) =>
             lbChatMessages.AddMessage(null, message, color);
@@ -641,20 +640,20 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         {
             Locked = false;
 
-            btnLockGame.Text = "Lock Game".L10N("UI:Main:LockGame");
+            btnLockGame.Text = "锁定游戏";
 
             if (manual)
-                AddNotice("You've unlocked the game room.".L10N("UI:Main:RoomUnockedByYou"));
+                AddNotice("您已解除锁定游戏房间.");
         }
 
         protected override void LockGame()
         {
             Locked = true;
 
-            btnLockGame.Text = "Unlock Game".L10N("UI:Main:UnlockGame");
+            btnLockGame.Text = "解锁游戏";
 
             if (Locked)
-                AddNotice("You've locked the game room.".L10N("UI:Main:RoomLockedByYou"));
+                AddNotice("您已锁定了游戏房间.");
         }
 
         protected override void GameProcessExited()
@@ -681,7 +680,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
         private void ReturnNotification(string sender)
         {
-            AddNotice(string.Format("{0} has returned from the game.".L10N("UI:Main:PlayerReturned"), sender));
+            AddNotice(string.Format("{0}回到了游戏房间.", sender));
 
             PlayerInfo pInfo = Players.Find(p => p.Name == sender);
 
@@ -703,7 +702,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                     {
                         CleanUpPlayer(lpInfo);
                         Players.RemoveAt(i);
-                        AddNotice(string.Format("{0} - connection timed out".L10N("UI:Main:PlayerTimeout"), lpInfo.Name));
+                        AddNotice(string.Format("{0}-连接超时", lpInfo.Name));
                         CopyPlayerDataToUI();
                         BroadcastPlayerOptions();
                         BroadcastPlayerExtraOptions();
@@ -727,7 +726,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 if (timeSinceLastReceivedCommand > TimeSpan.FromSeconds(DROPOUT_TIMEOUT))
                 {
                     LobbyNotification?.Invoke(this,
-                        new LobbyNotificationEventArgs("Connection to the game host timed out.".L10N("UI:Main:HostConnectTimeOut")));
+                        new LobbyNotificationEventArgs("连接到游戏主持超时."));
                     BtnLeaveGame_LeftClick(this, EventArgs.Empty);
                 }
             }
@@ -954,7 +953,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             if (pInfo == null)
                 return;
 
-            AddNotice(string.Format("{0} has left the game.".L10N("UI:Main:PlayerLeftGame"), pInfo.Name));
+            AddNotice(string.Format("{0}离开了游戏.", pInfo.Name));
             Players.Remove(pInfo);
             ClearReadyStatuses();
             CopyPlayerDataToUI();
@@ -971,8 +970,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             if (parts.Length != CheckBoxes.Count + DropDowns.Count + GAME_OPTION_SPECIAL_FLAG_COUNT)
             {
-                AddNotice(("The game host has sent an invalid game options message! " +
-                    "The game host's game version might be different from yours.").L10N("UI:Main:HostGameOptionInvalid"));
+                AddNotice("游戏主持更改了无效的游戏设置!游戏主持的游戏版本可能与您不同.");
                 Logger.Log("Invalid game options message from host: " + data);
                 return;
             }
@@ -990,8 +988,8 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             if (gameModeMap == null)
             {
-                AddNotice("The game host has selected a map that doesn't exist on your installation.".L10N("UI:Main:MapNotExist") +
-                    "The host needs to change the map or you won't be able to play.".L10N("UI:Main:HostNeedChangeMapForYou"));
+                AddNotice("游戏主持选择了您本地未安装的地图." +
+                    "游戏主持需要更换地图否则您将不能参与游戏.");
                 ChangeMap(null);
                 return;
             }
@@ -1003,7 +1001,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             if (frameSendRate != FrameSendRate)
             {
                 FrameSendRate = frameSendRate;
-                AddNotice(string.Format("The game host has changed FrameSendRate (order lag) to {0}".L10N("UI:Main:HostChangeFrameSendRate"), frameSendRate));
+                AddNotice(string.Format("游戏主持将FrameSendRate(orderlag)更改为{0}", frameSendRate));
             }
 
             bool removeStartingLocations = Convert.ToBoolean(Conversions.IntFromString(
@@ -1020,9 +1018,9 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 if (chkBox.Checked != oldValue)
                 {
                     if (chkBox.Checked)
-                        AddNotice(string.Format("The game host has enabled {0}".L10N("UI:Main:HostEnableOption"), chkBox.Text));
+                        AddNotice(string.Format("游戏主持启用了{0}", chkBox.Text));
                     else
-                        AddNotice(string.Format("The game host has disabled {0}".L10N("UI:Main:HostDisableOption"), chkBox.Text));
+                        AddNotice(string.Format("游戏主持禁用了{0}", chkBox.Text));
                 }
             }
 
@@ -1044,7 +1042,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                     if (dd.OptionName == null)
                         ddName = dd.Name;
 
-                    AddNotice(string.Format("The game host has set {0} to {1}".L10N("UI:Main:HostSetOption"), ddName, dd.SelectedItem.Text));
+                    AddNotice(string.Format("游戏主持将{0}设为{1}", ddName, dd.SelectedItem.Text));
                 }
             }
         }

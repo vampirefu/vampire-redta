@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 #if WINFORMS
 using System.Windows.Forms;
 #endif
@@ -10,7 +10,6 @@ using ClientCore;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Collections.Generic;
-using Localization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -84,7 +83,7 @@ namespace DTAClient
                 Logger.Log("Startup parameter: No audio");
 
                 // TODO fix
-                throw new NotImplementedException("-NOAUDIO is currently not implemented, please run the client without it.".L10N("UI:Main:NoAudio"));
+                throw new NotImplementedException("-NOAUDIO 当前未实现,请在不使用该参数的情况下运行客户端.");
             }
 
             if (parameters.MultipleInstanceMode)
@@ -95,59 +94,6 @@ namespace DTAClient
             Logger.Log("Loading settings.");
 
             UserINISettings.Initialize(ClientConfiguration.Instance.SettingsIniName);
-
-         //   Try to load translations
-            try
-            {
-                TranslationTable translation;
-                var iniFileInfo = SafePath.GetFile(ProgramConstants.GamePath, ClientConfiguration.Instance.TranslationIniName);
-
-                if (iniFileInfo.Exists)
-                {
-               
-                    translation = TranslationTable.LoadFromIniFile(iniFileInfo.FullName);
-                }
-                else
-                {
-                    Logger.Log("Failed to load the translation file. File does not exist.");
-
-                    translation = new TranslationTable();
-                }
-
-                TranslationTable.Instance = translation;
-                Logger.Log("Load translation: " + translation.LanguageName);
-            }
-            catch (Exception ex)
-            {
-                Logger.Log("Failed to load the translation file. " + ex.Message);
-                TranslationTable.Instance = new TranslationTable();
-            }
-
-            try
-            {
-                if (ClientConfiguration.Instance.GenerateTranslationStub)
-                {
-                    string stubPath = SafePath.CombineFilePath(ProgramConstants.ClientUserFilesPath, "Translation.stub.ini");
-                    var stubTable = TranslationTable.Instance.Clone();
-                    TranslationTable.Instance.MissingTranslationEvent += (sender, e) =>
-                    {
-                        stubTable.Table.Add(e.Label, e.DefaultValue);
-                    };
-
-                    AppDomain.CurrentDomain.ProcessExit += (sender, e) =>
-                    {
-                        Logger.Log("Writing the translation stub file.");
-                        var ini = stubTable.SaveIni();
-                        ini.WriteIniFile(stubPath);
-                    };
-
-                    Logger.Log("Generating translation stub feature is now enabled. The stub file will be written when the client exits.");
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Log("Failed to generate the translation stub. " + ex.Message);
-            }
 
             // Delete obsolete files from old target project versions
 
@@ -213,17 +159,17 @@ namespace DTAClient
             }
             catch { }
 
-            string error = string.Format("{0} has crashed. Error message:".L10N("UI:Main:FatalErrorText1") + Environment.NewLine + Environment.NewLine +
+            string error = string.Format("{0}已崩溃.错误信息:" + Environment.NewLine + Environment.NewLine +
                 ex.Message + Environment.NewLine + Environment.NewLine + (crashLogCopied ?
-                "A crash log has been saved to the following file:".L10N("UI:Main:FatalErrorText2") + " " + Environment.NewLine + Environment.NewLine +
+                "崩溃日志已保存至以下文件:" + " " + Environment.NewLine + Environment.NewLine +
                 errorLogPath + Environment.NewLine + Environment.NewLine : "") +
-                (crashLogCopied ? "If the issue is repeatable, contact the {1} staff at {2} and provide the crash log file.".L10N("UI:Main:FatalErrorText3") :
-                "If the issue is repeatable, contact the {1} staff at {2}.".L10N("UI:Main:FatalErrorText4")),
+                (crashLogCopied ? "如果问题可重复,请联系{1}工作人员{2}并提供崩溃日志文件。" :
+                "如果问题可重复,请联系{1}工作人员{2}。"),
                 MainClientConstants.GAME_NAME_LONG,
                 MainClientConstants.GAME_NAME_SHORT,
                 MainClientConstants.SUPPORT_URL_SHORT);
 
-            ProgramConstants.DisplayErrorAction("KABOOOOOOOM".L10N("UI:Main:FatalErrorTitle"), error, true);
+            ProgramConstants.DisplayErrorAction("崩溃", error, true);
         }
 
         [SupportedOSPlatform("windows")]
@@ -232,12 +178,12 @@ namespace DTAClient
             if (UserHasDirectoryAccessRights(ProgramConstants.GamePath, FileSystemRights.Modify))
                 return;
 
-            string error = string.Format(("You seem to be running {0} from a write-protected directory." + Environment.NewLine + Environment.NewLine +
-                "For {1} to function properly when run from a write-protected directory, it needs administrative priveleges." + Environment.NewLine + Environment.NewLine +
-                "Would you like to restart the client with administrative rights?" + Environment.NewLine + Environment.NewLine +
-                "Please also make sure that your security software isn't blocking {1}.").L10N("UI:Main:AdminRequiredText"), MainClientConstants.GAME_NAME_LONG, MainClientConstants.GAME_NAME_SHORT);
+            string error = string.Format(("您似乎正在从写保护目录运行{0}。" + Environment.NewLine + Environment.NewLine +
+                "为了使{1}在写保护目录中正常运行,需要管理员权限。" + Environment.NewLine + Environment.NewLine +
+                "您想以管理员权限重新启动客户端吗?" + Environment.NewLine + Environment.NewLine +
+                "请同时确保您的安全软件没有阻止{1}。"), MainClientConstants.GAME_NAME_LONG, MainClientConstants.GAME_NAME_SHORT);
 
-            ProgramConstants.DisplayErrorAction("Administrative privileges required".L10N("UI:Main:AdminRequiredTitle"), error, false);
+            ProgramConstants.DisplayErrorAction("需要管理员权限", error, false);
 
             using var _ = Process.Start(new ProcessStartInfo
             {

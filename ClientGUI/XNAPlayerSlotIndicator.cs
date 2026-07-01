@@ -3,8 +3,6 @@ using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 using System;
 using System.Collections.Generic;
-using Localization;
-
 namespace ClientGUI
 {
     public enum PlayerSlotState
@@ -58,35 +56,35 @@ namespace ClientGUI
             switch (key)
             {
                 case PlayerSlotState.Empty:
-                    ToolTip.Text = "The slot is empty.".L10N("UI:ClientGUI:SlotEmpty");
+                    ToolTip.Text = "该位置无玩家";
                     break;
 
                 case PlayerSlotState.Unavailable:
-                    ToolTip.Text = "The slot is unavailable.".L10N("UI:ClientGUI:SlotUnavailable");
+                    ToolTip.Text = "The slot is unavailable.";
                     break;
 
                 case PlayerSlotState.AI:
-                    ToolTip.Text = "The player is computer-controlled.".L10N("UI:ClientGUI:PlayerIsComputer");
+                    ToolTip.Text = "该玩家由电脑控制";
                     break;
 
                 case PlayerSlotState.NotReady:
-                    ToolTip.Text = "The player isn't ready.".L10N("UI:ClientGUI:PlayerIsNotReady");
+                    ToolTip.Text = "该玩家没有准备";
                     break;
 
                 case PlayerSlotState.Ready:
-                    ToolTip.Text = "The player is ready.".L10N("UI:ClientGUI:PlayerIsReady");
+                    ToolTip.Text = "The player is ready.";
                     break;
 
                 case PlayerSlotState.InGame:
-                    ToolTip.Text = "The player is in game.".L10N("UI:ClientGUI:PlayerIsInGame");
+                    ToolTip.Text = "The player is in game.";
                     break;
 
                 case PlayerSlotState.Warning:
-                    ToolTip.Text = "The player has some issue(s) that may impact gameplay.".L10N("UI:ClientGUI:PlayerHasIssue");
+                    ToolTip.Text = "The player has some issue(s) that may impact gameplay.";
                     break;
 
                 case PlayerSlotState.Error:
-                    ToolTip.Text = "There's a critical issue with the player.".L10N("UI:ClientGUI:PlayerHasCriticalIssue");
+                    ToolTip.Text = "There's a critical issue with the player.";
                     break;
             }
         }

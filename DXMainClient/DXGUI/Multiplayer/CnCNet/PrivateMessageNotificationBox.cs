@@ -1,5 +1,4 @@
 ﻿using ClientCore;
-using Localization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Rampastring.XNAUI;
@@ -51,7 +50,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             XNALabel lblHeader = new XNALabel(WindowManager);
             lblHeader.Name = "lblHeader";
             lblHeader.FontIndex = 1;
-            lblHeader.Text = "PRIVATE MESSAGE".L10N("UI:Main:PMHeader");
+            lblHeader.Text = "私信";
             AddChild(lblHeader);
             lblHeader.CenterOnParent();
             lblHeader.ClientRectangle = new Rectangle(lblHeader.X,
@@ -64,7 +63,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             XNALabel lblHint = new XNALabel(WindowManager);
             lblHint.Name = "lblHint";
             lblHint.RemapColor = UISettings.ActiveSettings.SubtleTextColor;
-            lblHint.Text = "Press F4 to respond".L10N("UI:Main:F4ToRespond");
+            lblHint.Text = "按F4回复";
 
             AddChild(lblHint);
             lblHint.CenterOnParent();

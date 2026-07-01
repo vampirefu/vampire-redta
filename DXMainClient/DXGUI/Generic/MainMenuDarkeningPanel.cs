@@ -25,6 +25,7 @@ namespace DTAClient.DXGUI.Generic
         public CampaignSelector CampaignSelector;
         public GameLoadingWindow GameLoadingWindow;
         public StatisticsWindow StatisticsWindow;
+        // Updater-related windows removed
         public ExtrasWindow ExtrasWindow;
 
         public override void Initialize()
@@ -45,6 +46,8 @@ namespace DTAClient.DXGUI.Generic
 
             StatisticsWindow = new StatisticsWindow(WindowManager);
             AddChild(StatisticsWindow);
+
+            // Updater-related child windows removed
 
             ExtrasWindow = new ExtrasWindow(WindowManager);
             AddChild(ExtrasWindow);

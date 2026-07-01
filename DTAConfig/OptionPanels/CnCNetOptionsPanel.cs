@@ -1,4 +1,3 @@
-﻿using Localization;
 using ClientCore;
 using ClientCore.CnCNet5;
 using ClientGUI;
@@ -57,7 +56,7 @@ namespace DTAConfig.OptionPanels
             chkPingUnofficialTunnels = new XNAClientCheckBox(WindowManager);
             chkPingUnofficialTunnels.Name = nameof(chkPingUnofficialTunnels);
             chkPingUnofficialTunnels.ClientRectangle = new Rectangle(12, 12, 0, 0);
-            chkPingUnofficialTunnels.Text = "Ping unofficial CnCNet tunnels".L10N("UI:DTAConfig:PingUnofficial");
+            chkPingUnofficialTunnels.Text = "显示非官方隧道服务器延迟";
 
             AddChild(chkPingUnofficialTunnels);
 
@@ -66,9 +65,9 @@ namespace DTAConfig.OptionPanels
             chkWriteInstallPathToRegistry.ClientRectangle = new Rectangle(
                 chkPingUnofficialTunnels.X,
                 chkPingUnofficialTunnels.Bottom + 12, 0, 0);
-            chkWriteInstallPathToRegistry.Text = ("Write game installation path to Windows" + Environment.NewLine +
-                "Registry (makes it possible to join" + Environment.NewLine +
-                 "other games' game rooms on CnCNet)").L10N("UI:DTAConfig:WriteGameRegistry");
+            chkWriteInstallPathToRegistry.Text = ("将游戏安装路径写入Windows注册表" + Environment.NewLine +
+                "(使得可以在CnCNet上加入" + Environment.NewLine +
+                 "其他游戏的房间)");
 
             AddChild(chkWriteInstallPathToRegistry);
 
@@ -77,7 +76,7 @@ namespace DTAConfig.OptionPanels
             chkPlaySoundOnGameHosted.ClientRectangle = new Rectangle(
                 chkPingUnofficialTunnels.X,
                 chkWriteInstallPathToRegistry.Bottom + 12, 0, 0);
-            chkPlaySoundOnGameHosted.Text = "Play sound when hosted".L10N("UI:DTAConfig:PlaySoundGameHosted");
+            chkPlaySoundOnGameHosted.Text = "主持游戏时播放声音";
 
             AddChild(chkPlaySoundOnGameHosted);
 
@@ -86,8 +85,7 @@ namespace DTAConfig.OptionPanels
             chkNotifyOnUserListChange.ClientRectangle = new Rectangle(
                 chkPingUnofficialTunnels.X,
                 chkPlaySoundOnGameHosted.Bottom + 12, 0, 0);
-            chkNotifyOnUserListChange.Text = ("Show player join / quit messages" + Environment.NewLine +
-                "on CnCNet lobby").L10N("UI:DTAConfig:ShowPlayerJoinQuit");
+            chkNotifyOnUserListChange.Text = ("显示CnCNet大厅玩家加入/离开信息" + Environment.NewLine);
 
             AddChild(chkNotifyOnUserListChange);
 
@@ -96,7 +94,7 @@ namespace DTAConfig.OptionPanels
             chkDisablePrivateMessagePopup.ClientRectangle = new Rectangle(
                 chkNotifyOnUserListChange.X,
                 chkNotifyOnUserListChange.Bottom + 8, 0, 0);
-            chkDisablePrivateMessagePopup.Text = "Disable Popups from Private Messages".L10N("UI:DTAConfig:DisablePMPopup");
+            chkDisablePrivateMessagePopup.Text = "禁用私信弹窗";
 
             AddChild(chkDisablePrivateMessagePopup);
 
@@ -109,7 +107,7 @@ namespace DTAConfig.OptionPanels
             chkSkipLoginWindow.ClientRectangle = new Rectangle(
                 276,
                 12, 0, 0);
-            chkSkipLoginWindow.Text = "Skip login dialog".L10N("UI:DTAConfig:SkipLoginDialog");
+            chkSkipLoginWindow.Text = "跳过登录对话框";
             chkSkipLoginWindow.CheckedChanged += ChkSkipLoginWindow_CheckedChanged;
 
             AddChild(chkSkipLoginWindow);
@@ -119,7 +117,7 @@ namespace DTAConfig.OptionPanels
             chkPersistentMode.ClientRectangle = new Rectangle(
                 chkSkipLoginWindow.X,
                 chkSkipLoginWindow.Bottom + 12, 0, 0);
-            chkPersistentMode.Text = "Stay connected outside of the CnCNet lobby".L10N("UI:DTAConfig:StayConnect");
+            chkPersistentMode.Text = "离开CnCNet大厅仍保持连接";
             chkPersistentMode.CheckedChanged += ChkPersistentMode_CheckedChanged;
 
             AddChild(chkPersistentMode);
@@ -129,7 +127,7 @@ namespace DTAConfig.OptionPanels
             chkConnectOnStartup.ClientRectangle = new Rectangle(
                 chkSkipLoginWindow.X,
                 chkPersistentMode.Bottom + 12, 0, 0);
-            chkConnectOnStartup.Text = "Connect automatically on client startup".L10N("UI:DTAConfig:ConnectOnStart");
+            chkConnectOnStartup.Text = "客户端启动时自动连接";
             chkConnectOnStartup.AllowChecking = false;
 
             AddChild(chkConnectOnStartup);
@@ -139,7 +137,7 @@ namespace DTAConfig.OptionPanels
             chkDiscordIntegration.ClientRectangle = new Rectangle(
                 chkSkipLoginWindow.X,
                 chkConnectOnStartup.Bottom + 12, 0, 0);
-            chkDiscordIntegration.Text = "Show detailed game info in Discord status".L10N("UI:DTAConfig:DiscordStatus");
+            chkDiscordIntegration.Text = "在Discord显示详细的游戏状态";
             
             if (String.IsNullOrEmpty(ClientConfiguration.Instance.DiscordAppId))
             {
@@ -158,7 +156,7 @@ namespace DTAConfig.OptionPanels
             chkAllowGameInvitesFromFriendsOnly.ClientRectangle = new Rectangle(
                 chkDiscordIntegration.X,
                 chkDiscordIntegration.Bottom + 12, 0, 0);
-            chkAllowGameInvitesFromFriendsOnly.Text = "Only receive game invitations from friends".L10N("UI:DTAConfig:FriendsOnly");
+            chkAllowGameInvitesFromFriendsOnly.Text = "仅接收好友邀请";
 
             AddChild(chkAllowGameInvitesFromFriendsOnly);
         }
@@ -167,7 +165,7 @@ namespace DTAConfig.OptionPanels
         {
             XNALabel lblAllPrivateMessagesFrom = new XNALabel(WindowManager);
             lblAllPrivateMessagesFrom.Name = nameof(lblAllPrivateMessagesFrom);
-            lblAllPrivateMessagesFrom.Text = "Allow Private Messages From:".L10N("UI:DTAConfig:AllowPMFrom");
+            lblAllPrivateMessagesFrom.Text = "接收这些人的私信:";
             lblAllPrivateMessagesFrom.ClientRectangle = new Rectangle(
                 chkDisablePrivateMessagePopup.X,
                 chkDisablePrivateMessagePopup.Bottom + 12, 165, 0);
@@ -182,19 +180,19 @@ namespace DTAConfig.OptionPanels
 
             ddAllowPrivateMessagesFrom.AddItem(new XNADropDownItem()
             {
-                Text = "All".L10N("UI:DTAConfig:PMAll"),
+                Text = "所有人",
                 Tag =  AllowPrivateMessagesFromEnum.All
             });
 
             ddAllowPrivateMessagesFrom.AddItem(new XNADropDownItem()
             {
-                Text = "Friends".L10N("UI:DTAConfig:PMFriends"),
+                Text = "好友",
                 Tag =  AllowPrivateMessagesFromEnum.Friends
             });
 
             ddAllowPrivateMessagesFrom.AddItem(new XNADropDownItem()
             {
-                Text = "None".L10N("UI:DTAConfig:PMNone"),
+                Text = "无",
                 Tag =  AllowPrivateMessagesFromEnum.None
             });
 
@@ -214,7 +212,7 @@ namespace DTAConfig.OptionPanels
             var lblFollowedGames = new XNALabel(WindowManager);
             lblFollowedGames.Name = nameof(lblFollowedGames);
             lblFollowedGames.ClientRectangle = new Rectangle(12, 12, 0, 0);
-            lblFollowedGames.Text = "Show game rooms from the following games:".L10N("UI:DTAConfig:ShowRoomFromGame");
+            lblFollowedGames.Text = "显示以下游戏的房间:";
 
             gameListPanel.AddChild(lblFollowedGames);
 

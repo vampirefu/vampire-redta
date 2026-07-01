@@ -51,6 +51,7 @@ namespace DTAClient
             if (!resourcesDirectory.Exists)
                 throw new DirectoryNotFoundException("Theme directory not found!" + Environment.NewLine + ProgramConstants.RESOURCES_DIR);
 
+            // Updater removed: initialization skipped
 
             Logger.Log("OSDescription: " + RuntimeInformation.OSDescription);
             Logger.Log("OSArchitecture: " + RuntimeInformation.OSArchitecture);
@@ -75,6 +76,20 @@ namespace DTAClient
 #endif
             Task.Factory.StartNew(MigrateOldLogFiles);
 
+            DirectoryInfo updaterFolder = SafePath.GetDirectory(ProgramConstants.GamePath, "Updater");
+
+            if (updaterFolder.Exists)
+            {
+                Logger.Log("Attempting to delete temporary updater directory.");
+                try
+                {
+                    updaterFolder.Delete(true);
+                }
+                catch
+                {
+                }
+            }
+
             if (ClientConfiguration.Instance.CreateSavedGamesDirectory)
             {
                 DirectoryInfo savedGamesFolder = SafePath.GetDirectory(ProgramConstants.GamePath, "Saved Games");
@@ -91,6 +106,8 @@ namespace DTAClient
                     }
                 }
             }
+
+            // Updater removed: no custom components to clean up
 
             FinalSunSettings.WriteFinalSunIni();
 

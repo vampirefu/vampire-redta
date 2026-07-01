@@ -2,8 +2,6 @@
 using Rampastring.XNAUI;
 using System;
 using Rampastring.Tools;
-using Localization;
-
 namespace ClientGUI
 {
     public class XNAClientCheckBox : XNACheckBox
@@ -40,7 +38,7 @@ namespace ClientGUI
             if (key == "$ToolTip")
             {
                 CreateToolTip();
-                ToolTip.Text = string.Empty.L10N("UI:Main:" + value).Replace("@", Environment.NewLine);
+                ToolTip.Text = string.Empty.Replace("@", Environment.NewLine);
                 return;
             }
             base.ParseAttributeFromINI(iniFile, key, value);

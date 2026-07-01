@@ -1,0 +1,41 @@
+<Application x:Class="MapGenerator.Example.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="Orange" SecondaryColor="Amber" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign3.Defaults.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <!-- Ensure MaterialDesign 'paper' surfaces (popups, menus) use the warm light background -->
+            <SolidColorBrush x:Key="MaterialDesignPaper" Color="#FFFDF7" />
+            <SolidColorBrush x:Key="MaterialDesignBackground" Color="#FFFDF7" />
+            <SolidColorBrush x:Key="MaterialDesignCardBackground" Color="#FFFDF7" />
+            <SolidColorBrush x:Key="MaterialDesignPopupBackground" Color="#FFFDF7" />
+            <SolidColorBrush x:Key="MaterialDesignDropdownBackground" Color="#FFFDF7" />
+            <SolidColorBrush x:Key="MaterialDesignMenuBackground" Color="#FFFDF7" />
+
+            <!-- Global simplified scrollbar styling for popups and dropdowns -->
+            <Style TargetType="ScrollBar">
+                <Setter Property="Width" Value="10"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Foreground" Value="#FF8A00"/>
+            </Style>
+
+            <!-- Ensure ComboBox dropdown items are readable by default -->
+            <Style TargetType="ComboBoxItem">
+                <Setter Property="Background" Value="#FFFDF7"/>
+                <Setter Property="Foreground" Value="#3B2E2A"/>
+                <Setter Property="Padding" Value="8,6"/>
+            </Style>
+
+            <!-- Improve TextBox selection visibility globally -->
+            <Style TargetType="TextBox">
+                <Setter Property="SelectionBrush" Value="#FF8A00"/>
+                <Setter Property="CaretBrush" Value="#3B2E2A"/>
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

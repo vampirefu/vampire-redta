@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ClientGUI;
-using Localization;
 using DTAClient.DXGUI.Helpers;
 
 namespace DTAClient.DXGUI.Multiplayer.GameLobby
@@ -188,13 +187,13 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             toggleFavoriteMapItem = new XNAContextMenuItem()
             {
-                Text = "Add Favorite".L10N("UI:Main:AddFavorite"),
+                Text = "添加收藏",
                 SelectAction = ToggleFavoriteMap,
                 SelectableChecker = () => GameModeMap != null
             };
             toggleExtraTexturesItem = new XNAContextMenuItem()
             {
-                Text = "Hide Extra Icons".L10N("UI:Main:HideExtraIcons"),
+                Text = "Hide Extra Icons",
                 SelectAction = ToggleExtraTextures,
                 SelectableChecker = () => GameModeMap != null,
                 VisibilityChecker = () => extraTextures.Any(x => x.Toggleable)
@@ -208,13 +207,13 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             btnToggleFavoriteMap.IdleTexture = AssetLoader.LoadTexture("favInactive.png");
             btnToggleFavoriteMap.ClientRectangle = new Rectangle(Width - 35, 8, 30, 30);
             btnToggleFavoriteMap.LeftClick += (sender, args) => ToggleFavorite?.Invoke(sender, args);
-            btnToggleFavoriteMap.SetToolTipText("Toggle Favorite Map".L10N("UI:Main:ToggleFavoriteMap"));
+            btnToggleFavoriteMap.SetToolTipText("添加收藏");
 
 
             btnToggleExtraTextures = new XNAClientButton(WindowManager);
             btnToggleExtraTextures.IdleTexture = AssetLoader.LoadTexture("pvTexturesActive.png");
             btnToggleExtraTextures.LeftClick += (sender, args) => ToggleExtraTextures();
-            btnToggleExtraTextures.SetToolTipText("Toggle Extra Icons".L10N("UI:Main:ToggleExtraIcons"));
+            btnToggleExtraTextures.SetToolTipText("Toggle Extra Icons");
             btnToggleExtraTextures.Disable();
 
             AddChild(mapContextMenu);
@@ -239,9 +238,9 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             if (GameModeMap == null)
                 return;
 
-            toggleFavoriteMapItem.Text = GameModeMap.IsFavorite ? "Remove Favorite".L10N("UI:Main:RemoveFavorite") : "Add Favorite".L10N("UI:Main:AddFavorite");
+            toggleFavoriteMapItem.Text = GameModeMap.IsFavorite ? "取消收藏" : "添加收藏";
             toggleExtraTexturesItem.Text = UserINISettings.Instance.DisplayToggleableExtraTextures ?
-                "Hide Extra Icons".L10N("UI:Main:HideExtraIcons") : "Show Extra Icons".L10N("UI:Main:ShowExtraIcons");
+                "Hide Extra Icons" : "Show Extra Icons";
 
             mapContextMenu.Open(GetCursorPoint());
         }
