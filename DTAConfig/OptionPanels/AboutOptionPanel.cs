@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using ClientCore;
 using ClientGUI;
 using DTAClient.DXGUI.Generic;
-using Localization;
 using Microsoft.Xna.Framework;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
@@ -20,7 +19,7 @@ internal class AboutOptionPanel : XNAOptionsPanel
     {
     }
 
-    private const string ModVersion = "1.2.0";
+    private const string ModVersion = "1.3.1";
     /// <summary>
     /// 当前版本
     /// </summary>
@@ -79,7 +78,7 @@ internal class AboutOptionPanel : XNAOptionsPanel
         lblThankList = new XNALinkLabel(WindowManager);
         lblThankList.Name = nameof(lblThankList);
         lblThankList.ClientRectangle = new Rectangle(lblGithubUrl.X, lblGithubUrl.Y + 52, 0, 0);
-        lblThankList.Text = "Thanks".L10N("UI:DTAConfig:ButtonThanks");
+        lblThankList.Text = "鸣谢列表";
         lblThankList.LeftClick += btnThank_LeftClick;
 
         AddChild(lblcurModVersion);

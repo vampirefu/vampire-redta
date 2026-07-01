@@ -1,5 +1,4 @@
 ﻿using ClientCore;
-using Localization;
 using Microsoft.Xna.Framework;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
@@ -224,8 +223,7 @@ namespace ClientGUI
                 }
                 else if (kvp.Key == "$Text")
                 {
-                    control.Text = section.GetStringValue(nameof(control.Text), string.Empty)
-                        .L10N($"UI:Main:{kvp.Value}");
+                    control.Text = section.GetStringValue(nameof(control.Text), string.Empty);
                 }
                 else
                 {

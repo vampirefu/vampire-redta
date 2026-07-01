@@ -1,5 +1,4 @@
-﻿using Localization;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -88,7 +87,7 @@ namespace ClientCore
         public static readonly List<string> TEAMS = new List<string> { "A", "B", "C", "D" };
 
         // Static fields might be initialized before the translation file is loaded. Change to readonly properties here.
-        public static List<string> AI_PLAYER_NAMES => new List<string> { "Easy AI".L10N("UI:Main:EasyAIName"), "Medium AI".L10N("UI:Main:MediumAIName"), "Hard AI".L10N("UI:Main:HardAIName") };
+        public static List<string> AI_PLAYER_NAMES => new List<string> { "简单AI", "中等AI", "困难AI" };
 
         public static string LogFileName { get; set; }
 

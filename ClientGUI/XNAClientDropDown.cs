@@ -2,7 +2,6 @@
 using Rampastring.XNAUI;
 using Rampastring.Tools;
 using System;
-using Localization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -82,7 +81,7 @@ namespace ClientGUI
             if (key == "$ToolTip")
             {
                 CreateToolTip();
-                ToolTip.Text = string.Empty.L10N("UI:Main:" + value).Replace("@", Environment.NewLine);
+                ToolTip.Text = string.Empty.Replace("@", Environment.NewLine);
                 return;
             }
             base.ParseAttributeFromINI(iniFile, key, value);

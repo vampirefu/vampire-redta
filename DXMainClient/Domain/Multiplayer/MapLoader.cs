@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using ClientCore;
-using Localization;
 using Rampastring.Tools;
 //using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
 
@@ -366,12 +365,12 @@ namespace DTAClient.Domain.Multiplayer
                     //   continue;
                     // }
 
-                    // Logger.Log(gameModeAlias.L10N("UI:GameMode:" + gameModeAlias));
-                    GameMode gm = GameModes.Find(g => g.Name == gameModeAlias.L10N("UI:GameMode:" + gameModeAlias) || g.UIName == gameModeAlias.L10N("UI:GameMode:" + gameModeAlias));
+                    // Logger.Log(gameModeAlias);
+                    GameMode gm = GameModes.Find(g => g.Name == gameModeAlias || g.UIName == gameModeAlias);
 
                     if (gm == null)
                     {
-                        gm = new GameMode(gameModeAlias.L10N("UI:GameMode:" + gameModeAlias));
+                        gm = new GameMode(gameModeAlias);
                         GameModes.Add(gm);
                         //Logger.Log(gm.Name);
                     }

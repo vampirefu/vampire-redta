@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ClientCore;
@@ -19,7 +19,7 @@ namespace DTAClient.DXGUI.Multiplayer
         private const int GAME_REFRESH_RATE = 1;
         private const int ICON_MARGIN = 2;
         private const int FONT_INDEX = 0;
-        private const string LOADED_GAME_TEXT = " (Loaded Game)";
+        private const string LOADED_GAME_TEXT = " (载入游戏)";
 
         public GameListBox(WindowManager windowManager,
             string localGameIdentifier, Predicate<GenericHostedGame> gameMatchesFilter)

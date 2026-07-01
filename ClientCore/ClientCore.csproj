@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Title>CnCNet Client</Title>
     <Description>CnCNet Client Core Library</Description>
@@ -53,8 +53,5 @@
     <PackageReference Include="Rampastring.XNAUI.$(Engine)" Version="2.2.11" Condition="'!$(Configuration.Contains(Debug))'" />
     <PackageReference Include="Rampastring.XNAUI.$(Engine).Debug" Version="2.2.11" Condition="'$(Configuration.Contains(Debug))'" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Localization\Localization.csproj" />
   </ItemGroup>
 </Project>

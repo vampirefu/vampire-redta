@@ -1,5 +1,4 @@
 ﻿using ClientGUI;
-using Localization;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;

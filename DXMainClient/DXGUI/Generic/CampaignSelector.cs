@@ -8,7 +8,6 @@ using ClientGUI;
 using Rampastring.XNAUI.XNAControls;
 using Rampastring.XNAUI;
 using Rampastring.Tools;
-using Localization;
 using System.Linq;
 using DTAClient.Domain.AI;
 
@@ -81,7 +80,7 @@ namespace DTAClient.DXGUI.Generic
             lblSelectCampaign.Name = "lblSelectCampaign";
             lblSelectCampaign.FontIndex = 1;
             lblSelectCampaign.ClientRectangle = new Rectangle(12, 12, 0, 0);
-            lblSelectCampaign.Text = "MISSIONS:".L10N("UI:Main:Missions");
+            lblSelectCampaign.Text = "战役:";
 
             lbCampaignList = new XNAListBox(WindowManager);
             lbCampaignList.Name = "lbCampaignList";
@@ -94,7 +93,7 @@ namespace DTAClient.DXGUI.Generic
 
             lblScreen = new XNALabel(WindowManager);
             lblScreen.Name = "lblScreen";
-            lblScreen.Text = "Screen:".L10N("UI:Campaign:Screen");
+            lblScreen.Text = "筛选";
             lblScreen.ClientRectangle = new Rectangle(10, 35, 0, 0);
 
             dddifficulty = new XNADropDown(WindowManager);
@@ -112,7 +111,7 @@ namespace DTAClient.DXGUI.Generic
             lblMissionDescriptionHeader.ClientRectangle = new Rectangle(
                 lbCampaignList.Right + 12,
                 lblSelectCampaign.Y, 0, 0);
-            lblMissionDescriptionHeader.Text = "MISSION DESCRIPTION:".L10N("UI:Main:MissionDescription");
+            lblMissionDescriptionHeader.Text = "战役描述:";
 
             tbMissionDescription = new XNATextBlock(WindowManager);
             tbMissionDescription.Name = "tbMissionDescription";
@@ -128,7 +127,7 @@ namespace DTAClient.DXGUI.Generic
 
             var lblDifficultyLevel = new XNALabel(WindowManager);
             lblDifficultyLevel.Name = "lblDifficultyLevel";
-            lblDifficultyLevel.Text = "DIFFICULTY LEVEL".L10N("UI:Main:DifficultyLevel");
+            lblDifficultyLevel.Text = "难度等级";
             lblDifficultyLevel.FontIndex = 1;
             Vector2 textSize = Renderer.GetTextDimensions(lblDifficultyLevel.Text, lblDifficultyLevel.FontIndex);
             lblDifficultyLevel.ClientRectangle = new Rectangle(
@@ -160,7 +159,7 @@ namespace DTAClient.DXGUI.Generic
 
             lbGameSpeed = new XNALabel(WindowManager);
             lbGameSpeed.Name = "lbGameSpeed";
-            lbGameSpeed.Text = "Game Speed:".L10N("UI:Main:GameSpeed");
+            lbGameSpeed.Text = "游戏速度";
             lbGameSpeed.FontIndex = 1;
             lbGameSpeed.ClientRectangle = new Rectangle(ddGameSpeed.X - 100, trbDifficultySelector.Y - 15, 0, 0);
 
@@ -168,14 +167,14 @@ namespace DTAClient.DXGUI.Generic
             var lblEasy = new XNALabel(WindowManager);
             lblEasy.Name = "lblEasy";
             lblEasy.FontIndex = 1;
-            lblEasy.Text = "EASY".L10N("UI:Main:DifficultyEasy");
+            lblEasy.Text = "简单";
             lblEasy.ClientRectangle = new Rectangle(trbDifficultySelector.X,
                 trbDifficultySelector.Bottom + 6, 1, 1);
 
             var lblNormal = new XNALabel(WindowManager);
             lblNormal.Name = "lblNormal";
             lblNormal.FontIndex = 1;
-            lblNormal.Text = "NORMAL".L10N("UI:Main:DifficultyNormal");
+            lblNormal.Text = "中等";
             textSize = Renderer.GetTextDimensions(lblNormal.Text, lblNormal.FontIndex);
             lblNormal.ClientRectangle = new Rectangle(
                 tbMissionDescription.X + (tbMissionDescription.Width - (int)textSize.X) / 2,
@@ -184,7 +183,7 @@ namespace DTAClient.DXGUI.Generic
             var lblHard = new XNALabel(WindowManager);
             lblHard.Name = "lblHard";
             lblHard.FontIndex = 1;
-            lblHard.Text = "HARD".L10N("UI:Main:DifficultyHard");
+            lblHard.Text = "困难";
             lblHard.ClientRectangle = new Rectangle(
                 tbMissionDescription.Right - lblHard.Width,
                 lblEasy.Y, 1, 1);
@@ -192,7 +191,7 @@ namespace DTAClient.DXGUI.Generic
             btnLaunch = new XNAClientButton(WindowManager);
             btnLaunch.Name = "btnLaunch";
             btnLaunch.ClientRectangle = new Rectangle(12, Height - 35, UIDesignConstants.BUTTON_WIDTH_133, UIDesignConstants.BUTTON_HEIGHT);
-            btnLaunch.Text = "Launch".L10N("UI:Main:ButtonLaunch");
+            btnLaunch.Text = "启动";
             btnLaunch.AllowClick = false;
             btnLaunch.LeftClick += BtnLaunch_LeftClick;
 
@@ -200,7 +199,7 @@ namespace DTAClient.DXGUI.Generic
             btnCancel.Name = "btnCancel";
             btnCancel.ClientRectangle = new Rectangle(Width - 145,
                 btnLaunch.Y, UIDesignConstants.BUTTON_WIDTH_133, UIDesignConstants.BUTTON_HEIGHT);
-            btnCancel.Text = "Cancel".L10N("UI:Main:ButtonCancel");
+            btnCancel.Text = "取消";
             btnCancel.LeftClick += BtnCancel_LeftClick;
 
             AddChild(lblSelectCampaign);
@@ -228,7 +227,7 @@ namespace DTAClient.DXGUI.Generic
             trbDifficultySelector.Value = UserINISettings.Instance.Difficulty;
 
             XNADropDownItem allitem = new XNADropDownItem();
-            allitem.Text = "All".L10N("UI:Main:All");
+            allitem.Text = "所有";
             allitem.Tag = "All";
 
             dddifficulty.AddItem(allitem);
@@ -241,7 +240,7 @@ namespace DTAClient.DXGUI.Generic
             foreach (string diff in difficultyList)
             {
                 XNADropDownItem item = new XNADropDownItem();
-                item.Text = diff.L10N("UI:Campaign:" + diff);
+                item.Text = diff;
                 item.Tag = diff;
                 dddifficulty.AddItem(item);
             }
@@ -249,7 +248,7 @@ namespace DTAClient.DXGUI.Generic
             foreach (string side in sideList)
             {
                 XNADropDownItem item = new XNADropDownItem();
-                item.Text = side.L10N("UI:Campaign:" + side);
+                item.Text = side;
                 item.Tag = side;
                 ddside.AddItem(item);
             }
@@ -281,7 +280,7 @@ namespace DTAClient.DXGUI.Generic
 
 
             //    var item = new XNAListBoxItem();
-            //    item.Text = mission.GUIName.L10N("UI:MissionName:" + mission.sectionName);
+            //    item.Text = mission.GUIName;
             //    if (!mission.Enabled)
             //    {
             //        item.TextColor = UISettings.ActiveSettings.DisabledItemColor;
@@ -354,6 +353,14 @@ namespace DTAClient.DXGUI.Generic
 
             Mission mission = Missions[selectedMissionId];
 
+            if (!ClientConfiguration.Instance.ModMode && AreFilesModified())
+            {
+                // Confront the user by showing the cheater screen
+                missionToLaunch = mission;
+                cheaterWindow.Enable();
+                return;
+            }
+
             LaunchMission(mission);
         }
 
@@ -376,6 +383,12 @@ namespace DTAClient.DXGUI.Generic
             return deleteFile;
         }
 
+
+        private bool AreFilesModified()
+        {
+            // Updater removed: cannot determine file originality, assume not modified
+            return false;
+        }
 
         /// <summary>
         /// Called when the user wants to proceed to the mission despite having
@@ -558,7 +571,7 @@ namespace DTAClient.DXGUI.Generic
                 Missions.Add(mission);
 
                 var item = new XNAListBoxItem();
-                item.Text = mission.GUIName.L10N("UI:MissionName:" + mission.sectionName);
+                item.Text = mission.GUIName;
                 item.Tag = mission.sectionName;
                 if (!mission.Enabled)
                 {

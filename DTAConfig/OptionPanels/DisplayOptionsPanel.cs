@@ -1,5 +1,4 @@
-using Localization;
-using ClientCore;
+﻿using ClientCore;
 using ClientGUI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -78,7 +77,7 @@ namespace DTAConfig.OptionPanels
             var lblIngameResolution = new XNALabel(WindowManager);
             lblIngameResolution.Name = "lblIngameResolution";
             lblIngameResolution.ClientRectangle = new Rectangle(12, 14, 0, 0);
-            lblIngameResolution.Text = "In-game Resolution:".L10N("UI:DTAConfig:InGameResolution");
+            lblIngameResolution.Text = "游戏分辨率:";
 
             ddIngameResolution = new XNAClientDropDown(WindowManager);
             ddIngameResolution.Name = "ddIngameResolution";
@@ -101,7 +100,7 @@ namespace DTAConfig.OptionPanels
             lblDetailLevel.Name = "lblDetailLevel";
             lblDetailLevel.ClientRectangle = new Rectangle(lblIngameResolution.X,
                 ddIngameResolution.Bottom + 16, 0, 0);
-            lblDetailLevel.Text = "Detail Level:".L10N("UI:DTAConfig:DetailLevel");
+            lblDetailLevel.Text = "画面精细度:";
 
             ddDetailLevel = new XNAClientDropDown(WindowManager);
             ddDetailLevel.Name = "ddDetailLevel";
@@ -110,15 +109,15 @@ namespace DTAConfig.OptionPanels
                 lblDetailLevel.Y - 2,
                 ddIngameResolution.Width,
                 ddIngameResolution.Height);
-            ddDetailLevel.AddItem("Low".L10N("UI:DTAConfig:DetailLevelLow"));
-            ddDetailLevel.AddItem("Medium".L10N("UI:DTAConfig:DetailLevelMedium"));
-            ddDetailLevel.AddItem("High".L10N("UI:DTAConfig:DetailLevelHigh"));
+            ddDetailLevel.AddItem("低");
+            ddDetailLevel.AddItem("中");
+            ddDetailLevel.AddItem("高");
 
             var lblRenderer = new XNALabel(WindowManager);
             lblRenderer.Name = "lblRenderer";
             lblRenderer.ClientRectangle = new Rectangle(lblDetailLevel.X,
                 ddDetailLevel.Bottom + 16, 0, 0);
-            lblRenderer.Text = "Renderer:".L10N("UI:DTAConfig:Renderer");
+            lblRenderer.Text = "渲染模式:";
 
             ddRenderer = new XNAClientDropDown(WindowManager);
             ddRenderer.Name = "ddRenderer";
@@ -148,7 +147,7 @@ namespace DTAConfig.OptionPanels
             chkWindowedMode.Name = "chkWindowedMode";
             chkWindowedMode.ClientRectangle = new Rectangle(lblDetailLevel.X,
                 ddRenderer.Bottom + 16, 0, 0);
-            chkWindowedMode.Text = "Windowed Mode".L10N("UI:DTAConfig:WindowedMode");
+            chkWindowedMode.Text = "窗口模式";
             chkWindowedMode.CheckedChanged += ChkWindowedMode_CheckedChanged;
 
             chkBorderlessWindowedMode = new XNAClientCheckBox(WindowManager);
@@ -156,7 +155,7 @@ namespace DTAConfig.OptionPanels
             chkBorderlessWindowedMode.ClientRectangle = new Rectangle(
                 chkWindowedMode.X + 50,
                 chkWindowedMode.Bottom + 24, 0, 0);
-            chkBorderlessWindowedMode.Text = "Borderless Windowed Mode".L10N("UI:DTAConfig:BorderlessWindowedMode");
+            chkBorderlessWindowedMode.Text = "无边框窗口模式";
             chkBorderlessWindowedMode.AllowChecking = false;
 
             chkBackBufferInVRAM = new XNAClientCheckBox(WindowManager);
@@ -164,14 +163,13 @@ namespace DTAConfig.OptionPanels
             chkBackBufferInVRAM.ClientRectangle = new Rectangle(
                 lblDetailLevel.X,
                 chkBorderlessWindowedMode.Bottom + 28, 0, 0);
-            chkBackBufferInVRAM.Text = ("Back Buffer in Video Memory" + Environment.NewLine +
-                "(lower performance, but is" + Environment.NewLine + "necessary on some systems)").L10N("UI:DTAConfig:BackBuffer");
+            chkBackBufferInVRAM.Text = "开启双重显存缓冲" + Environment.NewLine + "(会降低性能,但在某些系统上是必须的)";
 
             var lblClientResolution = new XNALabel(WindowManager);
             lblClientResolution.Name = "lblClientResolution";
             lblClientResolution.ClientRectangle = new Rectangle(
                 285, 14, 0, 0);
-            lblClientResolution.Text = "Client Resolution:".L10N("UI:DTAConfig:ClientResolution");
+            lblClientResolution.Text = "客户端分辨率:";
 
             ddClientResolution = new XNAClientPreferredItemDropDown(WindowManager);
             ddClientResolution.Name = "ddClientResolution";
@@ -181,7 +179,7 @@ namespace DTAConfig.OptionPanels
                 160,
                 ddIngameResolution.Height);
             ddClientResolution.AllowDropDown = false;
-            ddClientResolution.PreferredItemLabel = "(recommended)".L10N("UI:DTAConfig:Recommended");
+            ddClientResolution.PreferredItemLabel = "(推荐)";
 
             int width = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             int height = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
@@ -226,17 +224,17 @@ namespace DTAConfig.OptionPanels
             chkBorderlessClient.ClientRectangle = new Rectangle(
                 lblClientResolution.X,
                 lblDetailLevel.Y, 0, 0);
-            chkBorderlessClient.Text = "Fullscreen Client".L10N("UI:DTAConfig:FullscreenClient");
+            chkBorderlessClient.Text = "客户端全屏";
             chkBorderlessClient.CheckedChanged += ChkBorderlessMenu_CheckedChanged;
             chkBorderlessClient.Checked = true;
 
-            //�����������
+            //����������
             chkRandom_wallpaper = new XNAClientCheckBox(WindowManager);
             chkRandom_wallpaper.Name = "chkRandom_wallpaper";
             chkRandom_wallpaper.ClientRectangle = new Rectangle(
                 lblClientResolution.X,
                 ddRenderer.Bottom + 16 + 24, 0, 0);//ddRenderer.Bottom + 16
-            chkRandom_wallpaper.Text = "Random start cover".L10N("UI:Main:RanWall");
+            chkRandom_wallpaper.Text = "随机启动封面";
             chkRandom_wallpaper.Checked = false;
 
             var lblClientTheme = new XNALabel(WindowManager);
@@ -244,7 +242,7 @@ namespace DTAConfig.OptionPanels
             lblClientTheme.ClientRectangle = new Rectangle(
                 lblClientResolution.X,
                 lblRenderer.Y, 0, 0);
-            lblClientTheme.Text = "Client Theme:".L10N("UI:DTAConfig:ClientTheme");
+            lblClientTheme.Text = "客户端主题:";
 
             ddClientTheme = new XNAClientDropDown(WindowManager);
             ddClientTheme.Name = "ddClientTheme";
@@ -259,7 +257,7 @@ namespace DTAConfig.OptionPanels
             lblLanguage.ClientRectangle = new Rectangle(
                 lblClientResolution.X,
                 lblRenderer.Y + 60, 0, 0);
-            lblLanguage.Text = "Language:".L10N("UI:Main:Language");
+            lblLanguage.Text = "语言";
 
             ddLanguage = new XNAClientDropDown(WindowManager);
             ddLanguage.Name = "ddLanguage";
@@ -274,7 +272,7 @@ namespace DTAConfig.OptionPanels
             lblVoice.ClientRectangle = new Rectangle(
                 lblClientResolution.X,
                 lblLanguage.Y + 60, 0, 0);
-            lblVoice.Text = "Voice:".L10N("UI:Main:Voice");
+            lblVoice.Text = "语音";
 
             ddVoice = new XNAClientDropDown(WindowManager);
             ddVoice.Name = "ddVoice";
@@ -290,7 +288,7 @@ namespace DTAConfig.OptionPanels
             for (int i = 0; i < languageCount; i++)
             {
                 XNADropDownItem item1 = new XNADropDownItem();
-                item1.Text = ClientConfiguration.Instance.GetLanguageInfoFromIndex(i)[0].L10N("UI:Language:" + ClientConfiguration.Instance.GetLanguageInfoFromIndex(i)[0]);
+                item1.Text = ClientConfiguration.Instance.GetLanguageInfoFromIndex(i)[0];
                 item1.Tag = ClientConfiguration.Instance.GetLanguageInfoFromIndex(i)[0];
                 ddLanguage.AddItem(item1);
             }
@@ -305,7 +303,7 @@ namespace DTAConfig.OptionPanels
             for (int i = 0; i < VoiceCount; i++)
             {
                 XNADropDownItem item1 = new XNADropDownItem();
-                item1.Text = ClientConfiguration.Instance.GetVoiceInfoFromIndex(i)[0].L10N("UI:Voice:" + ClientConfiguration.Instance.GetVoiceInfoFromIndex(i)[0]);
+                item1.Text = ClientConfiguration.Instance.GetVoiceInfoFromIndex(i)[0];
                 item1.Tag = ClientConfiguration.Instance.GetVoiceInfoFromIndex(i)[0];
                 ddVoice.AddItem(item1);
             }
@@ -314,7 +312,7 @@ namespace DTAConfig.OptionPanels
             for (int i = 0; i < themeCount; i++)
             {
                 XNADropDownItem item1 = new XNADropDownItem();
-                item1.Text = ClientConfiguration.Instance.GetThemeInfoFromIndex(i)[0].L10N("UI:Themes:" + ClientConfiguration.Instance.GetThemeInfoFromIndex(i)[0]);
+                item1.Text = ClientConfiguration.Instance.GetThemeInfoFromIndex(i)[0];
                 item1.Tag = ClientConfiguration.Instance.GetThemeInfoFromIndex(i)[0];
                 ddClientTheme.AddItem(item1);
             }
@@ -322,7 +320,7 @@ namespace DTAConfig.OptionPanels
             lblCompatibilityFixes = new XNALabel(WindowManager);
             lblCompatibilityFixes.Name = "lblCompatibilityFixes";
             lblCompatibilityFixes.FontIndex = 1;
-            lblCompatibilityFixes.Text = "Compatibility Fixes (advanced):".L10N("UI:DTAConfig:TSCompatibilityFixAdv");
+            lblCompatibilityFixes.Text = "兼容性修复 (高级):";
             AddChild(lblCompatibilityFixes);
             lblCompatibilityFixes.CenterOnParent();
             lblCompatibilityFixes.Y = Height - 103;
@@ -331,7 +329,7 @@ namespace DTAConfig.OptionPanels
             lblGameCompatibilityFix.Name = "lblGameCompatibilityFix";
             lblGameCompatibilityFix.ClientRectangle = new Rectangle(132,
                 lblCompatibilityFixes.Bottom + 20, 0, 0);
-            lblGameCompatibilityFix.Text = "DTA/TI/TS Compatibility Fix:".L10N("UI:DTAConfig:TSCompatibilityFix");
+            lblGameCompatibilityFix.Text = "DTA/TI/TS兼容性修复:";
 
             btnGameCompatibilityFix = new XNAClientButton(WindowManager);
             btnGameCompatibilityFix.Name = "btnGameCompatibilityFix";
@@ -339,7 +337,7 @@ namespace DTAConfig.OptionPanels
                 lblGameCompatibilityFix.Right + 20,
                 lblGameCompatibilityFix.Y - 4, UIDesignConstants.BUTTON_WIDTH_133, UIDesignConstants.BUTTON_HEIGHT);
             btnGameCompatibilityFix.FontIndex = 1;
-            btnGameCompatibilityFix.Text = "Enable".L10N("UI:DTAConfig:Enable");
+            btnGameCompatibilityFix.Text = "启用";
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 btnGameCompatibilityFix.LeftClick += BtnGameCompatibilityFix_LeftClick;
@@ -351,7 +349,7 @@ namespace DTAConfig.OptionPanels
             lblMapEditorCompatibilityFix.ClientRectangle = new Rectangle(
                 lblGameCompatibilityFix.X,
                 lblGameCompatibilityFix.Bottom + 20, 0, 0);
-            lblMapEditorCompatibilityFix.Text = "FinalSun Compatibility Fix:".L10N("UI:DTAConfig:TSFinalSunFix");
+            lblMapEditorCompatibilityFix.Text = "FinalSun兼容性修复:";
 
             btnMapEditorCompatibilityFix = new XNAClientButton(WindowManager);
             btnMapEditorCompatibilityFix.Name = "btnMapEditorCompatibilityFix";
@@ -361,7 +359,7 @@ namespace DTAConfig.OptionPanels
                 btnGameCompatibilityFix.Width,
                 btnGameCompatibilityFix.Height);
             btnMapEditorCompatibilityFix.FontIndex = 1;
-            btnMapEditorCompatibilityFix.Text = "Enable".L10N("UI:DTAConfig:TSButtonEnable");
+            btnMapEditorCompatibilityFix.Text = "启用";
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 btnMapEditorCompatibilityFix.LeftClick += BtnMapEditorCompatibilityFix_LeftClick;
@@ -391,7 +389,7 @@ namespace DTAConfig.OptionPanels
             AddChild(ddLanguage);
             AddChild(lblVoice);
             AddChild(ddVoice);
-            //�������
+            //�������
             AddChild(chkRandom_wallpaper);
         }
 
@@ -470,12 +468,11 @@ namespace DTAConfig.OptionPanels
             {
                 string defaultGame = ClientConfiguration.Instance.LocalGame;
 
-                var messageBox = XNAMessageBox.ShowYesNoDialog(WindowManager, "New Compatibility Fix".L10N("UI:DTAConfig:TSFixTitle"),
-                    string.Format("A performance-enhancing compatibility fix for modern Windows versions" + Environment.NewLine +
-                        "has been included in this version of {0}. Enabling it requires" + Environment.NewLine +
-                        "administrative priveleges. Would you like to install the compatibility fix?" + Environment.NewLine + Environment.NewLine +
-                        "You'll always be able to install or uninstall the compatibility fix later from the options menu.", defaultGame
-                    ).L10N("UI:DTAConfig:TSFixText"));
+                var messageBox = XNAMessageBox.ShowYesNoDialog(WindowManager, "新的兼容性修复",
+                    string.Format("此版本的{0}包含了适用于现代Windows版本的性能增强兼容性修复" + Environment.NewLine +
+                        "启用它需要管理员权限。您想安装此兼容性修复吗?" + Environment.NewLine + Environment.NewLine +
+                        "您随时可以在选项菜单中安装或卸载此兼容性修复。", defaultGame
+                    ));
                 messageBox.YesClickedAction = MessageBox_YesClicked;
                 messageBox.NoClickedAction = MessageBox_NoClicked;
             }
@@ -521,22 +518,22 @@ namespace DTAConfig.OptionPanels
                     sdbinst.WaitForExit();
 
                     Logger.Log("DTA/TI/TS Compatibility Fix succesfully uninstalled.");
-                    XNAMessageBox.Show(WindowManager, "Compatibility Fix Uninstalled".L10N("UI:DTAConfig:TSFixUninstallTitle"),
-                        "The DTA/TI/TS Compatibility Fix has been succesfully uninstalled.".L10N("UI:DTAConfig:TSFixUninstallText"));
+                    XNAMessageBox.Show(WindowManager, "兼容性修复已卸载",
+                        "DTA/TI/TS兼容性修复已成功卸载。");
 
                     RegistryKey regKey = Registry.CurrentUser.OpenSubKey("SOFTWARE", true);
                     regKey = regKey.CreateSubKey("Tiberian Sun Client");
                     regKey.SetValue("TSCompatFixInstalled", "No");
 
-                    btnGameCompatibilityFix.Text = "Enable";
+                    btnGameCompatibilityFix.Text = "启用";
 
                     GameCompatFixInstalled = false;
                 }
                 catch (Exception ex)
                 {
                     Logger.Log("Uninstalling DTA/TI/TS Compatibility Fix failed. Error message: " + ex.Message);
-                    XNAMessageBox.Show(WindowManager, "Uninstalling Compatibility Fix Failed".L10N("UI:DTAConfig:TSFixUninstallFailTitle"),
-                        "Uninstalling DTA/TI/TS Compatibility Fix failed. Returned error:".L10N("UI:DTAConfig:TSFixUninstallFailText") + " " + ex.Message);
+                    XNAMessageBox.Show(WindowManager, "卸载兼容性修复失败",
+                        "卸载DTA/TI/TS兼容性修复失败。错误信息:" + " " + ex.Message);
                 }
 
                 return;
@@ -549,22 +546,22 @@ namespace DTAConfig.OptionPanels
                 sdbinst.WaitForExit();
 
                 Logger.Log("DTA/TI/TS Compatibility Fix succesfully installed.");
-                XNAMessageBox.Show(WindowManager, "Compatibility Fix Installed".L10N("UI:DTAConfig:TSFixInstallSuccessTitle"),
-                    "The DTA/TI/TS Compatibility Fix has been succesfully installed.".L10N("UI:DTAConfig:TSFixInstallSuccessText"));
+                XNAMessageBox.Show(WindowManager, "兼容性修复已安装",
+                    "DTA/TI/TS兼容性修复已成功安装。");
 
                 RegistryKey regKey = Registry.CurrentUser.OpenSubKey("SOFTWARE", true);
                 regKey = regKey.CreateSubKey("Tiberian Sun Client");
                 regKey.SetValue("TSCompatFixInstalled", "Yes");
 
-                btnGameCompatibilityFix.Text = "Disable";
+                btnGameCompatibilityFix.Text = "禁用";
 
                 GameCompatFixInstalled = true;
             }
             catch (Exception ex)
             {
                 Logger.Log("Installing DTA/TI/TS Compatibility Fix failed. Error message: " + ex.Message);
-                XNAMessageBox.Show(WindowManager, "Installing Compatibility Fix Failed".L10N("UI:DTAConfig:TSFixInstallFailTitle"),
-                    "Installing DTA/TI/TS Compatibility Fix failed. Error message:".L10N("UI:DTAConfig:TSFixInstallFailText") + " " + ex.Message);
+                XNAMessageBox.Show(WindowManager, "安装兼容性修复失败",
+                    "安装DTA/TI/TS兼容性修复失败。错误信息:" + " " + ex.Message);
             }
         }
 
@@ -583,19 +580,19 @@ namespace DTAConfig.OptionPanels
                     regKey = regKey.CreateSubKey("Tiberian Sun Client");
                     regKey.SetValue("FSCompatFixInstalled", "No");
 
-                    btnMapEditorCompatibilityFix.Text = "Enable".L10N("UI:DTAConfig:TSFEnable");
+                    btnMapEditorCompatibilityFix.Text = "启用";
 
                     Logger.Log("FinalSun Compatibility Fix succesfully uninstalled.");
-                    XNAMessageBox.Show(WindowManager, "Compatibility Fix Uninstalled".L10N("UI:DTAConfig:TSFinalSunFixUninstallTitle"),
-                        "The FinalSun Compatibility Fix has been succesfully uninstalled.".L10N("UI:DTAConfig:TSFinalSunFixUninstallText"));
+                    XNAMessageBox.Show(WindowManager, "兼容性修复已卸载",
+                        "FinalSun兼容性修复已成功卸载。");
 
                     FinalSunCompatFixInstalled = false;
                 }
                 catch (Exception ex)
                 {
                     Logger.Log("Uninstalling FinalSun Compatibility Fix failed. Error message: " + ex.Message);
-                    XNAMessageBox.Show(WindowManager, "Uninstalling Compatibility Fix Failed".L10N("UI:DTAConfig:TSFinalSunFixUninstallFailedTitle"),
-                        "Uninstalling FinalSun Compatibility Fix failed. Error message:".L10N("UI:DTAConfig:TSFinalSunFixUninstallFailedText") + " " + ex.Message);
+                    XNAMessageBox.Show(WindowManager, "卸载兼容性修复失败",
+                        "卸载FinalSun兼容性修复失败。错误信息:" + " " + ex.Message);
                 }
 
                 return;
@@ -611,19 +608,19 @@ namespace DTAConfig.OptionPanels
                 regKey = regKey.CreateSubKey("Tiberian Sun Client");
                 regKey.SetValue("FSCompatFixInstalled", "Yes");
 
-                btnMapEditorCompatibilityFix.Text = "Disable".L10N("UI:DTAConfig:TSDisable");
+                btnMapEditorCompatibilityFix.Text = "禁用";
 
                 Logger.Log("FinalSun Compatibility Fix succesfully installed.");
-                XNAMessageBox.Show(WindowManager, "Compatibility Fix Installed".L10N("UI:DTAConfig:TSFinalSunCompatibilityFixInstalledTitle"),
-                    "The FinalSun Compatibility Fix has been succesfully installed.".L10N("UI:DTAConfig:TSFinalSunCompatibilityFixInstalledText"));
+                XNAMessageBox.Show(WindowManager, "兼容性修复已安装",
+                    "FinalSun兼容性修复已成功安装。");
 
                 FinalSunCompatFixInstalled = true;
             }
             catch (Exception ex)
             {
                 Logger.Log("Installing FinalSun Compatibility Fix failed. Error message: " + ex.Message);
-                XNAMessageBox.Show(WindowManager, "Installing Compatibility Fix Failed".L10N("UI:DTAConfig:TSFinalSunCompatibilityFixInstalledFailedTitle"),
-                    "Installing FinalSun Compatibility Fix failed. Error message:".L10N("UI:DTAConfig:TSFinalSunCompatibilityFixInstalledFailedText") + " " + ex.Message);
+                XNAMessageBox.Show(WindowManager, "安装兼容性修复失败",
+                    "安装FinalSun兼容性修复失败。错误信息:" + " " + ex.Message);
             }
         }
 #endif
@@ -737,7 +734,7 @@ namespace DTAConfig.OptionPanels
                 chkBorderlessWindowedMode.Checked = UserINISettings.Instance.BorderlessWindowedMode;
             }
 
-            //�����ֽ
+            //�����ֽ
             chkRandom_wallpaper.Checked = UserINISettings.Instance.Random_wallpaper;
 
             int selectedLanguageIndex = ddLanguage.Items.FindIndex(
@@ -777,7 +774,7 @@ namespace DTAConfig.OptionPanels
             if (tsCompatFixString == "Yes")
             {
                 GameCompatFixInstalled = true;
-                btnGameCompatibilityFix.Text = "Disable".L10N("UI:DTAConfig:TSDisable");
+                btnGameCompatibilityFix.Text = "禁用";
             }
 
             object fsCompatFixValue = regKey.GetValue("FSCompatFixInstalled", "No");
@@ -786,7 +783,7 @@ namespace DTAConfig.OptionPanels
             if (fsCompatFixString == "Yes")
             {
                 FinalSunCompatFixInstalled = true;
-                btnMapEditorCompatibilityFix.Text = "Disable".L10N("UI:DTAConfig:TSDisable");
+                btnMapEditorCompatibilityFix.Text = "禁用";
             }
 
             object tsCompatFixDeclinedValue = regKey.GetValue("TSCompatFixDeclined", "No");
@@ -830,7 +827,7 @@ namespace DTAConfig.OptionPanels
                 {
                     string name = System.IO.Path.GetFileName(folder);
                     string dest = System.IO.Path.Combine(saveDirPath, name);
-                    CopyDirectory(folder, dest);//����Ŀ��·��,�ݹ鸴���ļ�
+                    CopyDirectory(folder, dest);//����Ŀ��·��,�ݹ鸴���ļ�
                 }
             }
         }
@@ -934,7 +931,7 @@ namespace DTAConfig.OptionPanels
             IniSettings.Voice.Value = (string)ddVoice.SelectedItem.Tag;
             IniSettings.ClientTheme.Value = (string)ddClientTheme.SelectedItem.Tag;
 
-            //�����ֽ
+            //�����ֽ
             IniSettings.Random_wallpaper.Value = chkRandom_wallpaper.Checked;
 
 #if TS
@@ -1019,7 +1016,7 @@ namespace DTAConfig.OptionPanels
                 screenResolutions.Add(resolution);
             }
 
-            //����1000*600�ֱ���֧��
+            //����1000*600�ֱ���֧��
             var subResolutions = new List<ScreenResolution>
             { 
                 new ScreenResolution(1000, 600),

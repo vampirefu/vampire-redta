@@ -3,6 +3,9 @@
     <ComVisible>false</ComVisible>
     <CLSCompliant>false</CLSCompliant>
     <Platforms>AnyCPU;x64;ARM64;x86</Platforms>
+    <!-- Default Engine and Game to avoid empty $(Engine) or $(Game) during restore/build -->
+    <Engine Condition="'$(Engine)' == ''">WindowsDX</Engine>
+    <Game Condition="'$(Game)' == ''">YR</Game>
     <AnalysisMode Condition="$(Configuration.Contains(Debug))">All</AnalysisMode>
     <EnforceCodeStyleInBuild Condition="$(Configuration.Contains(Debug))">true</EnforceCodeStyleInBuild>
     <AnalysisMode Condition="!$(Configuration.Contains(Debug))">Recommended</AnalysisMode>

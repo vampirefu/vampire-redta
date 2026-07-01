@@ -1,5 +1,4 @@
-﻿using Localization;
-using Rampastring.Tools;
+﻿using Rampastring.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +21,7 @@ namespace DTAClient.Domain
             Scenario = iniFile.GetStringValue(sectionName, nameof(Scenario), string.Empty);
             GUIName = iniFile.GetStringValue(sectionName, "Description", "Undefined mission");
             IconPath = iniFile.GetStringValue(sectionName, "SideName", string.Empty);
-            GUIDescription = iniFile.GetStringValue(sectionName, "LongDescription", string.Empty).L10N("UI:MissionText:" + sectionName);
+            GUIDescription = iniFile.GetStringValue(sectionName, "LongDescription", string.Empty);
             FinalMovie = iniFile.GetStringValue(sectionName, nameof(FinalMovie), "none");
             RequiredAddon = iniFile.GetBooleanValue(sectionName, nameof(RequiredAddon),
 #if YR || ARES

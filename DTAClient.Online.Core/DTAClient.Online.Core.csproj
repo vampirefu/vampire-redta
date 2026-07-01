@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>DTAClient.Online</RootNamespace>
+    <AssemblyName>DTAClient.Online.Core</AssemblyName>
+    <Description>DTAClient online core library (Connection, QueuedMessage, Server, event args)</Description>
+    <!-- Default Engine for projects that use conditional PackageReference with $(Engine) -->
+    <Engine>WindowsDX</Engine>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ClientCore\ClientCore.csproj" />
+  </ItemGroup>
+</Project>
