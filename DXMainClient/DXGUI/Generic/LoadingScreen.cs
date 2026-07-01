@@ -41,6 +41,7 @@ namespace DTAClient.DXGUI.Generic
         private static extern IntPtr ActivateKeyboardLayout(IntPtr hkl, uint Flags);
 
         private const uint KLF_ACTIVATE = 0x00000001;
+        private const uint KLF_SETFORPROCESS = 0x00000100;
         private const string KLID_ENGLISH_US = "00000409";
 
         // 只监测常用的跳过按键，避免轮询过多虚拟键码
@@ -110,6 +111,8 @@ namespace DTAClient.DXGUI.Generic
         private bool skipRequested;
         private bool[] previousKeyStates = new bool[0x100];
         private IntPtr originalKeyboardLayout = IntPtr.Zero;
+        private bool keyboardLayoutOverrideActive;
+        private Form gameForm;
         private double loadingVideoVolumePercent = 100.0;
         private string loadingVideoAudioOutput = "directsound";
         private DateTime loadingScreenStartedAtUtc;
@@ -136,6 +139,13 @@ namespace DTAClient.DXGUI.Generic
             {
                 originalKeyboardLayout = GetKeyboardLayout(0);
                 LoadKeyboardLayout(KLID_ENGLISH_US, KLF_ACTIVATE);
+                keyboardLayoutOverrideActive = true;
+                WindowManager.GameClosing += WindowManager_GameClosing;
+                WindowManager.Game.Exiting += Game_Exiting;
+                Application.ApplicationExit += Application_ApplicationExit;
+                gameForm = Form.FromHandle(WindowManager.GetWindowHandle()) as Form;
+                if (gameForm != null)
+                    gameForm.FormClosing += GameForm_FormClosing;
                 Logger.Log("LoadingScreen: Keyboard layout forced to English US.");
             }
             catch (Exception ex)
@@ -229,18 +239,7 @@ namespace DTAClient.DXGUI.Generic
 
         private void Finish()
         {
-            // 恢复原始键盘布局。加载界面显示期间由 Update() 持续保持英文输入法，
-            // 离开加载界面后恢复用户进入前的输入法，避免影响后续正常切换。
-            try
-            {
-                if (originalKeyboardLayout != IntPtr.Zero)
-                    ActivateKeyboardLayout(originalKeyboardLayout, 0);
-                Logger.Log("LoadingScreen: Original keyboard layout restored.");
-            }
-            catch (Exception ex)
-            {
-                Logger.Log("LoadingScreen: Failed to restore keyboard layout: " + ex.Message);
-            }
+            RestoreOriginalKeyboardLayout();
 
             StopLoadingVideo();
 
@@ -276,10 +275,13 @@ namespace DTAClient.DXGUI.Generic
             // Windows 可能在 WM_SETFOCUS、WM_INPUTLANGCHANGE 等消息中切换布局
             try
             {
-                IntPtr currentLayout = GetKeyboardLayout(0);
-                if ((currentLayout.ToInt64() & 0xFFFF) != 0x0409)
+                if (keyboardLayoutOverrideActive)
                 {
-                    LoadKeyboardLayout(KLID_ENGLISH_US, KLF_ACTIVATE);
+                    IntPtr currentLayout = GetKeyboardLayout(0);
+                    if ((currentLayout.ToInt64() & 0xFFFF) != 0x0409)
+                    {
+                        LoadKeyboardLayout(KLID_ENGLISH_US, KLF_ACTIVATE);
+                    }
                 }
             }
             catch { }
@@ -579,7 +581,7 @@ namespace DTAClient.DXGUI.Generic
                 // 日志已经证明 LibVLC 可以播放，但 VideoView 作为 WinForms 原生子窗口无法可靠显示在
                 // MonoGame/DirectX 的交换链上方。改用 video callbacks 后，VLC 只负责解码，最终显示
                 // 由 LoadingScreen.Draw() 上传 Texture2D 并绘制，和普通 XNA 背景图片走同一条渲染管线。
-                loadingVideoPlayer.SetVideoFormat("RV32", (uint)loadingVideoWidth, (uint)loadingVideoHeight, (uint)loadingVideoPitch);
+                loadingVideoPlayer.SetVideoFormat("RGBA", (uint)loadingVideoWidth, (uint)loadingVideoHeight, (uint)loadingVideoPitch);
                 loadingVideoPlayer.SetVideoCallbacks(loadingVideoLockCallback, loadingVideoUnlockCallback, loadingVideoDisplayCallback);
 
                 loadingVideoMedia = new Media(loadingVideoLibVlc, new Uri(configuredBackgroundPath));
@@ -744,10 +746,7 @@ namespace DTAClient.DXGUI.Generic
                 hasPendingVideoFrame = false;
             }
 
-            // RV32 的第 4 个字节在部分 VLC 输出里不是可用 alpha。
-            // XNA 默认混合会读取 alpha；如果这里保持 0，画面就会像完全透明一样“没有播放”。
-            for (int i = 3; i < textureUploadFrame.Length; i += 4)
-                textureUploadFrame[i] = 255;
+            EnsureOpaqueVideoFrameAlpha(textureUploadFrame);
 
             if (loadingVideoTexture == null || loadingVideoTexture.Width != loadingVideoWidth || loadingVideoTexture.Height != loadingVideoHeight)
             {
@@ -765,8 +764,84 @@ namespace DTAClient.DXGUI.Generic
             }
         }
 
+        private static void EnsureOpaqueVideoFrameAlpha(byte[] frame)
+        {
+            // MonoGame WindowsDX uploads SurfaceFormat.Color byte[] as RGBA (DXGI R8G8B8A8).
+            // The loading video has no useful transparency; keep it fully opaque for SpriteBatch blending.
+            for (int i = 3; i < frame.Length; i += 4)
+                frame[i] = 255;
+        }
+
+        private void Game_Exiting(object sender, EventArgs e)
+        {
+            RestoreOriginalKeyboardLayout();
+        }
+
+        private void WindowManager_GameClosing(object sender, EventArgs e)
+        {
+            RestoreOriginalKeyboardLayout();
+        }
+
+        private void GameForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            RestoreOriginalKeyboardLayout();
+        }
+
+        private void Application_ApplicationExit(object sender, EventArgs e)
+        {
+            RestoreOriginalKeyboardLayout();
+        }
+
+        private static string FormatKeyboardLayout(IntPtr layout)
+        {
+            return "0x" + layout.ToInt64().ToString("X");
+        }
+
+        private void RestoreOriginalKeyboardLayout()
+        {
+            if (!keyboardLayoutOverrideActive)
+                return;
+
+            keyboardLayoutOverrideActive = false;
+
+            try
+            {
+                WindowManager.GameClosing -= WindowManager_GameClosing;
+                WindowManager.Game.Exiting -= Game_Exiting;
+                Application.ApplicationExit -= Application_ApplicationExit;
+                if (gameForm != null)
+                {
+                    gameForm.FormClosing -= GameForm_FormClosing;
+                    gameForm = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log("LoadingScreen: Failed to detach keyboard layout restore handlers: " + ex.Message);
+            }
+
+            try
+            {
+                IntPtr currentKeyboardLayout = GetKeyboardLayout(0);
+                IntPtr previousKeyboardLayout = IntPtr.Zero;
+
+                if (originalKeyboardLayout != IntPtr.Zero)
+                    previousKeyboardLayout = ActivateKeyboardLayout(originalKeyboardLayout, KLF_SETFORPROCESS);
+
+                IntPtr restoredKeyboardLayout = GetKeyboardLayout(0);
+
+                Logger.Log($"LoadingScreen: Original keyboard layout restored. original={FormatKeyboardLayout(originalKeyboardLayout)}, before={FormatKeyboardLayout(currentKeyboardLayout)}, previous={FormatKeyboardLayout(previousKeyboardLayout)}, after={FormatKeyboardLayout(restoredKeyboardLayout)}");
+            }
+            catch (Exception ex)
+            {
+                Logger.Log("LoadingScreen: Failed to restore keyboard layout: " + ex.Message);
+            }
+        }
+
         private void StopLoadingVideo()
         {
+            RestoreOriginalKeyboardLayout();
+
             try
             {
                 loadingVideoPlayer?.Stop();
