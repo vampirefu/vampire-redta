@@ -1,12 +1,12 @@
-﻿using Rampastring.Tools;
+using Rampastring.Tools;
 using System.Collections.Generic;
 using System.IO;
 
 namespace ClientCore.INIProcessing
 {
     /// <summary>
-    /// Pre-processes INI files.
-    /// Allows sections to inherit other sections.
+    /// 预处理 INI 文件。
+    /// 允许节继承其他节。
     /// </summary>
     public class IniPreprocessor
     {
@@ -26,11 +26,11 @@ namespace ClientCore.INIProcessing
         }
 
         /// <summary>
-        /// Processes an INI section and applies its potential base section.
-        /// Returns the INI section. Works recursively.
+        /// 处理一个 INI 节并应用其可能的基础节。
+        /// 返回该 INI 节。递归执行。
         /// </summary>
-        /// <param name="iniFile">The INI file.</param>
-        /// <param name="sectionName">The name of the section to process.</param>
+        /// <param name="iniFile">INI 文件。</param>
+        /// <param name="sectionName">要处理的节名称。</param>
         private IniSection ProcessSection(IniFile iniFile, string sectionName)
         {
             IniSection section = iniFile.GetSection(sectionName);

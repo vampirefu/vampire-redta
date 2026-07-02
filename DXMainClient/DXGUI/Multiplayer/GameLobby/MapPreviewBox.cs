@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using DTAClient.Domain.Multiplayer;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -30,7 +30,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
     }
 
     /// <summary>
-    /// The picture box for displaying the map preview.
+    /// 用于显示地图预览的图片框。
     /// </summary>
     public class MapPreviewBox : XNAPanel
     {
@@ -71,7 +71,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             Color hoverRemapColor = AssetLoader.GetRGBAColorFromString(ClientConfiguration.Instance.MapPreviewStartingLocationHoverRemapColor);
 
             startingLocationIndicators = new PlayerLocationIndicator[MAX_STARTING_LOCATIONS];
-            // Init starting location indicators
+            // 初始化起始位置指示器
             for (int i = 0; i < MAX_STARTING_LOCATIONS; i++)
             {
                 PlayerLocationIndicator indicator = new PlayerLocationIndicator(WindowManager, mpColors,
@@ -114,9 +114,8 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         public int FontIndex { get; set; }
 
         /// <summary>
-        /// Controls whether the context menu is enabled for this map preview box.
-        /// Skirmish games and online games where the local player is the host should
-        /// set have this set to true.
+        /// 控制此地图预览框是否启用上下文菜单。
+        /// 遭遇战游戏和本地玩家为主机的在线游戏应将此设置为true。
         /// </summary>
         public bool EnableContextMenu { get; set; }
         public bool EnableStartLocationSelection { get; set; }
@@ -290,8 +289,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Allows the user to select their starting location by clicking on one of them
-        /// in the map preview.
+        /// 允许用户通过点击地图预览中的起始位置来选择其起始位置。
         /// </summary>
         private void Indicator_LeftClick(object sender, EventArgs e)
         {
@@ -380,9 +378,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Updates the map preview texture's position inside
-        /// this control's display rectangle and the 
-        /// starting location indicators' positions.
+        /// 更新地图预览纹理在此控件显示矩形内的位置以及起始位置指示器的位置。
         /// </summary>
         public void UpdateMap()
         {
@@ -483,8 +479,8 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             foreach (var mapExtraTexture in GameModeMap.Map.GetExtraMapPreviewTextures())
             {
-                // LoadTexture makes use of a texture cache 
-                // so we don't need to cache the textures manually
+                // LoadTexture使用了纹理缓存，
+                // 所以我们不需要手动缓存纹理
                 Texture2D extraTexture = AssetLoader.LoadTexture(mapExtraTexture.TextureName);
                 Point location = PreviewTexturePointToControlAreaPoint(
                     GameModeMap.Map.MapPointToMapPreviewPoint(mapExtraTexture.Point,

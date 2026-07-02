@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using ClientGUI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -186,8 +186,8 @@ namespace DTAConfig.OptionPanels
 
             resolutions = GetResolutions(1280, 768, width, height);
 
-            // Add "optimal" client resolutions for windowed mode
-            // if they're not supported in fullscreen mode
+            // 添加窗口模式的"最佳"客户端分辨率
+            // 如果它们在全屏模式下不受支持
 
             AddResolutionIfFitting(1024, 600, resolutions);
             AddResolutionIfFitting(1024, 720, resolutions);
@@ -206,8 +206,8 @@ namespace DTAConfig.OptionPanels
                 ddClientResolution.AddItem(item);
             }
 
-            // So we add the optimal resolutions to the list, sort it and then find
-            // out the optimal resolution index - it's inefficient, but works
+            // 所以我们将最佳分辨率添加到列表中，排序后找出最佳分辨率索引
+            // 虽然效率不高，但能用
 
             string[] recommendedResolutions = clientConfig.RecommendedResolutions;
 
@@ -394,12 +394,12 @@ namespace DTAConfig.OptionPanels
         }
 
         /// <summary>
-        /// Adds a screen resolution to a list of resolutions if it fits on the screen.
-        /// Checks if the resolution already exists before adding it.
+        /// 如果屏幕分辨率适合屏幕则将其添加到分辨率列表中。
+        /// 添加前检查该分辨率是否已存在。
         /// </summary>
-        /// <param name="width">The width of the new resolution.</param>
-        /// <param name="height">The height of the new resolution.</param>
-        /// <param name="resolutions">A list of screen resolutions.</param>
+        /// <param name="width">新分辨率的宽度。</param>
+        /// <param name="height">新分辨率的高度。</param>
+        /// <param name="resolutions">屏幕分辨率列表。</param>
         private void AddResolutionIfFitting(int width, int height, List<ScreenResolution> resolutions)
         {
             if (resolutions.Find(res => res.Width == width && res.Height == height) != null)
@@ -455,7 +455,7 @@ namespace DTAConfig.OptionPanels
 #if TS
 
         /// <summary>
-        /// Asks the user whether they want to install the DTA/TI/TS compatibility fix.
+        /// 询问用户是否要安装DTA/TI/TS兼容性修复。
         /// </summary>
         public void PostInit()
         {
@@ -481,7 +481,7 @@ namespace DTAConfig.OptionPanels
         [SupportedOSPlatform("windows")]
         private void MessageBox_NoClicked(XNAMessageBox messageBox)
         {
-            // Set compatibility fix declined flag in registry
+            // 在注册表中设置兼容性修复已拒绝标志
             try
             {
                 RegistryKey regKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Tiberian Sun Client");
@@ -664,7 +664,7 @@ namespace DTAConfig.OptionPanels
         }
 
         /// <summary>
-        /// Loads the user's preferred renderer.
+        /// 加载用户首选的渲染器。
         /// </summary>
         private void LoadRenderer()
         {
@@ -698,19 +698,18 @@ namespace DTAConfig.OptionPanels
 
             ddIngameResolution.SelectedIndex = index > -1 ? index : 0;
 
-            // Wonder what this "Win8CompatMode" actually does..
-            // Disabling it used to be TS-DDRAW only, but it was never enabled after 
-            // you had tried TS-DDRAW once, so most players probably have it always
-            // disabled anyway
+            // 不知道这个"Win8CompatMode"实际上做了什么..
+            // 禁用它以前只对TS-DDRAW有效，但一旦你尝试过TS-DDRAW，
+            // 它就再也不会被启用，所以大多数玩家可能一直处于禁用状态
             IniSettings.Win8CompatMode.Value = "No";
 
             var renderer = (DirectDrawWrapper)ddRenderer.SelectedItem.Tag;
 
             if (renderer.UsesCustomWindowedOption())
             {
-                // For renderers that have their own windowed mode implementation
-                // enabled through their own config INI file
-                // (for example DxWnd and CnC-DDRAW)
+                // 对于通过自身配置INI文件启用
+                // 自定义窗口模式实现的渲染器
+                //（例如DxWnd和CnC-DDRAW）
 
                 IniFile rendererSettingsIni = new IniFile(SafePath.CombineFilePath(ProgramConstants.GamePath, renderer.ConfigFileName));
 
@@ -845,7 +844,7 @@ namespace DTAConfig.OptionPanels
             IniSettings.IngameScreenWidth.Value = ingameRes[0];
             IniSettings.IngameScreenHeight.Value = ingameRes[1];
 
-            // Calculate drag selection distance, scale it with resolution width
+            // 计算拖拽选择距离，根据分辨率宽度进行缩放
             int dragDistance = ingameRes[0] / ORIGINAL_RESOLUTION_WIDTH * DRAG_DISTANCE_DEFAULT;
             IniSettings.DragDistance.Value = dragDistance;
 
@@ -1007,9 +1006,9 @@ namespace DTAConfig.OptionPanels
 
                 var resolution = new ScreenResolution(dm.Width, dm.Height);
 
-                // SupportedDisplayModes can include the same resolution multiple times
-                // because it takes the refresh rate into consideration.
-                // Which means that we have to check if the resolution is already listed
+                // SupportedDisplayModes可能多次包含相同分辨率
+                // 因为它会考虑刷新率。
+                // 这意味着我们必须检查该分辨率是否已在列表中
                 if (screenResolutions.Find(res => res.Equals(resolution)) != null)
                     continue;
 
@@ -1031,7 +1030,7 @@ namespace DTAConfig.OptionPanels
         }
 
         /// <summary>
-        /// A single screen resolution.
+        /// 单个屏幕分辨率。
         /// </summary>
         sealed class ScreenResolution : IComparable<ScreenResolution>
         {
@@ -1042,12 +1041,12 @@ namespace DTAConfig.OptionPanels
             }
 
             /// <summary>
-            /// The width of the resolution in pixels.
+            /// 分辨率的宽度（像素）。
             /// </summary>
             public int Width { get; set; }
 
             /// <summary>
-            /// The height of the resolution in pixels.
+            /// 分辨率的高度（像素）。
             /// </summary>
             public int Height { get; set; }
 
@@ -1062,7 +1061,7 @@ namespace DTAConfig.OptionPanels
                     return -1;
                 else if (this.Width > res2.Width)
                     return 1;
-                else // equal
+                else // 相等
                 {
                     if (this.Height < res2.Height)
                         return -1;

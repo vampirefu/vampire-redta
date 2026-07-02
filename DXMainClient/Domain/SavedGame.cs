@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using Rampastring.Tools;
 using System;
 using System.IO;
@@ -7,7 +7,7 @@ using OpenMcdf;
 namespace DTAClient.Domain
 {
     /// <summary>
-    /// A single-player saved game.
+    /// 单人游戏存档。
     /// </summary>
     public class SavedGame
     {
@@ -23,7 +23,7 @@ namespace DTAClient.Domain
         public DateTime LastModified { get; private set; }
 
         /// <summary>
-        /// Get the saved game's name from a .sav file.
+        /// 从.sav文件获取存档名称。
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
@@ -37,9 +37,9 @@ namespace DTAClient.Domain
         }
 
         /// <summary>
-        /// Reads and sets the saved game's name and last modified date, and returns true if succesful.
+        /// 读取并设置存档名称和最后修改日期，成功则返回true。
         /// </summary>
-        /// <returns>True if parsing the info was succesful, otherwise false.</returns>
+        /// <returns>如果解析信息成功则为true，否则为false。</returns>
         public bool ParseInfo()
         {
             try

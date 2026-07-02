@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using ClientCore.CnCNet5;
 using ClientGUI;
 using DTAClient.Domain.Multiplayer;
@@ -177,7 +177,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             btnLogout.Name = nameof(btnLogout);
             btnLogout.ClientRectangle = new Rectangle(Width - 145, btnNewGame.Y,
                 UIDesignConstants.BUTTON_WIDTH_133, UIDesignConstants.BUTTON_HEIGHT);
-            btnLogout.Text = "Log Out";
+            btnLogout.Text = "登出";
             btnLogout.LeftClick += BtnLogout_LeftClick;
 
             var gameListRectangle = new Rectangle(
@@ -418,7 +418,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
         private bool HostedGameMatches(GenericHostedGame hg)
         {
-            // friends list takes priority over other filters below
+            // 好友列表优先于以下其他筛选条件
             if (UserINISettings.Instance.ShowFriendGamesOnly)
                 return hg.Players.Any(p => cncnetUserData.IsFriend(p));
 
@@ -505,7 +505,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
             if (connectionManager.MainChannel == null)
             {
-                // Set CnCNet channel as main channel if no channel found
+                // 如果未找到频道，则将CnCNet频道设置为主频道
                 ddCurrentChannel.SelectedIndex = ddCurrentChannel.Items.Count - 1;
             }
         }
@@ -579,8 +579,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
         }
 
         /// <summary>
-        /// Displays a message when the IRC server has informed that the local user
-        /// has been banned from a channel that they're attempting to join.
+        /// 当IRC服务器通知本地用户已被禁止加入其尝试进入的频道时显示消息。
         /// </summary>
         private void ConnectionManager_BannedFromChannel(object sender, ChannelEventArgs e)
         {
@@ -590,12 +589,12 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             {
                 var chatChannel = connectionManager.FindChannel(e.ChannelName);
                 chatChannel?.AddMessage(new ChatMessage(Color.White, string.Format(
-                    "Cannot join chat channel {0}, you're banned!", chatChannel.UIName)));
+                    "无法加入聊天频道{0}，您已被封禁！", chatChannel.UIName)));
                 return;
             }
 
             connectionManager.MainChannel.AddMessage(new ChatMessage(Color.White, string.Format(
-                "Cannot join game {0}, you've been banned by the game host!", game.RoomName)));
+                "无法加入游戏{0}，您已被房主封禁！", game.RoomName)));
 
             isJoiningGame = false;
             if (gameOfLastJoinAttempt != null)
@@ -678,7 +677,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
         }
 
         /// <summary>
-        /// Enables private messaging by PM'ing a user in the player list.
+        /// 通过向玩家列表中的用户发送私信来启用私聊。
         /// </summary>
         private void LbPlayerList_DoubleLeftClick(object sender, EventArgs e)
         {
@@ -691,7 +690,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
         }
 
         /// <summary>
-        /// Hides the login dialog once the user has hit Connect on that dialog.
+        /// 当用户在该对话框上点击连接后隐藏登录对话框。
         /// </summary>
         private void LoginWindow_Connect(object sender, EventArgs e)
         {
@@ -702,8 +701,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
         }
 
         /// <summary>
-        /// Hides the login window and the CnCNet lobby if the user
-        /// cancels connecting to CnCNet in the login dialog.
+        /// 如果用户在登录对话框中取消连接CnCNet，则隐藏登录窗口和CnCNet大厅。
         /// </summary>
         private void LoginWindow_Cancelled(object sender, EventArgs e)
         {
@@ -717,7 +715,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             isInGameRoom = false;
             SetLogOutButtonText();
 
-            // keep the friends window up to date so it can disable the Invite option
+            // 保持好友窗口更新，以便它可以禁用邀请选项
             pmWindow.ClearInviteChannelInfo();
         }
 
@@ -727,7 +725,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             isInGameRoom = false;
             SetLogOutButtonText();
 
-            // keep the friends window up to date so it can disable the Invite option
+            // 保持好友窗口更新，以便它可以禁用邀请选项
             pmWindow.ClearInviteChannelInfo();
         }
 
@@ -765,11 +763,10 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             return null;
         }
         /// <summary>
-        /// Checks if the user can join a game.
-        /// Returns null if the user can, otherwise returns an error message
-        /// that tells the reason why the user cannot join the game.
+        /// 检查用户是否可以加入游戏。
+        /// 如果可以则返回null，否则返回说明用户无法加入游戏原因的错误消息。
         /// </summary>
-        /// <param name="gameIndex">The index of the game in the game list box.</param>
+        /// <param name="gameIndex">游戏列表框中的游戏索引。</param>
         private string GetJoinGameErrorByIndex(int gameIndex)
         {
             if (gameIndex < 0 || gameIndex >= lbGameList.HostedGames.Count)
@@ -779,10 +776,10 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
         }
 
         /// <summary>
-        /// Returns an error message if game is not join-able, otherwise null.
+        /// 如果游戏不可加入则返回错误消息，否则返回null。
         /// </summary>
-        /// <param name="hg"></param>
-        /// <returns></returns>
+        /// <param name="hg">托管游戏。</param>
+        /// <returns>错误消息或null。</returns>
         private string GetJoinGameError(HostedCnCNetGame hg)
         {
             if (hg.Game.InternalName.ToUpper() != localGameID.ToUpper())
@@ -819,12 +816,12 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
         }
 
         /// <summary>
-        /// Attempt to join a game.
+        /// 尝试加入游戏。
         /// </summary>
-        /// <param name="hg">The game to join.</param>
-        /// <param name="password">The password to join with.</param>
-        /// <param name="messageView">The message view/list to write error messages to.</param>
-        /// <returns></returns>
+        /// <param name="hg">要加入的游戏。</param>
+        /// <param name="password">用于加入的密码。</param>
+        /// <param name="messageView">用于写入错误消息的消息视图/列表。</param>
+        /// <returns>是否成功。</returns>
         private bool JoinGame(HostedCnCNetGame hg, string password, IMessageView messageView)
         {
             string error = GetJoinGameError(hg);
@@ -841,11 +838,11 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             }
 
             // if (hg.GameVersion != ProgramConstants.GAME_VERSION)
-            // TODO Show warning
+            // TODO 显示警告
 
             if (hg.Passworded)
             {
-                // only display password dialog if we've not been supplied with a password (invite)
+                // 仅在我们没有提供密码（邀请）时才显示密码对话框
                 if (string.IsNullOrEmpty(password))
                 {
                     passwordRequestWindow.SetHostedGame(hg);
@@ -911,7 +908,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
         }
 
         private void GameChannel_ChannelFull(object sender, EventArgs e) =>
-            // We'd do the exact same things here, so we can just call the method below
+            // 我们在这里会做完全相同的事情，所以可以直接调用下面的方法
             GameChannel_InviteOnlyErrorOnJoin(sender, e);
 
         private void GameChannel_InviteOnlyErrorOnJoin(object sender, EventArgs e)
@@ -1014,7 +1011,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
             gameCreationPanel.Hide();
 
-            // update the friends window so it can enable the Invite option
+            // 更新好友窗口，以便它可以启用邀请选项
             pmWindow.SetInviteChannelInfo(channelName, e.GameRoomName, string.IsNullOrEmpty(e.Password) ? string.Empty : e.Password);
         }
 
@@ -1036,7 +1033,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
             gameCreationPanel.Hide();
 
-            // update the friends window so it can enable the Invite option
+            // 更新好友窗口，以便它可以启用邀请选项
             pmWindow.SetInviteChannelInfo(channelName, e.GameRoomName, string.IsNullOrEmpty(e.Password) ? string.Empty : e.Password);
         }
 
@@ -1065,9 +1062,9 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
         }
 
         /// <summary>
-        /// Generates and returns a random, unused cannel name.
+        /// 生成并返回一个随机的、未使用的频道名称。
         /// </summary>
-        /// <returns>A random channel name based on the currently played game.</returns>
+        /// <returns>基于当前正在玩的游戏的随机频道名称。</returns>
         private string RandomizeChannelName()
         {
             while (true)
@@ -1121,7 +1118,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
             gameCreationPanel.Hide();
 
-            // Switch channel to default
+            // 切换到默认频道
             if (localGame != null)
             {
                 int gameIndex = ddCurrentChannel.Items.FindIndex(i => i.Text == localGame.UIName);
@@ -1182,10 +1179,10 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
         private void HandleGameInviteCommand(string sender, string argumentsString)
         {
-            // arguments are semicolon-delimited
+            // 参数以分号分隔
             var arguments = argumentsString.Split(';');
 
-            // we expect to be given a channel name, a (human-friendly) game name and optionally a password
+            // 我们期望收到一个频道名称、一个（人类可读的）游戏名称，以及可选的密码
             if (arguments.Length < 2 || arguments.Length > 3)
                 return;
 
@@ -1198,15 +1195,15 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
             var gameIndex = lbGameList.HostedGames.FindIndex(hg => ((HostedCnCNetGame)hg).ChannelName == channelName);
 
-            // also enforce user preference on whether to accept invitations from non-friends
-            // this is kept separate from CanReceiveInvitationMessagesFrom() as we still
-            // want to let the host know that we couldn't receive the invitation
+            // 同时强制执行用户关于是否接受非好友邀请的偏好设置
+            // 这与CanReceiveInvitationMessagesFrom()分开处理，因为我们仍
+            // 希望让主持知道我们无法收到邀请
             if (!string.IsNullOrEmpty(GetJoinGameErrorByIndex(gameIndex)) ||
                 (UserINISettings.Instance.AllowGameInvitesFromFriendsOnly &&
                 !cncnetUserData.IsFriend(sender)))
             {
-                // let the host know that we can't accept
-                // note this is not reached for the rejection case
+                // 让主持知道我们无法接受
+                // 注意：拒绝情况下不会到达这里
                 connectionManager.SendCustomMessage(new QueuedMessage("PRIVMSG " + sender + " :\u0001" +
                     ProgramConstants.GAME_INVITATION_FAILED_CTCP_COMMAND + "\u0001",
                     QueuedMessageType.CHAT_MESSAGE, 0));
@@ -1214,10 +1211,10 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
                 return;
             }
 
-            // if there's already an outstanding invitation from this user/channel combination,
-            // we don't want to display another
-            // we won't bother telling the host though, since their old invitation is still
-            // available to us
+            // 如果此用户/频道组合已有一个未处理的邀请，
+            // 我们不想再显示另一个
+            // 我们不会通知主持，因为他们的旧邀请对我们
+            // 仍然可用
             var invitationIdentity = new UserChannelPair(sender, channelName);
 
             if (invitationIndex.ContainsKey(invitationIdentity))
@@ -1229,7 +1226,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
             WindowManager.AddAndInitializeControl(gameInviteChoiceBox);
 
-            // show the invitation at top left; it will remain until it is acted upon or the target game is closed
+            // 在左上角显示邀请；它将一直保留直到被操作或目标游戏关闭
             gameInviteChoiceBox.Show(
                 "游戏邀请",
                 GetUserTexture(sender),
@@ -1237,20 +1234,20 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
                 string.Format("加入{0}?", gameName),
                 "确定", "取消", 0);
 
-            // add the invitation to the index so we can remove it if the target game is closed
-            // also lets us silently ignore new invitations from the same person while this one is still outstanding
+            // 将邀请添加到索引中，以便在目标游戏关闭时可以移除
+            // 也允许我们在该邀请仍然未处理时静默忽略来自同一人的新邀请
             invitationIndex[invitationIdentity] =
                 new WeakReference(gameInviteChoiceBox);
 
             gameInviteChoiceBox.AffirmativeClickedAction = delegate (ChoiceNotificationBox choiceBox)
             {
-                // if we're currently in a game lobby, first leave that channel
+                // 如果我们当前在游戏大厅中，首先离开该频道
                 if (isInGameRoom)
                 {
                     gameLobby.LeaveGameLobby();
                 }
 
-                // JoinGameByIndex does bounds checking so we're safe to pass -1 if the game doesn't exist
+                // JoinGameByIndex会进行边界检查，所以如果游戏不存在传入-1也是安全的
                 if (!JoinGameByIndex(lbGameList.HostedGames.FindIndex(hg => ((HostedCnCNetGame)hg).ChannelName == channelName), password))
                 {
                     XNAMessageBox.Show(WindowManager,
@@ -1258,13 +1255,13 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
                         string.Format("无法加入{0}的游戏.游戏已锁定或关闭.", sender));
                 }
 
-                // clean up the index as this invitation no longer exists
+                // 清理索引，因为此邀请不再存在
                 invitationIndex.Remove(invitationIdentity);
             };
 
             gameInviteChoiceBox.NegativeClickedAction = delegate (ChoiceNotificationBox choiceBox)
             {
-                // clean up the index as this invitation no longer exists
+                // 清理索引，因为此邀请不再存在
                 invitationIndex.Remove(invitationIdentity);
             };
 
@@ -1279,9 +1276,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             if (isInGameRoom && !ProgramConstants.IsInGame)
             {
                 gameLobby.AddWarning(
-                    string.Format("{0} could not receive your invitation. They might be in game " +
-                    "or only accepting invitations from friends. Ensure your game is " +
-                    "{0}无法接收您的游戏邀请.其可能已在游戏中或者仅接收好友邀请.请确保您的游戏未锁定并在大厅可见然后再重试.", sender));
+                    string.Format("{0}无法接收您的游戏邀请.其可能已在游戏中或者仅接收好友邀请.请确保您的游戏未锁定并在大厅可见然后再重试.", sender));
             }
         }
 
@@ -1300,7 +1295,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
                 if (currentChatChannel.ChannelName != "#cncnet" &&
                     currentChatChannel.ChannelName != gameCollection.GetGameChatChannelNameFromIdentifier(localGameID))
                 {
-                    // Remove the assigned channels from the users so we don't have ghost users on the PM user list
+                    // 移除分配给用户的频道，以免在私聊用户列表中出现幽灵用户
                     currentChatChannel.Users.DoForAllUsers(user =>
                     {
                         connectionManager.RemoveChannelFromUser(user.IRCUser.Name, currentChatChannel.ChannelName);
@@ -1360,9 +1355,9 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
         }
 
         /// <summary>
-        /// Refreshes a single user's info on the player list.
+        /// 刷新玩家列表中单个用户的信息。
         /// </summary>
-        /// <param name="user">User on the current chat channel.</param>
+        /// <param name="user">当前聊天频道上的用户。</param>
         private void RefreshPlayerListUser(ChannelUser user)
         {
             user.IRCUser.IsFriend = cncnetUserData.IsFriend(user.IRCUser.Name);
@@ -1399,8 +1394,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             AddMessageToChat(e.Message);
 
         /// <summary>
-        /// Removes a game from the list when the host quits CnCNet or
-        /// leaves the game broadcast channel.
+        /// 当主持退出CnCNet或离开游戏广播频道时，从列表中移除游戏。
         /// </summary>
         private void GameBroadcastChannel_UserLeftOrQuit(object sender, UserNameEventArgs e)
         {
@@ -1410,7 +1404,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             {
                 lbGameList.RemoveGame(gameIndex);
 
-                // dismiss any outstanding invitations that are no longer valid
+                // 关闭任何不再有效的未处理邀请
                 DismissInvalidInvitations();
             }
         }
@@ -1445,7 +1439,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             if (!e.Message.StartsWith("GAME "))
                 return;
 
-            string msg = e.Message.Substring(5); // Cut out GAME part
+            string msg = e.Message.Substring(5); // 截取GAME之后的部分
             string[] splitMessage = msg.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 
             if (splitMessage.Length != 11)
@@ -1509,15 +1503,15 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
                     {
                         lbGameList.RemoveGame(index);
 
-                        // dismiss any outstanding invitations that are no longer valid
+                        // 关闭任何不再有效的未处理邀请
                         DismissInvalidInvitations();
                     }
 
                     return;
                 }
 
-                // Seek for the game in the internal game list based on the name of its host;
-                // if found, then refresh that game's information, otherwise add as new game
+                // 根据主持名称在内部游戏列表中查找游戏；
+                // 如果找到则刷新该游戏信息，否则作为新游戏添加
                 int gameIndex = lbGameList.HostedGames.FindIndex(hg => hg.HostName == e.UserName);
 
                 if (gameIndex > -1)
@@ -1586,13 +1580,13 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
         {
             IRCUser iu = connectionManager.UserList.Find(u => u.Name == username);
 
-            // We don't accept invitation messages from people who we don't share any channels with
+            // 我们不接受来自不共享任何频道的人的邀请消息
             if (iu == null)
             {
                 return false;
             }
 
-            // Invitation messages from users we've blocked are not wanted
+            // 我们不希望收到已屏蔽用户的邀请消息
             if (cncnetUserData.IsIgnored(iu.Ident))
             {
                 return false;
@@ -1654,26 +1648,25 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
         }
 
         /// <summary>
-        /// Attempts to find a hosted game that the specified user is in
+        /// 尝试查找指定用户所在的已托管游戏
         /// </summary>
-        /// <param name="user">The user to find a game for.</param>
-        /// <returns></returns>
+        /// <param name="user">要查找游戏的用户。</param>
+        /// <returns>找到的托管游戏或null。</returns>
         private HostedCnCNetGame GetHostedGameForUser(IRCUser user)
         {
             return lbGameList.HostedGames.Select(g => (HostedCnCNetGame)g).FirstOrDefault(g => g.Players.Contains(user.Name));
         }
 
         /// <summary>
-        /// Joins a specified user's game depending on whether or not
-        /// they are currently in one.
+        /// 根据指定用户当前是否在游戏中来加入其游戏。
         /// </summary>
-        /// <param name="user">The user to join.</param>
-        /// <param name="messageView">The message view/list to write error messages to.</param>
+        /// <param name="user">要加入的用户。</param>
+        /// <param name="messageView">用于写入错误消息的消息视图/列表。</param>
         private void JoinUser(IRCUser user, IMessageView messageView)
         {
             if (user == null)
             {
-                // can happen if a user is selected while offline
+                // 可能在用户离线时被选中
                 messageView.AddMessage(new ChatMessage(Color.White, "用户当前不可用!"));
                 return;
             }

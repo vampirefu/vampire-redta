@@ -1,11 +1,11 @@
-﻿using Rampastring.XNAUI.XNAControls;
+using Rampastring.XNAUI.XNAControls;
 using Rampastring.XNAUI;
 using Microsoft.Xna.Framework;
 
 namespace DTAClient.DXGUI.Multiplayer.GameLobby
 {
     /// <summary>
-    /// A box for drawing scenario briefings.
+    /// 用于绘制场景简报的框。
     /// </summary>
     class CoopBriefingBox : XNAPanel
     {

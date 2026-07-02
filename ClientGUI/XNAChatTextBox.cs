@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Input;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 using System;
@@ -7,8 +7,7 @@ using System.Collections.Generic;
 namespace ClientGUI
 {
     /// <summary>
-    /// A text box that stores entered messages and allows viewing them
-    /// with the arrow keys.
+    /// 存储已输入消息的文本框，允许通过方向键查看历史消息。
     /// </summary>
     public class XNAChatTextBox : XNASuggestionTextBox
     {

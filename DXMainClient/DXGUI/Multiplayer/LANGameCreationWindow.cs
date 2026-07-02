@@ -1,4 +1,4 @@
-﻿using ClientGUI;
+using ClientGUI;
 using System;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
@@ -12,8 +12,7 @@ using DTAClient.DXGUI.Generic;
 namespace DTAClient.DXGUI.Multiplayer
 {
     /// <summary>
-    /// A window that makes it possible for a LAN player who's hosting a game
-    /// to pick between hosting a new game and hosting a loaded game.
+    /// 一个窗口，使主持游戏的局域网玩家可以选择主持新游戏或主持已加载的游戏。
     /// </summary>
     class LANGameCreationWindow : XNAWindow
     {
@@ -133,7 +132,7 @@ namespace DTAClient.DXGUI.Multiplayer
             if (!iniFile.GetBooleanValue("Settings", "Host", false))
                 return false;
 
-            // Don't allow loading CnCNet games in LAN mode
+            // 不允许在局域网模式下加载CnCNet游戏
             if (iniFile.SectionExists("Tunnel"))
                 return false;
 

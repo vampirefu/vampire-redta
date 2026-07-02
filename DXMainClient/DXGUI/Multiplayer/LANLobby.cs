@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using ClientCore.CnCNet5;
 using ClientGUI;
 using DTAClient.Domain;
@@ -133,7 +133,7 @@ namespace DTAClient.DXGUI.Multiplayer
             lbGameList.ClientRectangle = new Rectangle(btnNewGame.X,
                 41, btnJoinGame.Right - btnNewGame.X,
                 btnNewGame.Y - 53);
-            lbGameList.GameLifetime = 15.0; // Smaller lifetime in LAN
+            lbGameList.GameLifetime = 15.0; // 局域网中更短的生命周期
             lbGameList.PanelBackgroundDrawMode = PanelBackgroundImageDrawMode.STRETCHED;
             lbGameList.BackgroundTexture = AssetLoader.CreateTexture(new Color(0, 0, 0, 128), 1, 1);
             lbGameList.DoubleLeftClick += LbGameList_DoubleLeftClick;
@@ -565,7 +565,7 @@ namespace DTAClient.DXGUI.Multiplayer
 
             if (hg.GameVersion != ProgramConstants.GAME_VERSION)
             {
-                // TODO Show warning
+                // TODO 显示警告
             }
 
             lbChatMessages.AddMessage(string.Format("尝试加入游戏{0}...", hg.RoomName));

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -103,30 +103,30 @@ namespace ClientCore.Statistics
 
         public void Write(Stream stream)
         {
-            // Game length
+            // 游戏时长
             stream.WriteInt(LengthInSeconds);
 
-            // Game version, 8 bytes, ASCII
+            // 游戏版本，8字节，ASCII
             stream.WriteString(GameVersion, 8, Encoding.ASCII);
 
-            // Date and time, 8 bytes
+            // 日期和时间，8字节
             stream.WriteLong(DateAndTime.ToBinary());
-            // SawCompletion, 1 byte
+            // SawCompletion，1字节
             stream.WriteBool(SawCompletion);
-            // Number of players, 1 byte
+            // 玩家数量，1字节
             stream.WriteByte(Convert.ToByte(GetPlayerCount()));
-            // Average FPS, 4 bytes
+            // 平均 FPS，4字节
             stream.WriteInt(AverageFPS);
-            // Map name, 128 bytes (64 chars), Unicode
+            // 地图名称，128字节（64字符），Unicode
             stream.WriteString(MapName, 128);
-            // Game mode, 64 bytes (32 chars), Unicode
+            // 游戏模式，64字节（32字符），Unicode
             stream.WriteString(GameMode, 64);
-            // Unique game ID, 4 bytes
+            // 唯一游戏ID，4字节
             stream.WriteInt(GameID);
-            // Whether game options were valid for earning a star, 1 byte
+            // 游戏选项是否满足获得星星的条件，1字节
             stream.WriteBool(IsValidForStar);
 
-            // Write player info
+            // 写入玩家信息
             for (int i = 0; i < GetPlayerCount(); i++)
             {
                 PlayerStatistics ps = GetPlayer(i);

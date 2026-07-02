@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using ClientCore.CnCNet5;
 using ClientGUI;
 using DTAConfig.OptionPanels;
@@ -97,10 +97,10 @@ namespace DTAConfig
         public void SetTopBar(XNAControl topBar) => this.topBar = topBar;
 
         /// <summary>
-        /// Parses extra options defined by the modder
-        /// from an INI file. Called from XNAWindow.SetAttributesFromINI.
+        /// 从INI文件中解析由模组制作者定义的额外选项。
+        /// 从XNAWindow.SetAttributesFromINI调用。
         /// </summary>
-        /// <param name="iniFile">The INI file.</param>
+        /// <param name="iniFile">INI文件。</param>
         protected override void GetINIAttributes(IniFile iniFile)
         {
             base.GetINIAttributes(iniFile);
@@ -120,14 +120,14 @@ namespace DTAConfig
 
         private void BtnBack_LeftClick(object sender, EventArgs e)
         {
-            // Updater removed: simply close options
+            // 更新器已移除：直接关闭选项
             WindowManager.SoundPlayer.SetVolume(Convert.ToSingle(UserINISettings.Instance.ClientVolume));
             Disable();
         }
 
         private void BtnSave_LeftClick(object sender, EventArgs e)
         {
-            // Updater removed: just save settings
+            // 更新器已移除：仅保存设置
             SaveSettings();
         }
 
@@ -168,12 +168,10 @@ namespace DTAConfig
         private void RestartMsgBox_YesClicked(XNAMessageBox messageBox) => WindowManager.RestartGame();
 
         /// <summary>
-        /// Refreshes the option panels to account for possible
-        /// changes that could affect theirs functionality.
-        /// Shows the popup to inform the user if needed.
+        /// 刷新选项面板以应对可能影响其功能的变更。
+        /// 如有需要，显示弹窗通知用户。
         /// </summary>
-        /// <returns>A bool that determines whether the 
-        /// settings values were changed.</returns>
+        /// <returns>一个布尔值，指示设置值是否已变更。</returns>
         private bool RefreshOptionPanels()
         {
             bool optionValuesChanged = false;
@@ -216,7 +214,7 @@ namespace DTAConfig
 
             RefreshOptionPanels();
 
-            // Updater and Components panels removed
+            // 更新器和组件面板已移除
 
             Enable();
         }
@@ -229,7 +227,7 @@ namespace DTAConfig
             }
         }
 
-        // Custom components / updater UI removed
+        // 自定义组件/更新器UI已移除
 
         public void PostInit()
         {

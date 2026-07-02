@@ -1,9 +1,9 @@
-﻿using Rampastring.Tools;
+using Rampastring.Tools;
 
 namespace ClientCore.Settings
 {
     /// <summary>
-    /// A base class for an INI setting.
+    /// INI 设置的基类。
     /// </summary>
     public abstract class INISetting<T> : IIniSetting
     {
@@ -38,8 +38,7 @@ namespace ClientCore.Settings
         }
 
         /// <summary>
-        /// Writes the default value of this setting to the INI file if no value
-        /// for the setting is currently specified in the INI file.
+        /// 如果 INI 文件中当前未指定此设置的值，则将默认值写入 INI 文件。
         /// </summary>
         public void SetDefaultIfNonexistent()
         {

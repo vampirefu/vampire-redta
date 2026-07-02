@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 using System;
@@ -60,7 +60,7 @@ namespace ClientGUI
                     break;
 
                 case PlayerSlotState.Unavailable:
-                    ToolTip.Text = "The slot is unavailable.";
+                    ToolTip.Text = "该位置不可用。";
                     break;
 
                 case PlayerSlotState.AI:
@@ -72,19 +72,19 @@ namespace ClientGUI
                     break;
 
                 case PlayerSlotState.Ready:
-                    ToolTip.Text = "The player is ready.";
+                    ToolTip.Text = "该玩家已准备。";
                     break;
 
                 case PlayerSlotState.InGame:
-                    ToolTip.Text = "The player is in game.";
+                    ToolTip.Text = "该玩家正在游戏中。";
                     break;
 
                 case PlayerSlotState.Warning:
-                    ToolTip.Text = "The player has some issue(s) that may impact gameplay.";
+                    ToolTip.Text = "该玩家存在可能影响游戏的问题。";
                     break;
 
                 case PlayerSlotState.Error:
-                    ToolTip.Text = "There's a critical issue with the player.";
+                    ToolTip.Text = "该玩家存在严重问题。";
                     break;
             }
         }

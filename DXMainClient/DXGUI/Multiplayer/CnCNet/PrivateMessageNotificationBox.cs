@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Rampastring.XNAUI;
@@ -14,8 +14,8 @@ using Rectangle = Microsoft.Xna.Framework.Rectangle;
 namespace DTAClient.DXGUI.Multiplayer.CnCNet
 {
     /// <summary>
-    /// A box that notifies users of new private messages,
-    /// top-right of the game window.
+    /// 通知用户新私信的消息框，
+    /// 位于游戏窗口右上角。
     /// </summary>
     public class PrivateMessageNotificationBox : XNAPanel
     {
@@ -87,13 +87,13 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             lblSender.FontIndex = 1;
             lblSender.ClientRectangle = new Rectangle(gameIconPanel.Right + 3,
                 gameIconPanel.Y, 0, 0);
-            lblSender.Text = "Rampastring:";
+            lblSender.Text = "发送者:";
 
             lblMessage = new XNALabel(WindowManager);
             lblMessage.Name = "lblMessage";
             lblMessage.ClientRectangle = new Rectangle(12, lblSender.Bottom + 6, 0, 0);
             lblMessage.RemapColor = AssetLoader.GetColorFromString(ClientConfiguration.Instance.ReceivedPMColor);
-            lblMessage.Text = "This is a test message.";
+            lblMessage.Text = "这是一条测试消息。";
 
             AddChild(gameIconPanel);
             AddChild(linePanel);

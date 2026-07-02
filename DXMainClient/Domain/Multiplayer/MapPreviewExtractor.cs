@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
@@ -15,15 +15,15 @@ using SixLabors.ImageSharp.PixelFormats;
 namespace DTAClient.Domain.Multiplayer
 {
     /// <summary>
-    /// A helper class for extracting preview images from maps.
+    /// 用于从地图中提取预览图像的辅助类。
     /// </summary>
     public static class MapPreviewExtractor
     {
         /// <summary>
-        /// Extracts map preview image as a bitmap.
+        /// 将地图预览图像提取为位图。
         /// </summary>
-        /// <param name="mapIni">Map file.</param>
-        /// <returns>Bitmap of map preview image, or null if preview could not be extracted.</returns>
+        /// <param name="mapIni">地图文件。</param>
+        /// <returns>地图预览图像的位图，如果无法提取预览则返回null。</returns>
         public static Image ExtractMapPreview(IniFile mapIni)
         {
             List<string> sectionKeys = mapIni.GetSectionKeys("PreviewPack");
@@ -92,12 +92,12 @@ namespace DTAClient.Domain.Multiplayer
         }
 
         /// <summary>
-        /// Decompresses map preview image data.
+        /// 解压地图预览图像数据。
         /// </summary>
-        /// <param name="dataSource">Array of compressed map preview image data.</param>
-        /// <param name="decompressedDataSize">Size of decompressed preview image data.</param>
-        /// <param name="errorMessage">Will be set to error message if something went wrong, otherwise null.</param>
-        /// <returns>Array of decompressed preview image data if successfully decompressed, otherwise null.</returns>
+        /// <param name="dataSource">压缩的地图预览图像数据数组。</param>
+        /// <param name="decompressedDataSize">解压后的预览图像数据大小。</param>
+        /// <param name="errorMessage">如果出错则设置为错误消息，否则为null。</param>
+        /// <returns>如果解压成功则返回解压后的预览图像数据数组，否则返回null。</returns>
         private static byte[] DecompressPreviewData(byte[] dataSource, int decompressedDataSize, out string errorMessage)
         {
             try
@@ -121,7 +121,7 @@ namespace DTAClient.Domain.Multiplayer
                     if (readBytes + sizeCompressed > dataSource.Length ||
                         writtenBytes + sizeUncompressed > dataDest.Length)
                     {
-                        errorMessage = "Preview data does not match preview size or the data is corrupted, unable to extract preview.";
+                        errorMessage = "预览数据与预览大小不匹配或数据已损坏，无法提取预览。";
                         return null;
                     }
 
@@ -136,19 +136,19 @@ namespace DTAClient.Domain.Multiplayer
             }
             catch (Exception e)
             {
-                errorMessage = "Error encountered decompressing preview data. Message: " + e.Message;
+                errorMessage = "解压预览数据时遇到错误。消息: " + e.Message;
                 return null;
             }
         }
 
         /// <summary>
-        /// Creates a preview bitmap based on a provided dimensions and raw image pixel data in 24-bit RGB format.
+        /// 根据提供的尺寸和24位RGB格式的原始图像像素数据创建预览位图。
         /// </summary>
-        /// <param name="width">Width of the bitmap.</param>
-        /// <param name="height">Height of the bitmap.</param>
-        /// <param name="imageData">Raw image pixel data in 24-bit RGB format.</param>
-        /// <param name="errorMessage">Will be set to error message if something went wrong, otherwise null.</param>
-        /// <returns>Bitmap based on the provided dimensions and raw image data, or null if length of image data does not match the provided dimensions or if something went wrong.</returns>
+        /// <param name="width">位图宽度。</param>
+        /// <param name="height">位图高度。</param>
+        /// <param name="imageData">24位RGB格式的原始图像像素数据。</param>
+        /// <param name="errorMessage">如果出错则设置为错误消息，否则为null。</param>
+        /// <returns>基于提供的尺寸和原始图像数据的位图，如果图像数据长度与提供的尺寸不匹配或出错则返回null。</returns>
         private static Image CreatePreviewBitmapFromImageData(int width, int height, byte[] imageData, out string errorMessage)
         {
             const int pixelFormatBitCount = 24;
@@ -156,7 +156,7 @@ namespace DTAClient.Domain.Multiplayer
 
             if (imageData.Length != width * height * pixelFormatByteCount)
             {
-                errorMessage = "Provided preview image dimensions do not match preview image data length.";
+                errorMessage = "提供的预览图像尺寸与预览图像数据长度不匹配。";
                 return null;
             }
 
@@ -172,7 +172,7 @@ namespace DTAClient.Domain.Multiplayer
                 {
                     for (int w = 0; w < width; w++)
                     {
-                        // GDI+ bitmap raw pixel data is in BGR format, red & blue values need to be flipped around for each pixel.
+                        // GDI+位图原始像素数据为BGR格式，每个像素的红蓝值需要互换。
                         bitmapPixelData[writtenBytes] = imageData[readBytes + 2];
                         bitmapPixelData[writtenBytes + 1] = imageData[readBytes + 1];
                         bitmapPixelData[writtenBytes + 2] = imageData[readBytes];
@@ -180,8 +180,8 @@ namespace DTAClient.Domain.Multiplayer
                         readBytes += pixelFormatByteCount;
                     }
 
-                    // GDI+ bitmap stride / scan width has to be a multiple of 4, so the end of each stride / scanline can contain extra bytes
-                    // in the bitmap raw pixel data that are not present in the image data and should be skipped when copying.
+                    // GDI+位图的步幅/扫描宽度必须是4的倍数，因此每个步幅/扫描行的末尾可能包含额外的字节
+                    // 这些字节在位图原始像素数据中存在但在图像数据中不存在，复制时应跳过。
                     writtenBytes += numSkipBytes;
                 }
 
@@ -215,7 +215,7 @@ namespace DTAClient.Domain.Multiplayer
             }
             catch (Exception e)
             {
-                errorMessage = "Error encountered creating preview bitmap. Message: " + e.Message;
+                errorMessage = "创建预览位图时遇到错误。消息: " + e.Message;
                 return null;
             }
         }

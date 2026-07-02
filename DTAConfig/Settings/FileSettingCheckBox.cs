@@ -9,7 +9,7 @@ using System.Linq;
 namespace DTAConfig.Settings
 {
     /// <summary>
-    /// A check-box that toggles between two sets of files and saves the setting to user settings file.
+    /// 在两组文件之间切换的复选框，并将设置保存到用户设置文件。
     /// </summary>
     public class FileSettingCheckBox : SettingCheckBoxBase, IFileSetting
     {
@@ -32,7 +32,7 @@ namespace DTAConfig.Settings
         private bool EnabledFilesComplete => enabledFiles.All(f => File.Exists(f.SourcePath));
         private bool DisabledFilesComplete => disabledFiles.All(f => File.Exists(f.SourcePath));
 
-        // Backwards compatibility with old FileSettingCheckBox implementation.
+        // 与旧版FileSettingCheckBox实现的向后兼容。
         private bool useLegacyImplementation = false;
         private bool reversed = false;
 
@@ -141,7 +141,7 @@ namespace DTAConfig.Settings
                 enabledFiles.ForEach(f => f.Revert());
                 disabledFiles.ForEach(f => f.Apply());
             }
-            else // selected state is unavailable, don't do anything
+            else // 所选状态不可用，不做任何操作
             {
                 Logger.Log($"{nameof(FileSettingCheckBox)}: " +
                     $"The selected state ({Checked}) is unavailable in {Name}");

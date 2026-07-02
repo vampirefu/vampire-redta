@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using ClientGUI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -11,7 +11,7 @@ using System.Collections.Generic;
 namespace DTAConfig
 {
     /// <summary>
-    /// A window for configuring in-game hotkeys.
+    /// 用于配置游戏内快捷键的窗口。
     /// </summary>
     public class HotkeyConfigurationWindow : XNAWindow
     {
@@ -24,7 +24,7 @@ namespace DTAConfig
         }
 
         /// <summary>
-        /// Keys that the client doesn't allow to be used regular hotkeys.
+        /// 客户端不允许用作常规快捷键的按键。
         /// </summary>
         private readonly Keys[] keyBlacklist = new Keys[]
         {
@@ -224,7 +224,7 @@ namespace DTAConfig
         }
 
         /// <summary>
-        /// Reads game commands from an INI file.
+        /// 从INI文件中读取游戏命令。
         /// </summary>
         private void ReadGameCommands()
         {
@@ -239,8 +239,7 @@ namespace DTAConfig
         }
 
         /// <summary>
-        /// Resets the hotkey for the currently selected game command to its
-        /// default value.
+        /// 将当前选中游戏命令的快捷键重置为默认值。
         /// </summary>
         private void BtnReset_LeftClick(object sender, EventArgs e)
         {
@@ -252,7 +251,7 @@ namespace DTAConfig
             var command = (GameCommand)lbHotkeys.GetItem(0, lbHotkeys.SelectedIndex).Tag;
             command.Hotkey = command.DefaultHotkey;
 
-            // If the hotkey is already assigned to some other command, unbind it
+            // 如果快捷键已绑定到其他命令，则解除绑定
             foreach (var gameCommand in gameCommands)
             {
                 if (pendingHotkey.Equals(gameCommand.Hotkey))
@@ -283,7 +282,7 @@ namespace DTAConfig
         }
 
         /// <summary>
-        /// Reloads Keyboard.ini when the game process has exited.
+        /// 当游戏进程退出时重新加载Keyboard.ini。
         /// </summary>
         private void GameProcessLogic_GameProcessExited()
         {
@@ -362,7 +361,7 @@ namespace DTAConfig
                 return;
             }
 
-            // If the hotkey is already assigned to other command, unbind it
+            // 如果快捷键已绑定到其他命令，则解除绑定
             foreach (var gameCommand in gameCommands)
             {
                 if (pendingHotkey.Equals(gameCommand.Hotkey))
@@ -385,7 +384,7 @@ namespace DTAConfig
         }
 
         /// <summary>
-        /// Detects when the user has pressed a key to generate a new hotkey.
+        /// 检测用户是否按下按键以生成新快捷键。
         /// </summary>
         private void Keyboard_OnKeyPressed(object sender, Rampastring.XNAUI.Input.KeyPressEventArgs e)
         {
@@ -397,7 +396,7 @@ namespace DTAConfig
 
             var currentModifiers = GetCurrentModifiers();
 
-            // The XNA keys seem to match the Windows virtual keycodes! This saves us some work
+            // XNA按键似乎与Windows虚拟键码匹配！这省了我们一些工作
             pendingHotkey = new Hotkey(GetKeyOverride(e.PressedKey), currentModifiers);
 
             lblCurrentlyAssignedTo.Text = string.Empty;
@@ -421,11 +420,10 @@ namespace DTAConfig
         }
 
         /// <summary>
-        /// Updates the logic of the window.
-        /// Used for keeping the "new hotkey" display in sync with the keyboard's
-        /// modifier keys.
+        /// 更新窗口逻辑。
+        /// 用于保持"新快捷键"显示与键盘修饰键同步。
         /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        /// <param name="gameTime">提供计时值的快照。</param>
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
@@ -453,7 +451,7 @@ namespace DTAConfig
         }
 
         /// <summary>
-        /// Detects which key modifiers (Ctrl, Shift, Alt) the user is currently pressing.
+        /// 检测用户当前按下的修饰键（Ctrl、Shift、Alt）。
         /// </summary>
         private KeyModifiers GetCurrentModifiers()
         {
@@ -492,13 +490,13 @@ namespace DTAConfig
         }
 
         /// <summary>
-        /// Allows defining keys that match other keys for in-game purposes
-        /// and should be displayed as those keys instead.
+        /// 允许定义在游戏内用途上与其他按键匹配的按键，
+        /// 并应显示为那些按键。
         /// </summary>
-        /// <param name="key">The key.</param>
+        /// <param name="key">按键。</param>
         private Keys GetKeyOverride(Keys key)
         {
-            // 12 is actually NumPad5 for the game
+            // 12在游戏中实际上是NumPad5
             if (key == (Keys)12)
                 return Keys.NumPad5;
 
@@ -506,7 +504,7 @@ namespace DTAConfig
         }
 
         /// <summary>
-        /// A game command that can be assigned into a key on the keyboard.
+        /// 可以绑定到键盘按键的游戏命令。
         /// </summary>
         class GameCommand
         {
@@ -519,22 +517,22 @@ namespace DTAConfig
             }
 
             /// <summary>
-            /// Creates a game command and parses its information from an INI section.
+            /// 创建游戏命令并从INI节中解析其信息。
             /// </summary>
-            /// <param name="iniSection">The INI section.</param>
+            /// <param name="iniSection">INI节。</param>
             public GameCommand(IniSection iniSection)
             {
                 ININame = iniSection.SectionName;
-                UIName = iniSection.GetStringValue("UIName", "Unnamed command");
-                Category = iniSection.GetStringValue("Category", "Unknown category");
-                Description = iniSection.GetStringValue("Description", "Unknown description");
+                UIName = iniSection.GetStringValue("UIName", "未命名命令");
+                Category = iniSection.GetStringValue("Category", "未知类别");
+                Description = iniSection.GetStringValue("Description", "未知描述");
                 DefaultHotkey = new Hotkey(iniSection.GetIntValue("DefaultKey", 0));
             }
 
             /// <summary>
-            /// Writes the game command's information to an INI file.
+            /// 将游戏命令信息写入INI文件。
             /// </summary>
-            /// <param name="iniFile">The INI file.</param>
+            /// <param name="iniFile">INI文件。</param>
             public void WriteToIni(IniFile iniFile)
             {
                 var section = new IniSection(ININame);
@@ -563,15 +561,14 @@ namespace DTAConfig
         }
 
         /// <summary>
-        /// Represents a keyboard key with modifiers.
+        /// 表示带修饰键的键盘按键。
         /// </summary>
         struct Hotkey
         {
             /// <summary>
-            /// Creates a new hotkey by decoding a Tiberian Sun / Red Alert 2
-            /// encoded key value.
+            /// 通过解码Tiberian Sun / Red Alert 2编码的键值创建新快捷键。
             /// </summary>
-            /// <param name="encodedKeyValue">The encoded key value.</param>
+            /// <param name="encodedKeyValue">编码的键值。</param>
             public Hotkey(int encodedKeyValue)
             {
                 Key = (Keys)(encodedKeyValue & 255);
@@ -598,13 +595,13 @@ namespace DTAConfig
             public string ToStringWithNone()
             {
                 if (Key == Keys.None && Modifier == KeyModifiers.None)
-                    return "None";
+                    return "无";
 
                 return GetString();
             }
 
             /// <summary>
-            /// Creates the display string for this key.
+            /// 创建此按键的显示字符串。
             /// </summary>
             private string GetString()
             {
@@ -626,7 +623,7 @@ namespace DTAConfig
             }
 
             /// <summary>
-            /// Returns the hotkey in the Tiberian Sun / Red Alert 2 Keyboard.ini encoded format.
+            /// 以Tiberian Sun / Red Alert 2 Keyboard.ini编码格式返回快捷键。
             /// </summary>
             public int GetTSEncoded()
             {
@@ -648,12 +645,11 @@ namespace DTAConfig
             }
 
             /// <summary>
-            /// Returns the display string for an XNA key.
-            /// Allows overriding specific key enum names to be more
-            /// suitable for the UI.
+            /// 返回XNA按键的显示字符串。
+            /// 允许覆盖特定按键枚举名称，使其更适合UI显示。
             /// </summary>
-            /// <param name="key">The key.</param>
-            /// <returns>A string.</returns>
+            /// <param name="key">按键。</param>
+            /// <returns>字符串。</returns>
             private string GetKeyDisplayString(Keys key)
             {
                 switch (key)

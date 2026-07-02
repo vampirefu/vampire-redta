@@ -1,4 +1,4 @@
-﻿using ClientCore.Settings;
+using ClientCore.Settings;
 using Rampastring.Tools;
 using System;
 using System.Collections.Generic;
@@ -143,7 +143,7 @@ namespace ClientCore
         public event EventHandler SettingsSaved;
 
         /*********/
-        /* VIDEO */
+        /* 视频 */
         /*********/
 
         public IntSetting IngameScreenWidth { get; private set; }
@@ -165,7 +165,7 @@ namespace ClientCore
         public BoolSetting DisplayToggleableExtraTextures { get; private set; }
 
         /*********/
-        /* AUDIO */
+        /* 音频 */
         /*********/
 
         public DoubleSetting ScoreVolume { get; private set; }
@@ -178,7 +178,7 @@ namespace ClientCore
         public BoolSetting MessageSound { get; private set; }
 
         /********/
-        /* GAME */
+        /* 游戏 */
         /********/
         public StringSetting Game { get; private set; }
 
@@ -188,7 +188,7 @@ namespace ClientCore
         public StringSetting Win8CompatMode { get; private set; }
 
         /************************/
-        /* MULTIPLAYER (CnCNet) */
+        /* 多人游戏 (CnCNet) */
         /************************/
 
         public StringSetting PlayerName { get; private set; }
@@ -218,7 +218,7 @@ namespace ClientCore
         public IntSetting MapSortState { get; private set; }
 
         /*********************/
-        /* GAME LIST FILTERS */
+        /* 游戏列表过滤器 */
         /*********************/
 
         public IntSetting SortState { get; private set; }
@@ -234,7 +234,7 @@ namespace ClientCore
         public IntRangeSetting MaxPlayerCount { get; private set; }
 
         /********/
-        /* MISC */
+        /* 其他 */
         /********/
 
         public BoolSetting PrivacyPolicyAccepted { get; private set; }
@@ -314,10 +314,10 @@ namespace ClientCore
         }
 
         /// <summary>
-        /// Checks if a specified map name and game mode name belongs to the favorite map list.
+        /// 检查指定的地图名称和游戏模式名称是否属于收藏地图列表。
         /// </summary>
-        /// <param name="nameName">The name of the map.</param>
-        /// <param name="gameModeName">The name of the game mode</param>
+        /// <param name="nameName">地图名称。</param>
+        /// <param name="gameModeName">游戏模式名称。</param>
         public bool IsFavoriteMap(string nameName, string gameModeName) => FavoriteMaps.Value.Contains(FavoriteMapKey(nameName, gameModeName));
 
         private string FavoriteMapKey(string nameName, string gameModeName) => $"{nameName}:{gameModeName}";

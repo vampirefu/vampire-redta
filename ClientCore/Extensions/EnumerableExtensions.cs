@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ClientCore.Extensions;
@@ -6,11 +6,11 @@ namespace ClientCore.Extensions;
 public static class EnumerableExtensions
 {
     /// <summary>
-    /// Converts an enumerable to a matrix of items with a max number of items per column.
-    /// The matrix is built column by column, left to right.
+    /// 将可枚举集合转换为矩阵，每列有最大项目数限制。
+    /// 矩阵按列从左到右构建。
     /// </summary>
-    /// <param name="enumerable">the enumerable to convert</param>
-    /// <param name="maxPerColumn">the max number of items per column</param>
+    /// <param name="enumerable">要转换的可枚举集合</param>
+    /// <param name="maxPerColumn">每列的最大项目数</param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
     public static List<List<T>> ToMatrix<T>(this IEnumerable<T> enumerable, int maxPerColumn)

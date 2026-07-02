@@ -1,4 +1,4 @@
-﻿using Rampastring.Tools;
+using Rampastring.Tools;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -27,7 +27,7 @@ namespace ClientCore.INIProcessing
     }
 
     /// <summary>
-    /// Handles information on what INI files have been processed by the client.
+    /// 处理有关哪些 INI 文件已被客户端预处理的信息。
     /// </summary>
     public class IniPreprocessInfoStore
     {
@@ -37,7 +37,7 @@ namespace ClientCore.INIProcessing
         public List<PreprocessedIniInfo> PreprocessedIniInfos { get; } = new List<PreprocessedIniInfo>();
 
         /// <summary>
-        /// Loads the preprocessed INI information.
+        /// 加载已预处理的 INI 信息。
         /// </summary>
         public void Load()
         {
@@ -59,7 +59,7 @@ namespace ClientCore.INIProcessing
                     continue;
                 }
 
-                // If an INI file no longer exists, it's useless to keep its record
+                // 如果 INI 文件已不存在，保留其记录就没有意义
                 if (!SafePath.GetFile(ProgramConstants.GamePath, "INI", values[0]).Exists)
                     continue;
 
@@ -68,12 +68,11 @@ namespace ClientCore.INIProcessing
         }
 
         /// <summary>
-        /// Checks if a (potentially processed) INI file is up-to-date 
-        /// or whether it needs to be (re)processed.
+        /// 检查一个（可能已处理的）INI 文件是否为最新，
+        /// 或者是否需要（重新）处理。
         /// </summary>
-        /// <param name="fileName">The name of the INI file in its directory.
-        /// Do not supply the entire file path.</param>
-        /// <returns>True if the INI file is up-to-date, false if it needs to be processed.</returns>
+        /// <param name="fileName">INI 文件在其目录中的名称。请勿提供完整文件路径。</param>
+        /// <returns>如果 INI 文件为最新则返回 true，如果需要处理则返回 false。</returns>
         public bool IsIniUpToDate(string fileName)
         {
             PreprocessedIniInfo info = PreprocessedIniInfos.Find(i => i.FileName == fileName);

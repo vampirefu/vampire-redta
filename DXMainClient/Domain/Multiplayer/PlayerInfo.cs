@@ -1,10 +1,10 @@
-﻿using Rampastring.Tools;
+using Rampastring.Tools;
 using System;
 
 namespace DTAClient.Domain.Multiplayer
 {
     /// <summary>
-    /// A player in the game lobby.
+    /// 游戏大厅中的玩家。
     /// </summary>
     public class PlayerInfo
     {
@@ -43,15 +43,15 @@ namespace DTAClient.Domain.Multiplayer
         public int Ping { get; set; } = -1;
 
         /// <summary>
-        /// The difficulty level of an AI player for in-client purposes.
-        /// Logical increasing scale, like in the vanilla Tiberian Sun UI.
-        /// 2 = Hard, 1 = Medium, 0 = Easy.
+        /// AI玩家在客户端内部的难度等级。
+        /// 逻辑递增标度，如原版泰伯利亚之日UI。
+        /// 2=困难，1=中等，0=简单。
         /// </summary>
         public int AILevel { get; set; }
 
         /// <summary>
-        /// The AI level of the AI for the [HouseHandicaps] section in spawn.ini.
-        /// 2 = Easy, 1 = Medium, 0 = Hard.
+        /// AI在spawn.ini中[HouseHandicaps]节的AI等级。
+        /// 2=简单，1=中等，0=困难。
         /// </summary>
         public int HouseHandicapAILevel
         {
@@ -73,11 +73,10 @@ namespace DTAClient.Domain.Multiplayer
         }
 
         /// <summary>
-        /// Creates a PlayerInfo instance from a string in a format that matches the 
-        /// string given by the ToString() method.
+        /// 从匹配ToString()方法格式的字符串创建PlayerInfo实例。
         /// </summary>
-        /// <param name="str">The string.</param>
-        /// <returns>A PlayerInfo instance, or null if the string format was invalid.</returns>
+        /// <param name="str">字符串。</param>
+        /// <returns>PlayerInfo实例，如果字符串格式无效则返回null。</returns>
         public static PlayerInfo FromString(string str)
         {
             var values = str.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);

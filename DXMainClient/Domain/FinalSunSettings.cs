@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using Rampastring.Tools;
 using ClientCore;
 using ClientCore.PlatformShim;
@@ -8,13 +8,13 @@ namespace DTAClient.Domain
     public static class FinalSunSettings
     {
         /// <summary>
-        /// Checks for the existence of the FinalSun settings file and writes it if it doesn't exist.
+        /// 检查FinalSun设置文件是否存在，如果不存在则创建它。
         /// </summary>
         public static void WriteFinalSunIni()
         {
-            // The encoding of the FinalSun/FinalAlert ini file should be legacy ANSI, not Windows-1252 and also not any specific encoding.
-            // Otherwise, the map editor will not work in a non-ASCII path. ANSI doesn't mean a specific codepage,
-            // it means the default non-Unicode codepage which can be changed from Control Panel.
+            // FinalSun/FinalAlert ini文件的编码应该是旧版ANSI，而不是Windows-1252，也不是任何特定编码。
+            // 否则，地图编辑器将无法在非ASCII路径中工作。ANSI并不意味着特定的代码页，
+            // 它指的是可以在控制面板中更改的默认非Unicode代码页。
             try
             {
                 string finalSunIniPath = ClientConfiguration.Instance.FinalSunIniPath;

@@ -1,4 +1,4 @@
-﻿using ClientGUI;
+using ClientGUI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Rampastring.XNAUI;
@@ -14,8 +14,8 @@ using Rectangle = Microsoft.Xna.Framework.Rectangle;
 namespace DTAClient.DXGUI.Multiplayer.CnCNet
 {
     /// <summary>
-    /// A box that allows users to make a choice,
-    /// top-left of the game window.
+    /// 允许用户做出选择的通知框，
+    /// 位于游戏窗口左上角。
     /// </summary>
     public class ChoiceNotificationBox : XNAPanel
     {
@@ -77,7 +77,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             lblSender.Name = nameof(lblSender);
             lblSender.FontIndex = 1;
             lblSender.ClientRectangle = new Rectangle(gameIconPanel.Right + 3, lblHeader.Bottom + 6, 0, 0);
-            lblSender.Text = "fonger";
+            lblSender.Text = "发送者";
             AddChild(lblSender);
 
             lblChoiceText = new XNALabel(WindowManager);
@@ -104,7 +104,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             base.Initialize();
         }
 
-        // a timeout of zero means the notification will never be automatically dismissed
+        // 超时时间为零表示通知永远不会被自动关闭
         public void Show(
             string headerText,
             Texture2D gameIcon,
@@ -123,7 +123,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             affirmativeButton.Text = affirmativeText;
             negativeButton.Text = negativeText;
 
-            // use the same clipping logic as the PM notification
+            // 使用与私聊通知相同的裁剪逻辑
             if (lblChoiceText.Width > Width)
             {
                 while (lblChoiceText.Width > Width)
@@ -162,7 +162,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
                 {
                     downTime += gameTime.ElapsedGameTime;
 
-                    // only change our "down" state if we have a valid timeout
+                    // 仅在我们有有效超时时间时更改"按下"状态
                     if (downTimeWaitTime != TimeSpan.Zero)
                     {
                         isDown = downTime < downTimeWaitTime;
@@ -178,7 +178,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
                 }
                 else
                 {
-                    // effectively delete ourselves when we've timed out
+                    // 当超时后实际上删除自身
                     WindowManager.RemoveControl(this);
                 }
             }

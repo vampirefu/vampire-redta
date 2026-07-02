@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using Microsoft.Xna.Framework;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
@@ -52,10 +52,10 @@ namespace DTAClient.Domain.Multiplayer.LAN
         }
 
         /// <summary>
-        /// Updates logic timers for the player.
+        /// 更新玩家的逻辑计时器。
         /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        /// <returns>True if the player is still considered connected, otherwise false.</returns>
+        /// <param name="gameTime">提供计时值的快照。</param>
+        /// <returns>如果玩家仍被视为已连接则返回true，否则返回false。</returns>
         public bool Update(GameTime gameTime)
         {
             TimeSinceLastReceivedMessage += gameTime.ElapsedGameTime;
@@ -89,9 +89,9 @@ namespace DTAClient.Domain.Multiplayer.LAN
         }
 
         /// <summary>
-        /// Sends a message to the player over the network.
+        /// 通过网络向玩家发送消息。
         /// </summary>
-        /// <param name="message">The message to send.</param>
+        /// <param name="message">要发送的消息。</param>
         public void SendMessage(string message)
         {
             byte[] buffer;
@@ -117,7 +117,7 @@ namespace DTAClient.Domain.Multiplayer.LAN
         }
 
         /// <summary>
-        /// Starts receiving messages from the player asynchronously.
+        /// 异步开始接收来自玩家的消息。
         /// </summary>
         public void StartReceiveLoop()
         {
@@ -126,8 +126,8 @@ namespace DTAClient.Domain.Multiplayer.LAN
         }
 
         /// <summary>
-        /// Receives messages sent by the client,
-        /// and hands them over to another class via an event.
+        /// 接收客户端发送的消息，
+        /// 并通过事件将其交给另一个类处理。
         /// </summary>
         private void ReceiveMessages()
         {
@@ -145,12 +145,12 @@ namespace DTAClient.Domain.Multiplayer.LAN
 
                 try
                 {
-                    //blocks until a client sends a message
+                    //阻塞直到客户端发送消息
                     bytesRead = ns.Read(message, 0, message.Length);
                 }
                 catch (Exception ex)
                 {
-                    //a socket error has occured
+                    //发生了套接字错误
                     Logger.Log("Socket error with client " + Name + "; removing. Message: " + ex.Message);
                     ConnectionLost?.Invoke(this, EventArgs.Empty);
                     break;

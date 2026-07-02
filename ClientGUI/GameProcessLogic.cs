@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -11,7 +11,7 @@ using Rampastring.XNAUI;
 namespace ClientGUI
 {
     /// <summary>
-    /// A static class used for controlling the launching and exiting of the game executable.
+    /// 用于控制游戏可执行文件启动和退出的静态类。
     /// </summary>
     public static class GameProcessLogic
     {
@@ -25,14 +25,14 @@ namespace ClientGUI
         public static bool SingleCoreAffinity { get; set; }
 
         /// <summary>
-        /// Starts the main game process.
+        /// 启动主游戏进程。
         /// </summary>
         public static void StartGameProcess(WindowManager windowManager)
         {
             Logger.Log("About to launch main game executable.");
 
-            // In the relatively unlikely event that INI preprocessing is still going on, just wait until it's done.
-            // TODO ideally this should be handled in the UI so the client doesn't appear just frozen for the user.
+            // 在INI预处理仍在进行的较不可能情况下，等待其完成。
+            // TODO 理想情况下这应该在UI中处理，以免客户端对用户看起来像是冻结了。
             int waitTimes = 0;
             while (PreprocessorBackgroundTask.Instance.IsRunning)
             {
@@ -40,9 +40,9 @@ namespace ClientGUI
                 waitTimes++;
                 if (waitTimes > 10)
                 {
-                    XNAMessageBox.Show(windowManager, "INI preprocessing not complete", "INI preprocessing not complete. Please try " +
-                        "launching the game again. If the problem persists, " +
-                        "contact the game or mod authors for support.");
+                    XNAMessageBox.Show(windowManager, "INI预处理未完成", "INI预处理未完成。请尝试" +
+                        "重新启动游戏。如果问题持续存在，" +
+                        "请联系游戏或模组作者获取支持。");
                     return;
                 }
             }
@@ -95,9 +95,9 @@ namespace ClientGUI
                 catch (Exception ex)
                 {
                     Logger.Log("Error launching QRes: " + ex.Message);
-                    XNAMessageBox.Show(windowManager, "Error launching game", "Error launching " + ProgramConstants.QRES_EXECUTABLE + ". Please check that your anti-virus isn't blocking the CnCNet Client. " +
-                        "You can also try running the client as an administrator." + Environment.NewLine + Environment.NewLine + "You are unable to participate in this match." +
-                        Environment.NewLine + Environment.NewLine + "Returned error: " + ex.Message);
+                    XNAMessageBox.Show(windowManager, "游戏启动错误", "启动 " + ProgramConstants.QRES_EXECUTABLE + " 时出错。请检查您的杀毒软件是否阻止了CnCNet客户端。" +
+                        "您也可以尝试以管理员身份运行客户端。" + Environment.NewLine + Environment.NewLine + "您无法参加本次比赛。" +
+                        Environment.NewLine + Environment.NewLine + "返回的错误: " + ex.Message);
                     Process_Exited(QResProcess, EventArgs.Empty);
                     return;
                 }
@@ -133,9 +133,9 @@ namespace ClientGUI
                 catch (Exception ex)
                 {
                     Logger.Log("Error launching " + gameFileInfo.Name + ": " + ex.Message);
-                    XNAMessageBox.Show(windowManager, "Error launching game", "Error launching " + gameFileInfo.Name + ". Please check that your anti-virus isn't blocking the CnCNet Client. " +
-                        "You can also try running the client as an administrator." + Environment.NewLine + Environment.NewLine + "You are unable to participate in this match." +
-                        Environment.NewLine + Environment.NewLine + "Returned error: " + ex.Message);
+                    XNAMessageBox.Show(windowManager, "游戏启动错误", "启动 " + gameFileInfo.Name + " 时出错。请检查您的杀毒软件是否阻止了CnCNet客户端。" +
+                        "您也可以尝试以管理员身份运行客户端。" + Environment.NewLine + Environment.NewLine + "您无法参加本次比赛。" +
+                        Environment.NewLine + Environment.NewLine + "返回的错误: " + ex.Message);
                     Process_Exited(gameProcess, EventArgs.Empty);
                     return;
                 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,11 +7,11 @@ namespace DTAClient.Domain.Multiplayer
 {
     public class PlayerExtraOptions
     {
-        private static string INVALID_OPTIONS_MESSAGE => "Invalid player extra options message";
-        private static string MAPPING_ERROR_PREFIX => "Auto Allying:";
-        protected static string NOT_ALL_MAPPINGS_ASSIGNED => MAPPING_ERROR_PREFIX + " " + "You must have all mappings assigned.";
-        protected static string MULTIPLE_MAPPINGS_ASSIGNED_TO_SAME_START => MAPPING_ERROR_PREFIX + " " + "Multiple mappings assigned to the same start location.";
-        protected static string ONLY_ONE_TEAM => MAPPING_ERROR_PREFIX + " " + "You must have more than one team assigned.";
+        private static string INVALID_OPTIONS_MESSAGE => "无效的玩家额外选项消息";
+        private static string MAPPING_ERROR_PREFIX => "自动结盟:";
+        protected static string NOT_ALL_MAPPINGS_ASSIGNED => MAPPING_ERROR_PREFIX + " " + "必须分配所有映射。";
+        protected static string MULTIPLE_MAPPINGS_ASSIGNED_TO_SAME_START => MAPPING_ERROR_PREFIX + " " + "多个映射分配到了同一起始位置。";
+        protected static string ONLY_ONE_TEAM => MAPPING_ERROR_PREFIX + " " + "必须分配多于一个队伍。";
         private const char MESSAGE_SEPARATOR = ';';
 
         public const string CNCNET_MESSAGE_KEY = "PEO";

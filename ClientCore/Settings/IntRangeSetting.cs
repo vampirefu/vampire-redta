@@ -1,9 +1,9 @@
-﻿using Rampastring.Tools;
+using Rampastring.Tools;
 
 namespace ClientCore.Settings
 {
     /// <summary>
-    /// Similar to IntSetting, this setting forces a min and max value upon getting and setting.
+    /// 类似于 IntSetting，此设置在获取和设置时强制执行最小值和最大值限制。
     /// </summary>
     public class IntRangeSetting : IntSetting
     {
@@ -17,11 +17,11 @@ namespace ClientCore.Settings
         }
 
         /// <summary>
-        /// Checks the validity of the value. If the value is invalid, return the default value of this setting.
-        /// Otherwise, return the set value.
+        /// 检查值的有效性。如果值无效，则返回此设置的默认值；
+        /// 否则返回设置的值。
         /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <param name="value">要检查的值。</param>
+        /// <returns>规范化后的值。</returns>
         private int NormalizeValue(int value)
         {
             return InvalidValue(value) ? DefaultValue : value;

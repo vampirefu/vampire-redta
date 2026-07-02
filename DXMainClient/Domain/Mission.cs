@@ -1,4 +1,4 @@
-﻿using Rampastring.Tools;
+using Rampastring.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 namespace DTAClient.Domain
 {
     /// <summary>
-    /// A Tiberian Sun mission listed in Battle(E).ini.
+    /// Battle(E).ini中列出的泰伯利亚之日任务。
     /// </summary>
     public class Mission
     {
@@ -19,13 +19,13 @@ namespace DTAClient.Domain
             CD = iniFile.GetIntValue(sectionName, nameof(CD), 0);
             Side = iniFile.GetIntValue(sectionName, nameof(Side), 0);
             Scenario = iniFile.GetStringValue(sectionName, nameof(Scenario), string.Empty);
-            GUIName = iniFile.GetStringValue(sectionName, "Description", "Undefined mission");
+            GUIName = iniFile.GetStringValue(sectionName, "Description", "未定义任务");
             IconPath = iniFile.GetStringValue(sectionName, "SideName", string.Empty);
             GUIDescription = iniFile.GetStringValue(sectionName, "LongDescription", string.Empty);
             FinalMovie = iniFile.GetStringValue(sectionName, nameof(FinalMovie), "none");
             RequiredAddon = iniFile.GetBooleanValue(sectionName, nameof(RequiredAddon),
 #if YR || ARES
-                true  // In case of YR this toggles Ra2Mode instead which should not be default
+                true  // 对于YR，这会切换Ra2Mode，不应该作为默认值
 #else
                 false
 #endif

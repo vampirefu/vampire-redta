@@ -12,7 +12,7 @@ using Rampastring.XNAUI.XNAControls;
 namespace DTAClient.DXGUI.Multiplayer
 {
     /// <summary>
-    /// A list box for listing hosted games.
+    /// 用于列出已托管游戏的列表框。
     /// </summary>
     public class GameListBox : XNAListBox
     {
@@ -37,7 +37,7 @@ namespace DTAClient.DXGUI.Multiplayer
         public double GameLifetime { get; set; } = 35.0;
 
         /// <summary>
-        /// A predicate for setting a filter expression for displayed games.
+        /// 用于设置显示游戏过滤表达式的谓词。
         /// </summary>
         private Predicate<GenericHostedGame> GameMatchesFilter { get; }
 
@@ -54,9 +54,9 @@ namespace DTAClient.DXGUI.Multiplayer
         private Color hoverOnGameColor;
 
         /// <summary>
-        /// Removes a game from the list.
+        /// 从列表中移除一个游戏。
         /// </summary>
-        /// <param name="index">The index of the game to remove.</param>
+        /// <param name="index">要移除的游戏索引。</param>
         public void RemoveGame(int index)
         {
             HostedGames.RemoveAt(index);
@@ -65,10 +65,10 @@ namespace DTAClient.DXGUI.Multiplayer
         }
 
         /// <summary>
-        /// Compares each listed XNAListBoxItem item in the GameListBox to the refernece XNAListBoxItem item for equality.
+        /// 将 GameListBox 中每个列出的 XNAListBoxItem 与参考 XNAListBoxItem 进行相等性比较。
         /// </summary>
-        /// <param name="referencedItem">The XNAListBoxItem to compare against</param>
-        /// <returns>bool</returns>
+        /// <param name="referencedItem">要比较的参考 XNAListBoxItem</param>
+        /// <returns>布尔值</returns>
         private static Predicate<XNAListBoxItem> GameListMatch(XNAListBoxItem referencedItem) => listedItem =>
         {
             var referencedGame = (GenericHostedGame)referencedItem?.Tag;
@@ -81,7 +81,7 @@ namespace DTAClient.DXGUI.Multiplayer
         };
         
         /// <summary>
-        /// Refreshes game information in the game list box.
+        /// 刷新游戏列表框中的游戏信息。
         /// </summary>
         public void Refresh()
         {
@@ -103,9 +103,9 @@ namespace DTAClient.DXGUI.Multiplayer
         }
 
         /// <summary>
-        /// Adds a game to the game list.
+        /// 将游戏添加到游戏列表。
         /// </summary>
-        /// <param name="game">The game to add.</param>
+        /// <param name="game">要添加的游戏。</param>
         public void AddGame(GenericHostedGame game)
         {
             HostedGames.Add(game);
@@ -143,7 +143,7 @@ namespace DTAClient.DXGUI.Multiplayer
         }
 
         /// <summary>
-        /// Sorts and refreshes the game information in the game list box.
+        /// 排序并刷新游戏列表框中的游戏信息。
         /// </summary>
         public void SortAndRefreshHostedGames()
         {
@@ -173,7 +173,7 @@ namespace DTAClient.DXGUI.Multiplayer
             panelGameInformation.Disable();
             panelGameInformation.InputEnabled = false;
             panelGameInformation.Alpha = 0f;
-            Parent.AddChild(panelGameInformation); // make this a child of our parent so it's not drawn on our rendertarget
+            Parent.AddChild(panelGameInformation); // 将其作为父级的子控件，这样就不会绘制在我们的渲染目标上
 
             SelectedIndexChanged += GameListBox_SelectedIndexChanged;
             HoveredIndexChanged += GameListBox_HoveredIndexChanged;
@@ -233,7 +233,7 @@ namespace DTAClient.DXGUI.Multiplayer
 
             if (hg.Game.InternalName != localGameIdentifier.ToLower())
                 lbItem.TextColor = UISettings.ActiveSettings.TextColor;
-            //else // made unnecessary by new Rampastring.XNAUI
+            //else // 被新版 Rampastring.XNAUI 取消了必要性
             //    lbItem.TextColor = UISettings.ActiveSettings.AltColor;
 
             if (hg.Incompatible || hg.Locked)

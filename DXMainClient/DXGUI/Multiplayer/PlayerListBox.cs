@@ -1,4 +1,4 @@
-﻿using ClientCore.CnCNet5;
+using ClientCore.CnCNet5;
 using DTAClient.Online;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,7 +14,7 @@ using Rectangle = Microsoft.Xna.Framework.Rectangle;
 namespace DTAClient.DXGUI.Multiplayer
 {
     /// <summary>
-    /// A list box for listing the players in the CnCNet lobby.
+    /// 用于列出 CnCNet 大厅中玩家的列表框。
     /// </summary>
     public class PlayerListBox : XNAListBox
     {
@@ -99,7 +99,7 @@ namespace DTAClient.DXGUI.Multiplayer
 
                 x += adminGameIcon.Width + MARGIN;
 
-                // Friend Icon
+                // 好友图标
                 if (user.IRCUser.IsFriend)
                 {
                     DrawTexture(friendIcon,
@@ -108,7 +108,7 @@ namespace DTAClient.DXGUI.Multiplayer
 
                     x += friendIcon.Width + MARGIN;
                 }
-                // Ignore Icon
+                // 忽略图标
                 else if (user.IRCUser.IsIgnored && !user.IsAdmin)
                 {
                     DrawTexture(ignoreIcon,
@@ -118,7 +118,7 @@ namespace DTAClient.DXGUI.Multiplayer
                     x += ignoreIcon.Width + MARGIN;
                 }
 
-                // Badge Icon - coming soon
+                // 徽章图标 - 即将推出
                 /*
                 Renderer.DrawTexture(badgeGameIcon,
                     new Rectangle(windowRectangle.X + x, windowRectangle.Y + height,
@@ -127,7 +127,7 @@ namespace DTAClient.DXGUI.Multiplayer
                 x += badgeGameIcon.Width + margin;
                 */
 
-                // Player Name
+                // 玩家名称
                 string name = user.IsAdmin ? user.IRCUser.Name + " " + "(Admin)" : user.IRCUser.Name;
                 x += lbItem.TextXPadding;
 

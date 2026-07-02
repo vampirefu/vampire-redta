@@ -1,11 +1,10 @@
-﻿using ClientGUI;
+using ClientGUI;
 using Rampastring.XNAUI;
 
 namespace DTAClient.DXGUI.Multiplayer.CnCNet
 {
     /// <summary>
-    /// A panel that hides itself if it's clicked while none of its children
-    /// are the focus of input.
+    /// 如果在点击时没有子控件获得输入焦点则隐藏自身的面板。
     /// </summary>
     public class PrivateMessagingPanel : DarkeningPanel
     {

@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using ClientCore.Statistics;
 using ClientGUI;
 using DTAClient.Domain.Multiplayer;
@@ -28,7 +28,7 @@ namespace DTAClient.DXGUI.Generic
 
         private XNAClientTabControl tabControl;
 
-        // Controls for game statistics
+        // 游戏统计控件
 
         private XNAMultiColumnListBox lbGameList;
         private XNAMultiColumnListBox lbGameStatistics;
@@ -44,7 +44,7 @@ namespace DTAClient.DXGUI.Generic
         private const int TOTAL_STATS_Y_INCREASE = 45;
         private const int TOTAL_STATS_FIRST_ITEM_Y = 20;
 
-        // Controls for total statistics
+        // 总计统计控件
 
         private XNALabel lblGamesStartedValue;
         private XNALabel lblGamesFinishedValue;
@@ -320,7 +320,7 @@ namespace DTAClient.DXGUI.Generic
             lblAverageAllyCountValue.RemapColor = UISettings.ActiveSettings.AltColor;
             locationY += TOTAL_STATS_Y_INCREASE;
 
-            // SECOND COLUMN
+            // 第二列
 
             locationY = TOTAL_STATS_FIRST_ITEM_Y;
 
@@ -767,7 +767,7 @@ namespace DTAClient.DXGUI.Generic
 
                 if (ps.WasSpectator)
                 {
-                    // Player was a spectator
+                    // 玩家是观战者
                     items.Add(new XNAListBoxItem("-", textColor));
                     items.Add(new XNAListBoxItem("-", textColor));
                     items.Add(new XNAListBoxItem("-", textColor));
@@ -784,7 +784,7 @@ namespace DTAClient.DXGUI.Generic
                 { 
                     if (!ms.SawCompletion)
                     {
-                        // The game wasn't completed - we don't know the stats
+                        // 游戏未完成 - 不知道统计数据
                         items.Add(new XNAListBoxItem("-", textColor));
                         items.Add(new XNAListBoxItem("-", textColor));
                         items.Add(new XNAListBoxItem("-", textColor));
@@ -793,7 +793,7 @@ namespace DTAClient.DXGUI.Generic
                     }
                     else
                     {
-                        // The game was completed and the player was actually playing
+                        // 游戏已完成且玩家确实在游戏中
                         items.Add(new XNAListBoxItem(ps.Kills.ToString(), textColor));
                         items.Add(new XNAListBoxItem(ps.Losses.ToString(), textColor));
                         items.Add(new XNAListBoxItem(ps.Economy.ToString(), textColor));
@@ -838,7 +838,7 @@ namespace DTAClient.DXGUI.Generic
             return ProgramConstants.TEAMS[teamIndex - 1];
         }
 
-        #region Statistics reading / game listing code
+        #region 统计数据读取/游戏列表代码
 
         private void ReadStatistics()
         {
@@ -1067,8 +1067,8 @@ namespace DTAClient.DXGUI.Generic
 
                     if (!ps.IsAI && !ps.WasSpectator)
                     {
-                        // If we find a single player on a different team than another player,
-                        // we'll count the game as a PvP game
+                        // 如果找到某个玩家与另一个玩家在不同的队伍中，
+                        // 我们就将该游戏计为 PvP 游戏
                         if (pTeam > -1 && (ps.Team != pTeam || ps.Team == 0))
                         {
                             ListGameIndexIfPrerequisitesMet(i);
@@ -1179,7 +1179,7 @@ namespace DTAClient.DXGUI.Generic
         }
 
         /// <summary>
-        /// Adjusts the labels on the "Total statistics" tab.
+        /// 调整"全部统计"选项卡上的标签。
         /// </summary>
         private void SetTotalStatistics()
         {
@@ -1364,8 +1364,8 @@ namespace DTAClient.DXGUI.Generic
 
         private void BtnReturnToMenu_LeftClick(object sender, EventArgs e)
         {
-            // To hide the control, just set Enabled=false
-            // and MainMenuDarkeningPanel will deal with the rest
+            // 要隐藏控件，只需设置 Enabled=false
+            // MainMenuDarkeningPanel 会处理其余的
             Enabled = false;
         }
 

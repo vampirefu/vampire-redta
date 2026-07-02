@@ -1,4 +1,4 @@
-﻿using Rampastring.XNAUI.XNAControls;
+using Rampastring.XNAUI.XNAControls;
 using Rampastring.XNAUI;
 using DTAClient.Online;
 using Microsoft.Xna.Framework;
@@ -9,8 +9,8 @@ using ClientCore.Extensions;
 namespace DTAClient.DXGUI.Multiplayer
 {
     /// <summary>
-    /// A list box for CnCNet chat. Supports opening links with a double-click,
-    /// and easy adding of IRC messages to the list box.
+    /// CnCNet 聊天的列表框。支持双击打开链接，
+    /// 以及方便地将 IRC 消息添加到列表框中。
     /// </summary>
     public class ChatListBox : XNAListBox, IMessageView
     {

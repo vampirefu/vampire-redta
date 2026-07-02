@@ -1,4 +1,4 @@
-﻿using Rampastring.Tools;
+using Rampastring.Tools;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -9,24 +9,23 @@ using Rampastring.Tools;
 namespace DTAClient.Domain.Multiplayer.CnCNet
 {
     /// <summary>
-    /// A CnCNet tunnel server.
+    /// CnCNet隧道服务器。
     /// </summary>
     public class CnCNetTunnel
     {
-        private const int REQUEST_TIMEOUT = 10000; // In milliseconds
+        private const int REQUEST_TIMEOUT = 10000; // 毫秒
         private const int PING_TIMEOUT = 1000;
 
         public CnCNetTunnel() { }
 
         /// <summary>
-        /// Parses a formatted string that contains the tunnel server's 
-        /// information into a CnCNetTunnel instance.
+        /// 将包含隧道服务器信息的格式化字符串解析为CnCNetTunnel实例。
         /// </summary>
-        /// <param name="str">The string that contains the tunnel server's information.</param>
-        /// <returns>A CnCNetTunnel instance parsed from the given string.</returns>
+        /// <param name="str">包含隧道服务器信息的字符串。</param>
+        /// <returns>从给定字符串解析的CnCNetTunnel实例。</returns>
         public static CnCNetTunnel Parse(string str)
         {
-            // For the format, check http://cncnet.org/master-list
+            // 格式参考 http://cncnet.org/master-list
 
             try
             {
@@ -87,9 +86,9 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
         public int PingInMs { get; set; } = -1;
 
         /// <summary>
-        /// Gets a list of player ports to use from a specific tunnel server.
+        /// 从特定隧道服务器获取要使用的玩家端口列表。
         /// </summary>
-        /// <returns>A list of player ports to use.</returns>
+        /// <returns>要使用的玩家端口列表。</returns>
         public List<int> GetPlayerPortInfo(int playerCount)
         {
             try

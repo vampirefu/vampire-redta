@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -8,8 +8,7 @@ using Rampastring.XNAUI.XNAControls;
 namespace ClientGUI
 {
     /// <summary>
-    /// This gui creator helps in the registration of XNAControl based controls that can be used via dependency injection
-    /// or through the INI system.
+    /// 此GUI创建器帮助注册基于XNAControl的控件，这些控件可通过依赖注入或INI系统使用。
     /// </summary>
     public static class ClientGUICreator
     {
@@ -18,13 +17,13 @@ namespace ClientGUI
         private static IServiceProvider serviceProvider;
 
         /// <summary>
-        /// Adds a control type as a singleton to our list of known control types.
+        /// 将控件类型作为单例添加到已知控件类型列表中。
         ///
-        /// When a control is added as singleton, the same instance will be returned every time one is requested by the control's name.
+        /// 当控件作为单例添加时，每次通过控件名称请求时都会返回相同的实例。
         /// </summary>
-        /// <param name="serviceCollection">Service collection for our dependency injection.</param>
-        /// <param name="controlType">The control type to add.</param>
-        /// <returns>IServiceCollection.</returns>
+        /// <param name="serviceCollection">用于依赖注入的服务集合。</param>
+        /// <param name="controlType">要添加的控件类型。</param>
+        /// <returns>IServiceCollection。</returns>
         public static IServiceCollection AddSingletonXnaControl<T>(this IServiceCollection serviceCollection)
         {
             Type controlType = typeof(T);
@@ -33,13 +32,13 @@ namespace ClientGUI
         }
 
         /// <summary>
-        /// Adds a control type as a transient to our list of known control types.
+        /// 将控件类型作为瞬态添加到已知控件类型列表中。
         ///
-        /// When a control is added as transient, a new instance will be instantiated every time one is requested by the control's name.
+        /// 当控件作为瞬态添加时，每次通过控件名称请求时都会创建一个新实例。
         /// </summary>
-        /// <param name="serviceCollection">Service collection for our dependency injection.</param>
-        /// <param name="controlType">The control type to add.</param>
-        /// <returns>IServiceCollection.</returns>
+        /// <param name="serviceCollection">用于依赖注入的服务集合。</param>
+        /// <param name="controlType">要添加的控件类型。</param>
+        /// <returns>IServiceCollection。</returns>
         public static IServiceCollection AddTransientXnaControl<T>(this IServiceCollection serviceCollection)
         {
             Type controlType = typeof(T);
@@ -48,19 +47,19 @@ namespace ClientGUI
         }
 
         /// <summary>
-        /// This is typically called during control initialization via the INI UI system.
+        /// 通常在通过INI UI系统进行控件初始化时调用。
         /// </summary>
-        /// <param name="controlTypeName">The name of the control to instantiate.</param>
-        /// <returns>XNAControl instance.</returns>
+        /// <param name="controlTypeName">要实例化的控件名称。</param>
+        /// <returns>XNAControl 实例。</returns>
         public static XNAControl GetXnaControl(string controlTypeName) => GetXnaControl(serviceProvider, controlTypeName);
 
         /// <summary>
-        /// Adds the control type to our list of known controls for instantiation.
+        /// 将控件类型添加到已知控件列表中以供实例化。
         /// </summary>
-        /// <param name="controlType">The control type to add.</param>
+        /// <param name="controlType">要添加的控件类型。</param>
         /// <exception cref="Exception">
-        /// If this control is not a sub-class of XNAControl or is not an XNAControl itself.
-        /// OR, this component type is added more than once.
+        /// 如果此控件不是XNAControl的子类，也不是XNAControl本身。
+        /// 或者，此组件类型被添加了多次。
         /// </exception>
         private static void AddXnaControl(Type controlType)
         {
@@ -73,11 +72,11 @@ namespace ClientGUI
         }
 
         /// <summary>
-        /// Because the INI system retrieves controls by its <see cref="Type.Name"/>, we need to make sure that
-        /// duplicates are not being registered with the same base name as another control.
+        /// 因为INI系统通过 <see cref="Type.Name"/> 检索控件，我们需要确保
+        /// 不会注册与另一个控件同名（基名）的重复项。
         /// </summary>
-        /// <param name="controlType">The Type to validate.</param>
-        /// <exception cref="Exception">If another control was registered with the same name.</exception>
+        /// <param name="controlType">要验证的类型。</param>
+        /// <exception cref="Exception">如果已注册了同名的另一个控件。</exception>
         private static void ValidateNonDuplicateControlType(Type controlType)
         {
             if (controlTypes.Any(c => c.Name == controlType.Name))
@@ -85,14 +84,14 @@ namespace ClientGUI
         }
 
         /// <summary>
-        /// This is the "factory" that is used to instantiate a control.
+        /// 这是用于实例化控件的"工厂"。
         ///
-        /// If this function is called for a singleton, it will only be called ONCE for a given <see cref="controlTypeName"/>
+        /// 如果此函数用于单例，对于给定的 <see cref="controlTypeName"/> 只会被调用一次。
         /// </summary>
-        /// <param name="provider">Our dependency injection service provider.</param>
-        /// <param name="controlTypeName">The name of the control type to instantiate.</param>
-        /// <returns>XNAControl instance.</returns>
-        /// <exception cref="Exception">If the control type was not registered with our service provider.</exception>
+        /// <param name="provider">依赖注入服务提供者。</param>
+        /// <param name="controlTypeName">要实例化的控件类型名称。</param>
+        /// <returns>XNAControl 实例。</returns>
+        /// <exception cref="Exception">如果控件类型未在服务提供者中注册。</exception>
         private static XNAControl GetXnaControl(IServiceProvider provider, string controlTypeName)
         {
             serviceProvider ??= provider;
@@ -107,11 +106,11 @@ namespace ClientGUI
         }
 
         /// <summary>
-        /// Attempts to get an instance of a specific type from our serviced provider.
+        /// 尝试从服务提供者获取特定类型的实例。
         /// </summary>
-        /// <param name="type">The type to instantiate.</param>
-        /// <returns>An instance of the type specified.</returns>
-        /// <exception cref="Exception">If the type was not registered with our service provider.</exception>
+        /// <param name="type">要实例化的类型。</param>
+        /// <returns>指定类型的实例。</returns>
+        /// <exception cref="Exception">如果该类型未在服务提供者中注册。</exception>
         private static object GetTypeInstance(Type type)
             => serviceProvider.GetService(type) ?? throw new Exception($"Control type {type.Name} was not registered with ServiceCollection in GameClass");
     }

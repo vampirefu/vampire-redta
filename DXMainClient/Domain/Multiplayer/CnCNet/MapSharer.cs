@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
@@ -14,7 +14,7 @@ using System.Linq;
 namespace DTAClient.Domain.Multiplayer.CnCNet
 {
     /// <summary>
-    /// Handles sharing maps.
+    /// 处理地图共享。
     /// </summary>
     public static class MapSharer
     {
@@ -39,10 +39,10 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
         private const string MAPDB_URL = "http://mapdb.cncnet.org/upload";
 
         /// <summary>
-        /// Adds a map into the CnCNet map upload queue.
+        /// 将地图添加到CnCNet地图上传队列中。
         /// </summary>
-        /// <param name="map">The map.</param>
-        /// <param name="myGame">The short name of the game that is being played (DTA, TI, MO, etc).</param>
+        /// <param name="map">地图。</param>
+        /// <param name="myGame">正在进行的游戏的短名称（DTA、TI、MO等）。</param>
         public static void UploadMap(Map map, string myGame)
         {
             lock (locker)
@@ -138,8 +138,8 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
             }
             catch { }
 
-            // Upload the file to the URI. 
-            // The 'UploadFile(uriString,fileName)' method implicitly uses HTTP POST method. 
+            // 将文件上传到URI。
+            // 'UploadFile(uriString,fileName)'方法隐式使用HTTP POST方法。
 
             try
             {
@@ -214,7 +214,7 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
 
             using (Stream requestStream = request.GetRequestStream())
             {
-                // Write the values
+                // 写入值
                 foreach (string name in values.Keys)
                 {
                     byte[] buffer = Encoding.ASCII.GetBytes(boundary + Environment.NewLine);
@@ -227,7 +227,7 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
                     requestStream.Write(buffer, 0, buffer.Length);
                 }
 
-                // Write the files
+                // 写入文件
                 foreach (FileToUpload file in files)
                 {
                     var buffer = Encoding.ASCII.GetBytes(boundary + Environment.NewLine);
@@ -275,8 +275,7 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
         {
             using ZipArchive zipArchive = ZipFile.OpenRead(zipFile);
 
-            // here, we extract every entry, but we could extract conditionally
-            // based on entry name, size, date, checkbox status, etc.  
+            // 这里我们提取每个条目，但也可以根据条目名称、大小、日期、复选框状态等条件提取。
             zipArchive.ExtractToDirectory(destDir);
 
             return zipArchive.Entries.FirstOrDefault()?.Name;
@@ -371,8 +370,8 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
 
             FileInfo destinationFile = SafePath.GetFile(customMapsDirectory, FormattableString.Invariant($"{mapFileName}.zip"));
 
-            // This string is up here so we can check that there isn't already a .map file for this download.
-            // This prevents the client from crashing when trying to rename the unzipped file to a duplicate filename.
+            // 此字符串放在这里是为了检查是否已有此下载的.map文件。
+            // 这防止在将解压文件重命名为重复文件名时客户端崩溃。
             FileInfo newFile = SafePath.GetFile(customMapsDirectory, FormattableString.Invariant($"{mapFileName}{MapLoader.MAP_FILE_EXTENSION}"));
 
             destinationFile.Delete();
@@ -420,8 +419,7 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
                 return null;
             }
 
-            // We can safely assume that there will not be a duplicate file due to deleting it
-            // earlier if one already existed.
+            // 我们可以安全地假设不会有重复文件，因为如果已存在则已在前面删除。
             File.Move(SafePath.CombineFilePath(customMapsDirectory, extractedFile), newFile.FullName);
 
             destinationFile.Delete();

@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using System;
 
 namespace DTAClient.Online
@@ -6,12 +6,12 @@ namespace DTAClient.Online
     public class ChatMessage
     {
         /// <summary>
-        /// Creates a new ChatMessage instance.
+        /// 创建新的 ChatMessage 实例。
         /// </summary>
-        /// <param name="senderName">The sender of the message. Use null for none (system messages).</param>
-        /// <param name="color">The color of the message.</param>
-        /// <param name="dateTime">The date and time of the message.</param>
-        /// <param name="message">The message.</param>
+        /// <param name="senderName">消息的发送者。对于无发送者（系统消息）使用 null。</param>
+        /// <param name="color">消息的颜色。</param>
+        /// <param name="dateTime">消息的日期和时间。</param>
+        /// <param name="message">消息内容。</param>
         public ChatMessage(string senderName, Color color, DateTime dateTime, string message)
         {
             SenderName = senderName;
@@ -21,22 +21,22 @@ namespace DTAClient.Online
         }
 
         /// <summary>
-        /// Creates a chat message with the date and time set to the current system date and time.
+        /// 创建日期和时间设置为当前系统日期和时间的聊天消息。
         /// </summary>
-        /// <param name="senderName">The sender of the message. Use null for none (system messages).</param>
-        /// <param name="color">The color of the message.</param>
-        /// <param name="message">The message.</param>
+        /// <param name="senderName">消息的发送者。对于无发送者（系统消息）使用 null。</param>
+        /// <param name="color">消息的颜色。</param>
+        /// <param name="message">消息内容。</param>
         public ChatMessage(string senderName, Color color, string message) : this(senderName, color, DateTime.Now, message) { }
 
         /// <summary>
-        /// Creates a new ChatMessage instance.
+        /// 创建新的 ChatMessage 实例。
         /// </summary>
-        /// <param name="senderName">The sender of the message. Use null for none (system messages).</param>
-        /// <param name="ident">The IRC identifier of the sender.</param>
-        /// <param name="senderIsAdmin">The sender of the message is a channel admin.</param>
-        /// <param name="color">The color of the message.</param>
-        /// <param name="dateTime">The date and time of the message.</param>
-        /// <param name="message">The message.</param>
+        /// <param name="senderName">消息的发送者。对于无发送者（系统消息）使用 null。</param>
+        /// <param name="ident">发送者的 IRC 标识符。</param>
+        /// <param name="senderIsAdmin">消息的发送者是否为频道管理员。</param>
+        /// <param name="color">消息的颜色。</param>
+        /// <param name="dateTime">消息的日期和时间。</param>
+        /// <param name="message">消息内容。</param>
         public ChatMessage(string senderName, string ident, bool senderIsAdmin, Color color, DateTime dateTime, string message) : this(senderName, color, dateTime, message)
         {
             SenderIdent = ident;
@@ -44,18 +44,16 @@ namespace DTAClient.Online
         }
 
         /// <summary>
-        /// Creates a chat message that has no sender and has the date and time set to the
-        /// current system date and time.
+        /// 创建无发送者且日期和时间设置为当前系统日期和时间的聊天消息。
         /// </summary>
-        /// <param name="color">The color of the message.</param>
-        /// <param name="message">The message.</param>
+        /// <param name="color">消息的颜色。</param>
+        /// <param name="message">消息内容。</param>
         public ChatMessage(Color color, string message) : this(null, color, DateTime.Now, message) { }
 
         /// <summary>
-        /// Creates a chat message that has no sender and has the date and time set to the
-        /// current system date and time.
+        /// 创建无发送者且日期和时间设置为当前系统日期和时间的聊天消息。
         /// </summary>
-        /// <param name="message">The message.</param>
+        /// <param name="message">消息内容。</param>
         public ChatMessage(string message) : this(Color.White, message) { }
 
         public string SenderName { get; private set; }

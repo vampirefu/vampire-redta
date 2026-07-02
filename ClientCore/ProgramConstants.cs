@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -8,7 +8,7 @@ using Rampastring.Tools;
 namespace ClientCore
 {
     /// <summary>
-    /// Contains various static variables and constants that the client uses for operation.
+    /// 包含客户端运行所使用的各种静态变量和常量。
     /// </summary>
     public static class ProgramConstants
     {
@@ -41,8 +41,8 @@ namespace ClientCore
 
         public static readonly Encoding LAN_ENCODING = Encoding.UTF8;
 
-        public static string GAME_VERSION = "Undefined";
-        private static string PlayerName = "No name";
+        public static string GAME_VERSION = "未定义";
+        private static string PlayerName = "未命名";
 
         public static string PLAYERNAME
         {
@@ -86,13 +86,13 @@ namespace ClientCore
 
         public static readonly List<string> TEAMS = new List<string> { "A", "B", "C", "D" };
 
-        // Static fields might be initialized before the translation file is loaded. Change to readonly properties here.
+        // 静态字段可能在翻译文件加载之前被初始化。此处改为只读属性。
         public static List<string> AI_PLAYER_NAMES => new List<string> { "简单AI", "中等AI", "困难AI" };
 
         public static string LogFileName { get; set; }
 
         /// <summary>
-        /// Gets or sets the action to perform to notify the user of an error.
+        /// 获取或设置用于通知用户错误的操作。
         /// </summary>
         public static Action<string, string, bool> DisplayErrorAction { get; set; } = (title, error, exit) =>
         {

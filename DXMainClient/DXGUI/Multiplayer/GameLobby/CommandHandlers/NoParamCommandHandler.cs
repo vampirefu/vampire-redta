@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 
 namespace DTAClient.DXGUI.Multiplayer.GameLobby.CommandHandlers
 {
     /// <summary>
-    /// A command handler that handles a command that has no parameter aside from the sender.
+    /// 一种命令处理器，处理除发送者之外没有其他参数的命令。
     /// </summary>
     public class NoParamCommandHandler : CommandHandlerBase
     {

@@ -1,14 +1,13 @@
-﻿using System;
+using System;
 using System.Linq;
 namespace ClientCore.CnCNet5
 {
     public static class NameValidator
     {
         /// <summary>
-        /// Checks if the player's nickname is valid for CnCNet.
+        /// 检查玩家昵称在 CnCNet 上是否有效。
         /// </summary>
-        /// <returns>Null if the nickname is valid, otherwise a string that tells
-        /// what is wrong with the name.</returns>
+        /// <returns>如果昵称有效则返回 null，否则返回说明名称问题的字符串。</returns>
         public static string IsNameValid(string name)
         {
             var profanityFilter = new ProfanityFilter();
@@ -25,7 +24,7 @@ namespace ClientCore.CnCNet5
             if (name[0] == '-')
                 return "玩家名称首位不能是短线(-).";
 
-            // Check that there are no invalid chars
+            // 检查是否含有无效字符
             char[] allowedCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_[]|\\{}^`".ToCharArray();
             char[] nicknameChars = name.ToCharArray();
 
@@ -45,11 +44,11 @@ namespace ClientCore.CnCNet5
         }
 
         /// <summary>
-        /// Returns player nickname constrained to maximum allowed length and with invalid characters for offline nicknames removed.
-        /// Does not check for offensive words or invalid characters for CnCNet.
+        /// 返回受最大允许长度约束且移除了离线昵称无效字符的玩家昵称。
+        /// 不检查脏话或 CnCNet 的无效字符。
         /// </summary>
-        /// <param name="name">Player nickname.</param>
-        /// <returns>Player nickname with invalid offline nickname characters removed and constrained to maximum name length.</returns>
+        /// <param name="name">玩家昵称。</param>
+        /// <returns>移除了离线昵称无效字符并受最大名称长度约束的玩家昵称。</returns>
         public static string GetValidOfflineName(string name)
         {
             char[] disallowedCharacters = ",;".ToCharArray();

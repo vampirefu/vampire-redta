@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 
 namespace DTAClient.Domain.Multiplayer.LAN
 {
     /// <summary>
-    /// A command handler that has no parameters.
+    /// 无参数的命令处理器。
     /// </summary>
     class ClientNoParamCommandHandler : LANClientCommandHandler
     {

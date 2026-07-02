@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 
 namespace ClientGUI
 {
     /// <summary>
-    /// The exception that is thrown when INI data is invalid.
+    /// 当INI数据无效时抛出的异常。
     /// </summary>
     public class INIConfigException : Exception
     {

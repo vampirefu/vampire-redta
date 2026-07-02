@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using System;
@@ -18,21 +18,19 @@ namespace DTAClient.Online
         private const int RECENT_LIMIT = 50;
 
         /// <summary>
-        /// A list which contains names of friended users. If you manipulate this list
-        /// directly you have to also invoke UserFriendToggled event handler for every
-        /// user name added or removed.
+        /// 包含好友用户名称的列表。如果直接操作此列表，
+        /// 还必须为每个添加或移除的用户名调用 UserFriendToggled 事件处理程序。
         /// </summary>
         public List<string> FriendList { get; private set; } = new();
 
         /// <summary>
-        /// A list which contains idents of ignored users. If you manipulate this list
-        /// directly you have to also invoke UserIgnoreToggled event handler for every
-        /// user ident added or removed.
+        /// 包含已忽略用户标识的列表。如果直接操作此列表，
+        /// 还必须为每个添加或移除的用户标识调用 UserIgnoreToggled 事件处理程序。
         /// </summary>
         public List<string> IgnoreList { get; private set; } = new();
 
         /// <summary>
-        /// A list which contains names of players from recent games.
+        /// 包含最近游戏中玩家名称的列表。
         /// </summary>
         public List<RecentPlayer> RecentList { get; private set; } = new();
 
@@ -153,10 +151,9 @@ namespace DTAClient.Online
         }
 
         /// <summary>
-        /// Adds or removes a specified user to or from the friend list
-        /// depending on whether they already are on the friend list.
+        /// 根据指定用户是否已在好友列表中，将其添加到或从好友列表中移除。
         /// </summary>
-        /// <param name="name">The name of the user.</param>
+        /// <param name="name">用户的名称。</param>
         public void ToggleFriend(string name)
         {
             Toggle(name, FriendList);
@@ -164,10 +161,9 @@ namespace DTAClient.Online
         }
 
         /// <summary>
-        /// Adds or removes a specified user to or from the chat ignore list
-        /// depending on whether they already are on the ignore list.
+        /// 根据指定用户是否已在忽略列表中，将其添加到或从聊天忽略列表中移除。
         /// </summary>
-        /// <param name="ident">The ident of the IRCUser.</param>
+        /// <param name="ident">IRCUser 的标识符。</param>
         public void ToggleIgnoreUser(string ident)
         {
             Toggle(ident, IgnoreList);
@@ -189,15 +185,15 @@ namespace DTAClient.Online
         }
 
         /// <summary>
-        /// Checks to see if a user is in the ignore list.
+        /// 检查用户是否在忽略列表中。
         /// </summary>
-        /// <param name="ident">The IRC identifier of the user.</param>
+        /// <param name="ident">用户的 IRC 标识符。</param>
         public bool IsIgnored(string ident) => IgnoreList.Contains(ident);
 
         /// <summary>
-        /// Checks if a specified user belongs to the friend list.
+        /// 检查指定用户是否属于好友列表。
         /// </summary>
-        /// <param name="name">The name of the user.</param>
+        /// <param name="name">用户的名称。</param>
         public bool IsFriend(string name) => FriendList.Contains(name);
     }
 

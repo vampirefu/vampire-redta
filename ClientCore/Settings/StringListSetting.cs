@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Rampastring.Tools;
@@ -6,7 +6,7 @@ using Rampastring.Tools;
 namespace ClientCore.Settings
 {
     /// <summary>
-    /// This is a setting that can be stored as a comma separated list of strings.
+    /// 可以存储为逗号分隔字符串列表的设置。
     /// </summary>
     public class StringListSetting : INISetting<List<string>>
     {

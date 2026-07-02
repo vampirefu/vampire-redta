@@ -1,4 +1,4 @@
-﻿using Rampastring.XNAUI.XNAControls;
+using Rampastring.XNAUI.XNAControls;
 using System;
 using System.Collections.Generic;
 using Rampastring.XNAUI;
@@ -17,13 +17,12 @@ using Rampastring.Tools;
 namespace DTAClient.DXGUI.Generic
 {
     /// <summary>
-    /// A top bar that allows switching between various client windows.
+    /// 允许在各种客户端窗口之间切换的顶部栏。
     /// </summary>
     public class TopBar : XNAPanel
     {
         /// <summary>
-        /// The number of seconds that the top bar will stay down after it has
-        /// lost input focus.
+        /// 顶部栏在失去输入焦点后保持停留的秒数。
         /// </summary>
         const double DOWN_TIME_WAIT_SECONDS = 1.0;
         const double EVENT_DOWN_TIME_WAIT_SECONDS = 2.0;
@@ -201,7 +200,7 @@ namespace DTAClient.DXGUI.Generic
                 lblCnCNetStatus = new XNALabel(WindowManager);
                 lblCnCNetStatus.Name = "lblCnCNetStatus";
                 lblCnCNetStatus.FontIndex = 1;
-                lblCnCNetStatus.Text = ClientConfiguration.Instance.LocalGame.ToUpper() + " PLAYERS ONLINE:";
+                lblCnCNetStatus.Text = ClientConfiguration.Instance.LocalGame.ToUpper() + " 在线玩家:";
                 lblCnCNetPlayerCount = new XNALabel(WindowManager);
                 lblCnCNetPlayerCount.Name = "lblCnCNetPlayerCount";
                 lblCnCNetPlayerCount.FontIndex = 1;
@@ -238,7 +237,7 @@ namespace DTAClient.DXGUI.Generic
             btnPrivateMessages.Text = DEFAULT_PM_BTN_LABEL;
             if (unreadMessageCount > 0)
             {
-                // TODO need to make a wider button to accommodate count
+                // TODO 需要制作更宽的按钮来容纳计数
                 // btnPrivateMessages.Text += $" ({unreadMessageCount})";
             }
         }
@@ -248,7 +247,7 @@ namespace DTAClient.DXGUI.Generic
             lock (locker)
             {
                 if (e.PlayerCount == -1)
-                    lblCnCNetPlayerCount.Text = "N/A";
+                    lblCnCNetPlayerCount.Text = "不可用";
                 else
                     lblCnCNetPlayerCount.Text = e.PlayerCount.ToString();
             }
@@ -316,8 +315,8 @@ namespace DTAClient.DXGUI.Generic
             cncnetLobbySwitch.SwitchOn();
             privateMessageSwitch.SwitchOff();
 
-            // HACK warning
-            // TODO: add a way for DarkeningPanel to skip transitions
+            // HACK 警告
+            // TODO: 为 DarkeningPanel 添加跳过过渡动画的方式
             ((DarkeningPanel)((XNAControl)cncnetLobbySwitch).Parent).Alpha = 1.0f;
         }
 
@@ -328,8 +327,8 @@ namespace DTAClient.DXGUI.Generic
             privateMessageSwitch.SwitchOff();
             primarySwitches[primarySwitches.Count - 1].SwitchOn();
 
-            // HACK warning
-            // TODO: add a way for DarkeningPanel to skip transitions
+            // HACK 警告
+            // TODO: 为 DarkeningPanel 添加跳过过渡动画的方式
             if (((XNAControl)primarySwitches[primarySwitches.Count - 1]).Parent is DarkeningPanel darkeningPanel)
                 darkeningPanel.Alpha = 1.0f;
         }
@@ -444,7 +443,7 @@ namespace DTAClient.DXGUI.Generic
                         Width, Height);
                 }
                 else
-                    return; // Don't handle input when the cursor is above our game window
+                    return; // 当光标在游戏窗口上方时不处理输入
             }
 
             DateTime dtn = DateTime.Now;

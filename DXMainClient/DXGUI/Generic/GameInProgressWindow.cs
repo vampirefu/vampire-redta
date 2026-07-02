@@ -1,4 +1,4 @@
-﻿using Rampastring.XNAUI.XNAControls;
+using Rampastring.XNAUI.XNAControls;
 using Rampastring.Tools;
 using System;
 using ClientCore;
@@ -18,9 +18,9 @@ using SixLabors.ImageSharp;
 namespace DTAClient.DXGUI
 {
     /// <summary>
-    /// Displays a dialog in the client when a game is in progress.
-    /// Also enables power-saving (lowers FPS) while a game is in progress,
-    /// and performs various operations on game start and exit.
+    /// 在游戏进行时在客户端中显示对话框。
+    /// 同时在游戏进行时启用节能（降低 FPS），
+    /// 并在游戏启动和退出时执行各种操作。
     /// </summary>
     public class GameInProgressWindow : XNAPanel
     {
@@ -160,14 +160,14 @@ namespace DTAClient.DXGUI
 
             if (UserINISettings.Instance.BorderlessWindowedClient)
             {
-                // Hack: Re-set graphics mode
-                // Windows resizes our window if we're in fullscreen mode and
-                // the in-game resolution is lower than the user's desktop resolution.
-                // After the game exits, Windows doesn't properly re-size our window
-                // back to cover the entire screen, which causes graphics to get
-                // stretched and also messes up input handling since the window manager
-                // still thinks it's using the original resolution.
-                // Re-setting the graphics mode fixes it.
+                // Hack：重新设置图形模式
+                // 如果我们处于全屏模式且游戏内分辨率低于用户桌面分辨率，
+                // Windows 会调整我们的窗口大小。
+                // 游戏退出后，Windows 无法正确地将窗口恢复为
+                // 覆盖整个屏幕，这会导致图形被拉伸，
+                // 并且由于窗口管理器仍然认为使用的是原始分辨率，
+                // 输入处理也会出问题。
+                // 重新设置图形模式可以修复此问题。
                 GameClass.SetGraphicsMode(WindowManager);
             }
 
@@ -176,12 +176,12 @@ namespace DTAClient.DXGUI
 #if ARES
             Task.Factory.StartNew(ProcessScreenshots);
 
-            // TODO: Ares debug log handling should be addressed in Ares DLL itself.
-            // For now the following are handled here:
-            // 1. Make a copy of syringe.log in debug snapshot directory on both crash and desync.
-            // 2. Move SYNCX.txt from game directory to debug snapshot directory on desync.
-            // 3. Make a debug snapshot directory & copy debug.log to it on desync even if full crash dump wasn't created.
-            // 4. Handle the empty snapshot directories created on a crash if debug logging was disabled.
+            // TODO: Ares 调试日志处理应该在 Ares DLL 本身中解决。
+            // 目前以下内容在此处理：
+            // 1. 在崩溃和不同步时将 syringe.log 复制到调试快照目录。
+            // 2. 在不同步时将 SYNCX.txt 从游戏目录移动到调试快照目录。
+            // 3. 在不同步时创建调试快照目录并将 debug.log 复制到其中，即使没有创建完整崩溃转储。
+            // 4. 处理崩溃时创建的空快照目录（如果调试日志被禁用）。
 
             string snapshotDirectory = GetNewestDebugSnapshotDirectory();
             bool snapshotCreated = snapshotDirectory != null;
@@ -220,12 +220,12 @@ namespace DTAClient.DXGUI
         }
 
         /// <summary>
-        /// Attempts to copy a general error log from game directory to another directory.
+        /// 尝试将通用错误日志从游戏目录复制到另一个目录。
         /// </summary>
-        /// <param name="directory">Directory to copy error log to.</param>
-        /// <param name="filename">Filename of the error log.</param>
-        /// <param name="dateTime">Time to to apply as a timestamp to filename. Set to null to not apply a timestamp.</param>
-        /// <returns>True if error log was copied, false otherwise.</returns>
+        /// <param name="directory">要复制错误日志到的目录。</param>
+        /// <param name="filename">错误日志的文件名。</param>
+        /// <param name="dateTime">要应用到文件名的时间戳。设为 null 则不应用时间戳。</param>
+        /// <returns>如果错误日志已复制则为 true，否则为 false。</returns>
         private bool CopyErrorLog(string directory, string filename, DateTime? dateTime)
         {
             bool copied = false;
@@ -260,11 +260,11 @@ namespace DTAClient.DXGUI
         }
 
         /// <summary>
-        /// Attempts to copy sync error logs from game directory to another directory.
+        /// 尝试将同步错误日志从游戏目录复制到另一个目录。
         /// </summary>
-        /// <param name="directory">Directory to copy sync error logs to.</param>
-        /// <param name="dateTime">Time to to apply as a timestamp to filename. Set to null to not apply a timestamp.</param>
-        /// <returns>True if any sync logs were copied, false otherwise.</returns>
+        /// <param name="directory">要复制同步错误日志到的目录。</param>
+        /// <param name="dateTime">要应用到文件名的时间戳。设为 null 则不应用时间戳。</param>
+        /// <returns>如果复制了任何同步日志则为 true，否则为 false。</returns>
         private bool CopySyncErrorLogs(string directory, DateTime? dateTime)
         {
             bool copied = false;
@@ -305,10 +305,10 @@ namespace DTAClient.DXGUI
 
 #if ARES
         /// <summary>
-        /// Returns the first debug snapshot directory found in Ares debug log directory that was created after last game launch and isn't empty.
-        /// Additionally any empty snapshot directories encountered are deleted.
+        /// 返回在 Ares 调试日志目录中找到的第一个在上次游戏启动后创建且不为空的调试快照目录。
+        /// 此外，遇到的任何空快照目录都会被删除。
         /// </summary>
-        /// <returns>Full path of the debug snapshot directory. If one isn't found, null is returned.</returns>
+        /// <returns>调试快照目录的完整路径。如果未找到，则返回 null。</returns>
         private string GetNewestDebugSnapshotDirectory()
         {
             string snapshotDirectory = null;
@@ -336,9 +336,9 @@ namespace DTAClient.DXGUI
         }
 
         /// <summary>
-        /// Returns list of all debug snapshot directories in Ares debug logs directory.
+        /// 返回 Ares 调试日志目录中所有调试快照目录的列表。
         /// </summary>
-        /// <returns>List of all debug snapshot directories in Ares debug logs directory. Empty list if none are found or an error was encountered.</returns>
+        /// <returns>Ares 调试日志目录中所有调试快照目录的列表。如果未找到或遇到错误则返回空列表。</returns>
         private List<string> GetAllDebugSnapshotDirectories()
         {
             var directories = new List<string>();
@@ -353,7 +353,7 @@ namespace DTAClient.DXGUI
         }
 
         /// <summary>
-        /// Converts BMP screenshots to PNG and copies them from game directory to Screenshots sub-directory.
+        /// 将 BMP 截图转换为 PNG 并从游戏目录复制到 Screenshots 子目录。
         /// </summary>
         private void ProcessScreenshots()
         {

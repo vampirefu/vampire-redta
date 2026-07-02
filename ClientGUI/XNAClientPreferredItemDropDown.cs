@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
@@ -7,24 +7,24 @@ using System.Collections.Generic;
 namespace ClientGUI
 {
     /// <summary>
-    /// A drop-down control that has a preferred drop-down item with an optional string label displayed next to its text.
+    /// 具有首选下拉项的下拉控件，带有可选的字符串标签显示在其文本旁边。
     /// </summary>
     public class XNAClientPreferredItemDropDown : XNAClientDropDown
     {
         /// <summary>
-        /// String label displayed next to the preferred drop-down item text.
+        /// 显示在首选下拉项文本旁边的字符串标签。
         /// </summary>
         public string PreferredItemLabel { get; set; }
 
         /// <summary>
-        /// Index of the preferred drop-down item.
+        /// 首选下拉项的索引。
         /// </summary>
         public List<int> PreferredItemIndexes { get; set; } = new List<int>();
 
         /// <summary>
-        /// Creates a new preferred item drop-down control.
+        /// 创建新的首选项下拉控件。
         /// </summary>
-        /// <param name="windowManager">The WindowManager associated with this control.</param>
+        /// <param name="windowManager">与此控件关联的WindowManager。</param>
         public XNAClientPreferredItemDropDown(WindowManager windowManager) : base(windowManager)
         {
         }
@@ -42,7 +42,7 @@ namespace ClientGUI
         }
 
         /// <summary>
-        /// Draws the drop-down.
+        /// 绘制下拉框。
         /// </summary>
         public override void Draw(GameTime gameTime)
         {

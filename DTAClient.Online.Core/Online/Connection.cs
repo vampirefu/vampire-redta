@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using Rampastring.Tools;
 using System;
 using System.Collections.Generic;
@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace DTAClient.Online
 {
     /// <summary>
-    /// The CnCNet connection handler.
+    /// CnCNet 连接处理程序。
     /// </summary>
     public class Connection
     {
@@ -31,7 +31,7 @@ namespace DTAClient.Online
         IConnectionManager connectionManager;
 
         /// <summary>
-        /// The list of CnCNet / GameSurge IRC servers to connect to.
+        /// 要连接的 CnCNet / GameSurge IRC 服务器列表。
         /// </summary>
         private static readonly IList<Server> Servers = new List<Server>
         {
@@ -104,10 +104,9 @@ namespace DTAClient.Online
         private readonly Encoding encoding = Encoding.UTF8;
 
         /// <summary>
-        /// A list of server IPs that have dropped our connection.
-        /// The client skips these servers when attempting to re-connect, to
-        /// prevent a server that first accepts a connection and then drops it
-        /// right afterwards from preventing online play.
+        /// 已断开我们连接的服务器 IP 列表。
+        /// 客户端在尝试重新连接时会跳过这些服务器，以防止服务器先接受连接
+        /// 然后立即断开从而导致无法在线游戏。
         /// </summary>
         private readonly List<string> failedServerIPs = new List<string>();
         private volatile string currentConnectedServerIP;
@@ -138,7 +137,7 @@ namespace DTAClient.Online
         }
 
         /// <summary>
-        /// Attempts to connect to CnCNet without blocking the calling thread.
+        /// 尝试连接到 CnCNet 而不阻塞调用线程。
         /// </summary>
         public void ConnectAsync()
         {
@@ -146,7 +145,7 @@ namespace DTAClient.Online
                 throw new InvalidOperationException("客户端已连接!");
 
             if (_attemptingConnection)
-                return; // Maybe we should throw in this case as well?
+                return; // 也许我们也应该在这种情况下抛出异常？
 
             welcomeMessageReceived = false;
             connectionCut = false;
@@ -160,7 +159,7 @@ namespace DTAClient.Online
         }
 
         /// <summary>
-        /// Attempts to connect to CnCNet.
+        /// 尝试连接到 CnCNet。
         /// </summary>
         private void ConnectToServer()
         {
@@ -183,7 +182,7 @@ namespace DTAClient.Online
                         if (!client.Connected)
                         {
                             Logger.Log("Connecting to " + server.Host + " port " + server.Ports[i] + " timed out!");
-                            continue; // Start all over again, using the next port
+                            continue; // 使用下一个端口重新开始
                         }
 
                         Logger.Log("Succesfully connected to " + server.Host + " on port " + server.Ports[i]);
@@ -213,7 +212,7 @@ namespace DTAClient.Online
             }
 
             Logger.Log("Connecting to CnCNet failed!");
-            // Clear the failed server list in case connecting to all servers has failed
+            // 如果连接所有服务器都失败了，清除失败服务器列表
             failedServerIPs.Clear();
             _attemptingConnection = false;
             connectionManager.OnConnectAttemptFailed();
@@ -235,7 +234,7 @@ namespace DTAClient.Online
                 if (connectionManager.GetDisconnectStatus())
                 {
                     connectionManager.OnDisconnected();
-                    connectionCut = false; // This disconnect is intentional
+                    connectionCut = false; // 此断开连接是有意的
                     break;
                 }
 
@@ -270,7 +269,7 @@ namespace DTAClient.Online
 
                 errorTimes = 0;
 
-                // A message has been succesfully received
+                // 已成功接收到消息
                 string msg = encoding.GetString(message, 0, bytesRead);
                 Logger.Log("Message received: " + msg);
 
@@ -311,14 +310,14 @@ namespace DTAClient.Online
         }
 
         /// <summary>
-        /// Get all IP addresses of Lobby servers by resolving the hostname and test the latency to the servers.
-        /// The maximum latency is defined in <c>MAXIMUM_LATENCY</c>, see <see cref="Connection.MAXIMUM_LATENCY"/>.
-        /// Servers that did not respond to ICMP messages in time will be placed at the end of the list.
+        /// 通过解析主机名获取大厅服务器的所有 IP 地址，并测试到服务器的延迟。
+        /// 最大延迟在 <c>MAXIMUM_LATENCY</c> 中定义，参见 <see cref="Connection.MAXIMUM_LATENCY"/>。
+        /// 未及时响应 ICMP 消息的服务器将被放置在列表末尾。
         /// </summary>
-        /// <returns>A list of Lobby servers sorted by latency.</returns>
+        /// <returns>按延迟排序的大厅服务器列表。</returns>
         private IList<Server> GetServerListSortedByLatency()
         {
-            // Resolve the hostnames.
+            // 解析主机名。
             ICollection<Task<IEnumerable<Tuple<IPAddress, string, int[]>>>>
                 dnsTasks = new List<Task<IEnumerable<Tuple<IPAddress, string, int[]>>>>(Servers.Count);
 
@@ -335,14 +334,14 @@ namespace DTAClient.Online
 
                     try
                     {
-                        // If hostNameOrAddress is an IP address, this address is returned without querying the DNS server.
+                        // 如果 hostNameOrAddress 是 IP 地址，则直接返回该地址而不查询 DNS 服务器。
                         IEnumerable<IPAddress> serverIPAddresses = Dns.GetHostAddresses(serverHostnameOrIPAddress)
                                                                       .Where(IPAddress => IPAddress.AddressFamily == AddressFamily.InterNetwork);
 
                         Logger.Log($"DNS resolved {serverName} ({serverHostnameOrIPAddress}): " +
                             $"{string.Join(", ", serverIPAddresses.Select(item => item.ToString()))}");
 
-                        // Store each IPAddress in a different tuple.
+                        // 将每个 IPAddress 存储在不同的元组中。
                         foreach (IPAddress serverIPAddress in serverIPAddresses)
                         {
                             _serverInfos.Add(new Tuple<IPAddress, string, int[]>(serverIPAddress, serverName, serverPorts));
@@ -362,22 +361,22 @@ namespace DTAClient.Online
 
             Task.WaitAll(dnsTasks.ToArray());
 
-            // Group the tuples by IPAddress to merge duplicate servers.
+            // 按 IPAddress 对元组进行分组以合并重复的服务器。
             IEnumerable<IGrouping<IPAddress, Tuple<string, int[]>>>
-                serverInfosGroupedByIPAddress = dnsTasks.SelectMany(dnsTask => dnsTask.Result)      // Tuple<IPAddress, serverName, serverPorts>
+                serverInfosGroupedByIPAddress = dnsTasks.SelectMany(dnsTask => dnsTask.Result)      // Tuple<IPAddress, 服务器名称, 服务器端口>
                                                         .GroupBy(
                                                             serverInfo => serverInfo.Item1,         // IPAddress
                                                             serverInfo => new Tuple<string, int[]>(
-                                                                serverInfo.Item2,                   // serverName
-                                                                serverInfo.Item3                    // serverPorts
+                                                                serverInfo.Item2,                   // 服务器名称
+                                                                serverInfo.Item3                    // 服务器端口
                                                             )
                                                         );
 
-            // Process each group:
-            //   1. Get IPAddress.
-            //   2. Concatenate serverNames.
-            //   3. Remove duplicate ports.
-            //   4. Construct and return a tuple that contains the IPAddress, concatenated serverNames and unique ports.
+            // 处理每个分组：
+            //   1. 获取 IPAddress。
+            //   2. 拼接服务器名称。
+            //   3. 移除重复的端口。
+            //   4. 构造并返回包含 IPAddress、拼接的服务器名称和唯一端口的元组。
             IEnumerable<Tuple<IPAddress, string, int[]>> serverInfos = serverInfosGroupedByIPAddress.Select(serverInfoGroup =>
             {
                 IPAddress ipAddress = serverInfoGroup.Key;
@@ -387,7 +386,7 @@ namespace DTAClient.Online
                 return new Tuple<IPAddress, string, int[]>(ipAddress, serverNames, serverPorts);
             });
 
-            // Do logging.
+            // 记录日志。
             foreach (Tuple<IPAddress, string, int[]> serverInfo in serverInfos)
             {
                 string serverIPAddress = serverInfo.Item1.ToString();
@@ -399,7 +398,7 @@ namespace DTAClient.Online
 
             Logger.Log($"The number of Lobby servers is {serverInfos.Count() }.");
 
-            // Test the latency.
+            // 测试延迟。
             ICollection<Task<Tuple<Server, long>>> pingTasks = new List<Task<Tuple<Server, long>>>(serverInfos.Count());
 
             foreach (Tuple<IPAddress, string, int[]> serverInfo in serverInfos)
@@ -455,12 +454,12 @@ namespace DTAClient.Online
 
             Task.WaitAll(pingTasks.ToArray());
 
-            // Sort the servers by latency.
+            // 按延迟对服务器进行排序。
             IOrderedEnumerable<Tuple<Server, long>>
-                sortedServerAndLatencyResults = pingTasks.Select(task => task.Result)              // Tuple<Server, Latency>
-                                                         .OrderBy(taskResult => taskResult.Item2); // Latency
+                sortedServerAndLatencyResults = pingTasks.Select(task => task.Result)              // Tuple<Server, 延迟>
+                                                         .OrderBy(taskResult => taskResult.Item2); // 延迟
 
-            // Do logging.
+            // 记录日志。
             foreach (Tuple<Server, long> serverAndLatencyResult in sortedServerAndLatencyResults)
             {
                 string serverIPAddress = serverAndLatencyResult.Item1.Host;
@@ -479,7 +478,7 @@ namespace DTAClient.Online
                 connectionManager.OnServerLatencyTested(candidateCount, closerCount);
             }
 
-            return sortedServerAndLatencyResults.Select(taskResult => taskResult.Item1).ToList(); // Server
+            return sortedServerAndLatencyResults.Select(taskResult => taskResult.Item1).ToList(); // 服务器
         }
 
         public void Disconnect()
@@ -494,10 +493,10 @@ namespace DTAClient.Online
         #region Handling commands
 
         /// <summary>
-        /// Checks if a message from the IRC server is a partial or full
-        /// message, and handles it accordingly.
+        /// 检查来自 IRC 服务器的消息是部分消息还是完整消息，
+        /// 并相应地处理。
         /// </summary>
-        /// <param name="message">The message.</param>
+        /// <param name="message">消息内容。</param>
         private void HandleMessage(string message)
         {
             string msg = overMessage + message;
@@ -528,7 +527,7 @@ namespace DTAClient.Online
         }
 
         /// <summary>
-        /// Handles a specific command received from the IRC server.
+        /// 处理从 IRC 服务器接收到的特定命令。
         /// </summary>
         private void PerformCommand(string message)
         {
@@ -553,26 +552,26 @@ namespace DTAClient.Online
 
                     switch (commandNumber)
                     {
-                        // Command descriptions from https://www.alien.net.au/irc/irc2numerics.html
+                        // 命令描述来自 https://www.alien.net.au/irc/irc2numerics.html
 
-                        case 001: // Welcome message
+                        case 001: // 欢迎消息
                             message = serverMessagePart + parameters[1];
                             welcomeMessageReceived = true;
                             connectionManager.OnWelcomeMessageReceived(message);
                             reconnectCount = 0;
                             break;
-                        case 002: // "Your host is x, running version y"
-                        case 003: // "This server was created..."
-                        case 251: // There are <int> users and <int> invisible on <int> servers
-                        case 255: // I have <int> clients and <int> servers
-                        case 265: // Local user count
-                        case 266: // Global user count
-                        case 401: // Used to indicate the nickname parameter supplied to a command is currently unused
-                        case 403: // Used to indicate the given channel name is invalid, or does not exist
-                        case 404: // Used to indicate that the user does not have the rights to send a message to a channel
-                        case 432: // Invalid nickname on registration
-                        case 461: // Returned by the server to any command which requires more parameters than the number of parameters given
-                        case 465: // Returned to a client after an attempt to register on a server configured to ban connections from that client
+                        case 002: // "您的主机是 x，运行版本 y"
+                        case 003: // "此服务器创建于..."
+                        case 251: // 有 <int> 个用户和 <int> 个隐身用户在 <int> 个服务器上
+                        case 255: // 我有 <int> 个客户端和 <int> 个服务器
+                        case 265: // 本地用户数
+                        case 266: // 全局用户数
+                        case 401: // 用于指示提供给命令的昵称参数当前未被使用
+                        case 403: // 用于指示给定的频道名称无效或不存在
+                        case 404: // 用于指示用户没有向频道发送消息的权限
+                        case 432: // 注册时昵称无效
+                        case 461: // 服务器返回此响应，当命令需要更多参数但提供的参数不足时
+                        case 465: // 当客户端尝试在配置为禁止该客户端连接的服务器上注册时返回
                             StringBuilder displayedMessage = new StringBuilder(serverMessagePart);
                             for (int i = 1; i < parameters.Count; i++)
                             {
@@ -581,15 +580,15 @@ namespace DTAClient.Online
                             }
                             connectionManager.OnGenericServerMessageReceived(displayedMessage.ToString());
                             break;
-                        case 439: // Attempt to send messages too fast
+                        case 439: // 尝试过快发送消息
                             connectionManager.OnTargetChangeTooFast(parameters[1], parameters[2]);
                             break;
-                        case 252: // Number of operators online
-                        case 254: // Number of channels formed
+                        case 252: // 在线管理员数量
+                        case 254: // 已形成的频道数量
                             message = serverMessagePart + parameters[1] + " " + parameters[2];
                             connectionManager.OnGenericServerMessageReceived(message);
                             break;
-                        case 301: // AWAY message
+                        case 301: // 离开消息
                             string awayTarget = parameters[0];
                             if (awayTarget != ProgramConstants.PLAYERNAME)
                                 break;
@@ -597,13 +596,13 @@ namespace DTAClient.Online
                             string awayReason = parameters[2];
                             connectionManager.OnAwayMessageReceived(awayPlayer, awayReason);
                             break;
-                        case 332: // Channel topic message
+                        case 332: // 频道主题消息
                             string _target = parameters[0];
                             if (_target != ProgramConstants.PLAYERNAME)
                                 break;
                             connectionManager.OnChannelTopicReceived(parameters[1], parameters[2]);
                             break;
-                        case 353: // User list (reply to NAMES)
+                        case 353: // 用户列表（NAMES 的回复）
                             string target = parameters[0];
                             if (target != ProgramConstants.PLAYERNAME)
                                 break;
@@ -611,35 +610,35 @@ namespace DTAClient.Online
                             string[] users = parameters[3].Split(new char[1] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                             connectionManager.OnUserListReceived(channelName, users);
                             break;
-                        case 352: // Reply to WHO query
+                        case 352: // WHO 查询的回复
                             string ident = parameters[2];
                             string host = parameters[3];
                             string wUserName = parameters[5];
                             string extraInfo = parameters[7];
                             connectionManager.OnWhoReplyReceived(ident, host, wUserName, extraInfo);
                             break;
-                        case 311: // Reply to WHOIS NAME query
+                        case 311: // WHOIS NAME 查询的回复
                             connectionManager.OnWhoReplyReceived(parameters[2], parameters[3], parameters[1], string.Empty);
                             break;
-                        case 433: // Name already in use
+                        case 433: // 名称已被使用
                             message = serverMessagePart + parameters[1] + ": " + parameters[2];
                             //connectionManager.OnGenericServerMessageReceived(message);
                             connectionManager.OnNameAlreadyInUse();
                             break;
-                        case 451: // Not registered
+                        case 451: // 尚未注册
                             Register();
                             connectionManager.OnGenericServerMessageReceived(message);
                             break;
-                        case 471: // Returned when attempting to join a channel that is full (basically, player limit met)
+                        case 471: // 尝试加入已满的频道时返回（基本上是玩家数量已达上限）
                             connectionManager.OnChannelFull(parameters[1]);
                             break;
-                        case 473: // Returned when attempting to join an invite-only channel (locked games)
+                        case 473: // 尝试加入仅限邀请的频道时返回（锁定的游戏）
                             connectionManager.OnChannelInviteOnly(parameters[1]);
                             break;
-                        case 474: // Returned when attempting to join a channel a user is banned from
+                        case 474: // 尝试加入用户被封禁的频道时返回
                             connectionManager.OnBannedFromChannel(parameters[1]);
                             break;
-                        case 475: // Returned when attempting to join a key-locked channel either without a key or with the wrong key
+                        case 475: // 尝试在没有密钥或使用错误密钥的情况下加入密钥锁定的频道时返回
                             connectionManager.OnIncorrectChannelPassword(parameters[1]);
                             break;
                     }
@@ -655,7 +654,7 @@ namespace DTAClient.Online
                         {
                             if (parameters.Count > 1 && parameters[1][0] == 1)//Conversions.IntFromString(parameters[1].Substring(0, 1), -1) == 1)
                             {
-                                // CTCP
+                                // CTCP 协议
                                 string channelName = parameters[0];
                                 string ctcpMessage = parameters[1];
                                 ctcpMessage = ctcpMessage.Remove(0, 1).Remove(ctcpMessage.Length - 2);
@@ -785,30 +784,28 @@ namespace DTAClient.Online
         }
 
         /// <summary>
-        /// Parses a single IRC message received from the server.
+        /// 解析从服务器接收到的单条 IRC 消息。
         /// </summary>
-        /// <param name="message">The message.</param>
-        /// <param name="prefix">(out) The message prefix.</param>
-        /// <param name="command">(out) The command.</param>
-        /// <param name="parameters">(out) The parameters of the command.</param>
+        /// <param name="message">消息内容。</param>
+        /// <param name="prefix">(out) 消息前缀。</param>
+        /// <param name="command">(out) 命令。</param>
+        /// <param name="parameters">(out) 命令的参数。</param>
         private void ParseIrcMessage(string message, out string prefix, out string command, out List<string> parameters)
         {
             int prefixEnd = -1;
             prefix = command = String.Empty;
             parameters = new List<string>();
 
-            // Grab the prefix if it is present. If a message begins
-            // with a colon, the characters following the colon until
-            // the first space are the prefix.
+            // 如果存在前缀则获取。如果消息以冒号开头，
+            // 冒号之后到第一个空格之间的字符就是前缀。
             if (message.StartsWith(":"))
             {
                 prefixEnd = message.IndexOf(" ");
                 prefix = message.Substring(1, prefixEnd - 1);
             }
 
-            // Grab the trailing if it is present. If a message contains
-            // a space immediately following a colon, all characters after
-            // the colon are the trailing part.
+            // 如果存在尾部内容则获取。如果消息中包含紧跟在冒号后面的空格，
+            // 则冒号之后的所有字符就是尾部内容。
             int trailingStart = message.IndexOf(" :");
             string trailing = null;
             if (trailingStart >= 0)
@@ -816,8 +813,7 @@ namespace DTAClient.Online
             else
                 trailingStart = message.Length;
 
-            // Use the prefix end position and trailing part start
-            // position to extract the command and parameters.
+            // 使用前缀结束位置和尾部内容起始位置来提取命令和参数。
             var commandAndParameters = message.Substring(prefixEnd + 1, trailingStart - prefixEnd - 1).Split(new char[1] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
             if (commandAndParameters.Length == 0)
@@ -827,11 +823,11 @@ namespace DTAClient.Online
                 return;
             }
 
-            // The command will always be the first element of the array.
+            // 命令始终是数组的第一个元素。
             command = commandAndParameters[0];
 
-            // The rest of the elements are the parameters, if they exist.
-            // Skip the first element because that is the command.
+            // 其余元素是参数（如果存在）。
+            // 跳过第一个元素，因为那是命令。
             if (commandAndParameters.Length > 1)
             {
                 for (int id = 1; id < commandAndParameters.Length; id++)
@@ -840,8 +836,7 @@ namespace DTAClient.Online
                 }
             }
 
-            // If the trailing part is valid add the trailing part to the
-            // end of the parameters.
+            // 如果尾部内容有效，将尾部内容添加到参数的末尾。
             if (!string.IsNullOrEmpty(trailing))
                 parameters.Add(trailing);
         }
@@ -902,16 +897,16 @@ namespace DTAClient.Online
         }
 
         /// <summary>
-        /// Sends a PING message to the server to indicate that we're still connected.
+        /// 向服务器发送 PING 消息以指示我们仍然在线。
         /// </summary>
-        /// <param name="data">Just a dummy parameter so that this matches the delegate System.Threading.TimerCallback.</param>
+        /// <param name="data">仅是一个虚拟参数，用于匹配 System.Threading.TimerCallback 委托。</param>
         private void AutoPing(object data)
         {
             SendMessage("PING LAG" + new Random().Next(100000, 999999));
         }
 
         /// <summary>
-        /// Registers the user.
+        /// 注册用户。
         /// </summary>
         private void Register()
         {
@@ -949,9 +944,9 @@ namespace DTAClient.Online
         }
 
         /// <summary>
-        /// Send a message to the CnCNet server.
+        /// 向 CnCNet 服务器发送消息。
         /// </summary>
-        /// <param name="message">The message to send.</param>
+        /// <param name="message">要发送的消息。</param>
         private void SendMessage(string message)
         {
             if (serverStream == null)
@@ -977,10 +972,10 @@ namespace DTAClient.Online
         private int NextQueueID { get; set; } = 0;
 
         /// <summary>
-        /// This will attempt to replace a previously queued message of the same type.
+        /// 尝试替换先前排队的同类型消息。
         /// </summary>
-        /// <param name="qm">The new message to replace with</param>
-        /// <returns>Whether or not a replace occurred</returns>
+        /// <param name="qm">要替换的新消息</param>
+        /// <returns>是否发生了替换</returns>
         private bool ReplaceMessage(QueuedMessage qm)
         {
             lock (messageQueueLocker)
@@ -995,10 +990,10 @@ namespace DTAClient.Online
         }
 
         /// <summary>
-        /// Adds a message to the send queue.
+        /// 将消息添加到发送队列。
         /// </summary>
-        /// <param name="qm">The message to queue.</param>
-        /// <param name="replace">If true, attempt to replace a previous message of the same type</param>
+        /// <param name="qm">要排队的消息。</param>
+        /// <param name="replace">如果为 true，尝试替换先前同类型的消息</param>
         public void QueueMessage(QueuedMessage qm)
         {
             if (!_isConnected)
@@ -1042,10 +1037,9 @@ namespace DTAClient.Online
         }
 
         /// <summary>
-        /// Adds a "special" message to the send queue that replaces
-        /// previous messages of the same type in the queue.
+        /// 将"特殊"消息添加到发送队列，替换队列中先前同类型的消息。
         /// </summary>
-        /// <param name="qm">The message to queue.</param>
+        /// <param name="qm">要排队的消息。</param>
         private void AddSpecialQueuedMessage(QueuedMessage qm)
         {
             int broadcastingMessageIndex = MessageQueue.FindIndex(m => m.MessageType == qm.MessageType);

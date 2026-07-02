@@ -1,4 +1,4 @@
-﻿
+
 using System;
 using System.Runtime.InteropServices;
 #if WINFORMS
@@ -9,36 +9,34 @@ namespace ClientGUI
     public enum CompositionAttributes
     {
         /// <summary>
-        /// Character being entered by the user.
-        /// The IME has yet to convert this character.
+        /// 用户正在输入的字符。
+        /// IME尚未转换此字符。
         /// </summary>
         Input = 0x00,
         /// <summary>
-        /// Character selected by the user and then converted by the IME.
+        /// 用户选择并由IME转换的字符。
         /// </summary>
         TargetConverted = 0x01,
         /// <summary>
-        /// Character that the IME has already converted.
+        /// IME已转换的字符。
         /// </summary>
         Converted = 0x02,
         /// <summary>
-        /// Character being converted. The user has selected this character
-        /// but the IME has not yet converted it.
+        /// 正在转换的字符。用户已选择此字符，但IME尚未转换。
         /// </summary>
         TargetNotConverted = 0x03,
         /// <summary>
-        /// An error character that the IME cannot convert. For example,
-        /// the IME cannot put together some consonants.
+        /// IME无法转换的错误字符。例如，IME无法组合某些辅音。
         /// </summary>
         InputError = 0x04,
         /// <summary>
-        /// Characters that the IME will no longer convert.
+        /// IME不再转换的字符。
         /// </summary>
         FixedConverted = 0x05,
     }
 
     /// <summary>
-    /// Special event arguemnt class stores new character that IME sends in.
+    /// 特殊事件参数类，存储IME发送的新字符。
     /// </summary>
     public class IMEResultEventArgs : EventArgs
     {
@@ -49,13 +47,13 @@ namespace ClientGUI
         }
 
         /// <summary>
-        /// The result character
+        /// 结果字符
         /// </summary>
         public char Result { get; private set; }
     }
 
     /// <summary>
-    /// Native window class that handles IME.
+    /// 处理IME的原生窗口类。
     /// </summary>
 #if WINFORMS
     public sealed class IMENativeWindow : NativeWindow, IDisposable
@@ -72,115 +70,114 @@ namespace ClientGUI
         private IntPtr _context;
 
         /// <summary>
-        /// Gets the state if the IME should be enabled
+        /// 获取IME是否应启用的状态
         /// </summary>
         public bool IsEnabled { get; private set; }
 
         /// <summary>
-        /// Composition String
+        /// 组合字符串
         /// </summary>
         public string CompositionString { get { return _compstr.ToString(); } }
 
         /// <summary>
-        /// Composition Clause
+        /// 组合子句
         /// </summary>
         public string CompositionClause { get { return _compclause.ToString(); } }
 
         /// <summary>
-        /// Composition String Reads
+        /// 组合字符串读取
         /// </summary>
         public string CompositionReadString { get { return _compread.ToString(); } }
 
         /// <summary>
-        /// Composition Clause Reads
+        /// 组合子句读取
         /// </summary>
         public string CompositionReadClause { get { return _compreadclause.ToString(); } }
 
         /// <summary>
-        /// Result String
+        /// 结果字符串
         /// </summary>
         public string ResultString { get { return _resstr.ToString(); } }
 
         /// <summary>
-        /// Result Clause
+        /// 结果子句
         /// </summary>
         public string ResultClause { get { return _resclause.ToString(); } }
 
         /// <summary>
-        /// Result String Reads
+        /// 结果字符串读取
         /// </summary>
         public string ResultReadString { get { return _resread.ToString(); } }
 
         /// <summary>
-        /// Result Clause Reads
+        /// 结果子句读取
         /// </summary>
         public string ResultReadClause { get { return _resreadclause.ToString(); } }
 
         /// <summary>
-        /// Caret position of the composition
+        /// 组合的光标位置
         /// </summary>
         public int CompositionCursorPos { get { return _compcurpos.Value; } }
 
         /// <summary>
-        /// Array of the candidates
+        /// 候选词数组
         /// </summary>
         public string[] Candidates { get; private set; }
 
         /// <summary>
-        /// First candidate index of current page
+        /// 当前页的第一个候选词索引
         /// </summary>
         public uint CandidatesPageStart { get; private set; }
 
         /// <summary>
-        /// How many candidates should display per page
+        /// 每页显示的候选词数量
         /// </summary>
         public uint CandidatesPageSize { get; private set; }
 
         /// <summary>
-        /// The selected canddiate index
+        /// 选中的候选词索引
         /// </summary>
         public uint CandidatesSelection { get; private set; }
 
         /// <summary>
-        /// Get the composition attribute at character index.
+        /// 获取指定字符索引处的组合属性。
         /// </summary>
-        /// <param name="index">Character Index</param>
-        /// <returns>Composition Attribute</returns>
+        /// <param name="index">字符索引</param>
+        /// <returns>组合属性</returns>
         public CompositionAttributes GetCompositionAttr(int index)
         {
             return (CompositionAttributes)_compattr[index];
         }
 
         /// <summary>
-        /// Get the composition read attribute at character index.
+        /// 获取指定字符索引处的组合读取属性。
         /// </summary>
-        /// <param name="index">Character Index</param>
-        /// <returns>Composition Attribute</returns>
+        /// <param name="index">字符索引</param>
+        /// <returns>组合属性</returns>
         public CompositionAttributes GetCompositionReadAttr(int index)
         {
             return (CompositionAttributes)_compreadattr[index];
         }
 
         /// <summary>
-        /// Called when the candidates updated
+        /// 当候选词更新时调用
         /// </summary>
         public event EventHandler CandidatesReceived;
 
         /// <summary>
-        /// Called when the composition updated
+        /// 当组合字符串更新时调用
         /// </summary>
         public event EventHandler CompositionReceived;
 
         /// <summary>
-        /// Called when a new result character is coming
+        /// 当新的结果字符到来时调用
         /// </summary>
         public event EventHandler<IMEResultEventArgs> ResultReceived;
 
         /// <summary>
-        /// Constructor, must be called when the window create.
+        /// 构造函数，必须在窗口创建时调用。
         /// </summary>
-        /// <param name="handle">Handle of the window</param>
-        /// <param name="showDefaultIMEWindow">True if you want to display the default IME window</param>
+        /// <param name="handle">窗口句柄</param>
         public IMENativeWindow(IntPtr handle)
         {
             this._context = IntPtr.Zero;
@@ -201,7 +198,7 @@ namespace ClientGUI
         }
 
         /// <summary>
-        /// Enable the IME
+        /// 启用IME
         /// </summary>
         public void EnableIME()
         {
@@ -215,12 +212,12 @@ namespace ClientGUI
                 return;
             }
 
-            // This fix the bug that _context is 0 on fullscreen mode.
+            // 修复全屏模式下 _context 为0的bug。
             ImeContext.Enable(Handle);
         }
 
         /// <summary>
-        /// Disable the IME
+        /// 禁用IME
         /// </summary>
         public void DisableIME()
         {
@@ -231,7 +228,7 @@ namespace ClientGUI
         }
 
         /// <summary>
-        /// Dispose everything
+        /// 释放所有资源
         /// </summary>
         public void Dispose()
         {
@@ -292,7 +289,7 @@ namespace ClientGUI
             _resreadclause.Clear();
         }
 
-        #region IME Message Handlers
+        #region IME消息处理
 
         private void IMESetContext(ref Message msg)
         {

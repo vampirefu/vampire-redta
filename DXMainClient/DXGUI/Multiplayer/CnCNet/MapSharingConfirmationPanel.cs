@@ -1,4 +1,4 @@
-﻿using ClientGUI;
+using ClientGUI;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 using System;
@@ -6,7 +6,7 @@ using System;
 namespace DTAClient.DXGUI.Multiplayer.CnCNet
 {
     /// <summary>
-    /// A panel that is used to verify and display map sharing status.
+    /// 用于验证和显示地图共享状态的面板。
     /// </summary>
     class MapSharingConfirmationPanel : XNAPanel
     {

@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using ClientGUI;
 using Microsoft.Xna.Framework;
 using Rampastring.XNAUI;
@@ -7,7 +7,7 @@ using Rampastring.XNAUI.XNAControls;
 namespace DTAClient.DXGUI.Generic
 {
     /// <summary>
-    /// A notification that asks the user to accept the CnCNet privacy policy.
+    /// 请求用户接受 CnCNet 隐私政策的通知。
     /// </summary>
     class PrivacyNotification : XNAWindow
     {

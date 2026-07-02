@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using ClientGUI;
 using DTAClient.Domain.Multiplayer.CnCNet;
 using Microsoft.Xna.Framework;
@@ -11,7 +11,7 @@ using System.IO;
 namespace DTAClient.DXGUI.Multiplayer.CnCNet
 {
     /// <summary>
-    /// A window that allows the user to host a new game on CnCNet.
+    /// 允许用户在CnCNet上主持新游戏的窗口。
     /// </summary>
     class GameCreationWindow : XNAWindow
     {
@@ -112,7 +112,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             lblTunnelServer.Name = nameof(lblTunnelServer);
             lblTunnelServer.ClientRectangle = new Rectangle(UIDesignConstants.EMPTY_SPACE_SIDES +
                 UIDesignConstants.CONTROL_HORIZONTAL_MARGIN, lblPassword.Bottom + UIDesignConstants.CONTROL_VERTICAL_MARGIN * 4, 0, 0);
-            lblTunnelServer.Text = "Tunnelserver:";
+            lblTunnelServer.Text = "隧道服务器:";
             lblTunnelServer.Enabled = false;
             lblTunnelServer.Visible = false;
 

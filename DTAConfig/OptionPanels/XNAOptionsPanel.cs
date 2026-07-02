@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using ClientGUI;
 using DTAConfig.Settings;
 using Microsoft.Xna.Framework;
@@ -10,9 +10,8 @@ using System.Collections.Generic;
 namespace DTAConfig.OptionPanels
 {
     /// <summary>
-    /// A base class for all option panels.
-    /// Handles custom game-specific panel options
-    /// defined in INI files.
+    /// 所有选项面板的基类。
+    /// 处理INI文件中定义的自定义游戏特定面板选项。
     /// </summary>
     internal abstract class XNAOptionsPanel : XNAWindowBase
     {
@@ -36,9 +35,9 @@ namespace DTAConfig.OptionPanels
         }
 
         /// <summary>
-        /// Parses user-defined game options from an INI file.
+        /// 从INI文件中解析用户定义的游戏选项。
         /// </summary>
-        /// <param name="iniFile">The INI file.</param>
+        /// <param name="iniFile">INI文件。</param>
         public void ParseUserOptions(IniFile iniFile)
         {
             GetAttributes(iniFile);
@@ -57,9 +56,8 @@ namespace DTAConfig.OptionPanels
         protected UserINISettings IniSettings { get; private set; }
 
         /// <summary>
-        /// Saves the options of this panel.
-        /// <returns>A bool that determines whether the 
-        /// client needs to restart for changes to apply.</returns>
+        /// 保存此面板的选项。
+        /// <returns>一个布尔值，指示客户端是否需要重启以应用更改。</returns>
         /// </summary>
         public virtual bool Save()
         {
@@ -71,11 +69,9 @@ namespace DTAConfig.OptionPanels
         }
 
         /// <summary>
-        /// Refreshes the panel's settings to account for possible
-        /// changes that could affect the functionality.
+        /// 刷新面板设置以应对可能影响功能的变更。
         /// </summary>
-        /// <returns>A bool that determines whether the 
-        /// setting's value was changed.</returns>
+        /// <returns>一个布尔值，指示设置的值是否已变更。</returns>
         public virtual bool RefreshPanel()
         {
             bool valuesChanged = false;
@@ -89,7 +85,7 @@ namespace DTAConfig.OptionPanels
         }
 
         /// <summary>
-        /// Loads the options of this panel.
+        /// 加载此面板的选项。
         /// </summary>
         public virtual void Load()
         {
@@ -98,10 +94,9 @@ namespace DTAConfig.OptionPanels
         }
 
         /// <summary>
-        /// Enables or disables any options that should only be available when
-        /// options window was opened in main menu.
+        /// 启用或禁用仅在主菜单中打开选项窗口时才可用的选项。
         /// </summary>
-        /// <param name="enable">If true enables options, disables if false.</param>
+        /// <param name="enable">如果为true则启用选项，如果为false则禁用。</param>
         public virtual void ToggleMainMenuOnlyOptions(bool enable)
         {
         }

@@ -1,10 +1,10 @@
-﻿using Rampastring.Tools;
+using Rampastring.Tools;
 using System.Collections.Generic;
 
 namespace DTAClient.Domain.Multiplayer
 {
     /// <summary>
-    /// A helper class for setting up alliances in spawn.ini.
+    /// 用于在spawn.ini中设置同盟关系的辅助类。
     /// </summary>
     public static class AllianceHolder
     {

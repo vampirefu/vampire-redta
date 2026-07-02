@@ -1,4 +1,4 @@
-﻿using DTAClient.Domain.Multiplayer.CnCNet;
+using DTAClient.Domain.Multiplayer.CnCNet;
 using Microsoft.Xna.Framework;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
@@ -9,7 +9,7 @@ using System.Collections.Generic;
 namespace DTAClient.DXGUI.Multiplayer.CnCNet
 {
     /// <summary>
-    /// A list box for listing CnCNet tunnel servers.
+    /// 用于列出CnCNet隧道服务器的列表框。
     /// </summary>
     class TunnelListBox : XNAMultiColumnListBox
     {
@@ -48,9 +48,9 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
 
         /// <summary>
-        /// Selects a tunnel from the list with the given address.
+        /// 从列表中选择具有给定地址的隧道。
         /// </summary>
-        /// <param name="address">The address of the tunnel server to select.</param>
+        /// <param name="address">要选择的隧道服务器地址。</param>
         public void SelectTunnel(string address)
         {
             int index = tunnelHandler.Tunnels.FindIndex(t => t.Address == address);
@@ -63,10 +63,10 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
         }
 
         /// <summary>
-        /// Gets whether or not a tunnel from the list with the given address is selected.
+        /// 获取列表中具有给定地址的隧道是否被选中。
         /// </summary>
-        /// <param name="address">The address of the tunnel server</param>
-        /// <returns>True if tunnel with given address is selected, otherwise false.</returns>
+        /// <param name="address">隧道服务器的地址</param>
+        /// <returns>如果具有给定地址的隧道被选中则为true，否则为false。</returns>
         public bool IsTunnelSelected(string address) =>
             tunnelHandler.Tunnels.FindIndex(t => t.Address == address) == SelectedIndex;
 

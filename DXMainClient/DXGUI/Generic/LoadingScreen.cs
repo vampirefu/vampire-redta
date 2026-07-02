@@ -85,7 +85,7 @@ namespace DTAClient.DXGUI.Generic
 
         private bool visibleSpriteCursor;
 
-        // Updater removed
+        // 更新器已移除
         private Task mapLoadTask;
         private readonly CnCNetManager cncnetManager;
         private readonly IServiceProvider serviceProvider;
@@ -159,7 +159,7 @@ namespace DTAClient.DXGUI.Generic
             if (!TryStartConfiguredVideoBackground())
                 LoadFallbackWallpaper();
 
-            // Updater removed: no updater initialization
+            // 更新器已移除: no updater initialization
             mapLoadTask = mapLoader.LoadMapsAsync();
 
             if (Cursor.Visible)
@@ -169,7 +169,7 @@ namespace DTAClient.DXGUI.Generic
             }
         }
 
-        // Updater removed: version checks disabled
+        // 更新器已移除: version checks disabled
 
         public override void ParseAttributeFromINI(IniFile iniFile, string key, string value)
         {
@@ -766,8 +766,8 @@ namespace DTAClient.DXGUI.Generic
 
         private static void EnsureOpaqueVideoFrameAlpha(byte[] frame)
         {
-            // MonoGame WindowsDX uploads SurfaceFormat.Color byte[] as RGBA (DXGI R8G8B8A8).
-            // The loading video has no useful transparency; keep it fully opaque for SpriteBatch blending.
+            // MonoGame WindowsDX 将 SurfaceFormat.Color byte[] 作为 RGBA（DXGI R8G8B8A8）上传。
+            // 载入视频没有有用的透明度；保持完全不透明以便 SpriteBatch 混合。
             for (int i = 3; i < frame.Length; i += 4)
                 frame[i] = 255;
         }

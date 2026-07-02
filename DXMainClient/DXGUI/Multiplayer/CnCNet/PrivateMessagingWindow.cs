@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using ClientCore.CnCNet5;
 using ClientGUI;
 using DTAClient.Online;
@@ -77,8 +77,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
         private string lastConversationPartner;
 
         /// <summary>
-        /// Holds the users that the local user has had conversations with
-        /// during this client session.
+        /// 保存本地用户在此客户端会话期间与之进行过对话的用户。
         /// </summary>
         private List<PrivateMessageUser> privateMessageUsers = new List<PrivateMessageUser>();
 
@@ -88,14 +87,13 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
         private EnhancedSoundEffect sndMessageSound;
 
         /// <summary>
-        /// Because the user cannot view PMs during a game, we store the latest
-        /// PM received during a game in this variable and display it when the
-        /// user has returned from the game.
+        /// 因为用户在游戏中无法查看私信，我们将游戏期间收到的最新私信
+        /// 存储在此变量中，并在用户从游戏返回后显示。
         /// </summary>
         private PrivateMessage pmReceivedDuringGame;
 
-        // These are used by the "invite to game" feature in the
-        // context menu and are kept up-to-date by the lobby
+        // 这些由右键菜单中的"邀请加入游戏"功能使用，
+        // 由大厅保持更新
         private string inviteChannelName;
         private string inviteGameName;
         private string inviteChannelPassword;
@@ -365,8 +363,8 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
             if (lbUserList.SelectedIndex == -1)
             {
-                // If we previously had an user selected and they now went offline,
-                // clear the messages and message input
+                // 如果我们之前选中了一个用户，而该用户现在已下线，
+                // 则清除消息和消息输入
                 tbMessageInput.Text = string.Empty;
                 tbMessageInput.Enabled = false;
                 lbMessages.Clear();
@@ -482,11 +480,10 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
         }
 
         /// <summary>
-        /// Displays a PM message if the user is not in-game, and queues
-        /// it to be displayed after the game if the user is in-game.
+        /// 如果用户不在游戏中则显示私信消息，如果用户在游戏中则将其排队等待游戏结束后显示。
         /// </summary>
-        /// <param name="ircUser">The sender of the private message.</param>
-        /// <param name="message">The contents of the private message.</param>
+        /// <param name="ircUser">私信的发送者。</param>
+        /// <param name="message">私信的内容。</param>
         private void HandleNotification(IRCUser ircUser, string message)
         {
             if (!ProgramConstants.IsInGame)
@@ -724,16 +721,16 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
         }
 
         /// <summary>
-        /// Prepares a recipient for sending a private message.
+        /// 准备私信接收者。
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="name">接收者名称。</param>
         public void InitPM(string name)
         {
             Visible = true;
             Enabled = true;
 
-            // Check if we've already talked with the user during this session
-            // and if so, open the old conversation
+            // 检查我们在此会话期间是否已经与该用户交谈过
+            // 如果是，则打开之前的对话
             int pmUserIndex = privateMessageUsers.FindIndex(
                 pmUser => pmUser.IrcUser.Name == name);
 
@@ -747,14 +744,14 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
             if (cncnetUserData.IsFriend(name))
             {
-                // If we haven't talked with the user, check if they are a friend and if so,
-                // let's enter the friend list and talk to them there
+                // 如果我们尚未与该用户交谈过，检查他们是否为好友，
+                // 如果是，则进入好友列表并在那里与他们交谈
                 tabControl.SelectedTab = FRIEND_LIST_VIEW_INDEX;
             }
             else
             {
-                // If the user isn't a friend, switch to the "all players" view and
-                // open the conversation there
+                // 如果该用户不是好友，切换到"所有玩家"视图
+                // 并在那里打开对话
                 tabControl.SelectedTab = ALL_PLAYERS_VIEW_INDEX;
             }
 
@@ -816,7 +813,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
         public string GetSwitchName() => "私信";
 
         /// <summary>
-        /// A class for storing a private message in memory.
+        /// 用于在内存中存储私信的类。
         /// </summary>
         class PrivateMessage
         {
@@ -840,7 +837,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             }
 
             public void AddMessage(ChatMessage message)
-                => XNAMessageBox.Show(windowManager, "Message", message.Message);
+                => XNAMessageBox.Show(windowManager, "消息", message.Message);
         }
     }
 }

@@ -1,11 +1,11 @@
-﻿using ClientCore.CnCNet5;
+using ClientCore.CnCNet5;
 using System;
 
 namespace DTAClient.Domain.Multiplayer
 {
     /// <summary>
-    /// A base class for hosted games.
-    /// CnCNet and LAN games derive from this.
+    /// 主机游戏的基类。
+    /// CnCNet和LAN游戏派生自此类。
     /// </summary>
     public abstract class GenericHostedGame: IEquatable<GenericHostedGame>
     {

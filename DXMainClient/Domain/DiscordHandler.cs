@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using ClientCore;
 using DiscordRPC;
 using DiscordRPC.Message;
@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 namespace DTAClient.Domain
 {
     /// <summary>
-    /// A class for handling Discord integration.
+    /// 处理Discord集成的类。
     /// </summary>
     public class DiscordHandler: IDisposable
     {
@@ -19,7 +19,7 @@ namespace DTAClient.Domain
         private RichPresence _currentPresence;
 
         /// <summary>
-        /// RichPresence instance that is currently being displayed.
+        /// 当前正在显示的RichPresence实例。
         /// </summary>
         public RichPresence CurrentPresence
         {
@@ -39,12 +39,12 @@ namespace DTAClient.Domain
         }
 
         /// <summary>
-        /// RichPresence instance that was last displayed before the current one.
+        /// 上一个显示的RichPresence实例。
         /// </summary>
         public RichPresence PreviousPresence { get; private set; }
 
         /// <summary>
-        /// Creates a new instance of Discord handler.
+        /// 创建Discord处理器的新实例。
         /// </summary>
         public DiscordHandler()
         {
@@ -63,7 +63,7 @@ namespace DTAClient.Domain
         #region methods
 
         /// <summary>
-        /// Initializes or reinitializes Discord RPC client object & event handlers.
+        /// 初始化或重新初始化Discord RPC客户端对象及事件处理器。
         /// </summary>
         private void InitializeClient()
         {
@@ -89,8 +89,8 @@ namespace DTAClient.Domain
         }
 
         /// <summary>
-        /// Connects to Discord.
-        /// Does not do anything if the Discord RPC client has not been initialized or is already connected.
+        /// 连接到Discord。
+        /// 如果Discord RPC客户端尚未初始化或已连接，则不做任何操作。
         /// </summary>
         public void Connect()
         {
@@ -106,31 +106,31 @@ namespace DTAClient.Domain
         }
 
         /// <summary>
-        /// Disconnects from Discord.
-        /// Does not do anything if the Discord RPC client has not been initialized or is not connected.
+        /// 断开与Discord的连接。
+        /// 如果Discord RPC客户端尚未初始化或未连接，则不做任何操作。
         /// </summary>
         public void Disconnect()
         {
             if (client == null || !client.IsInitialized)
                 return;
 
-            // HACK warning
-            // Currently DiscordRpcClient does not appear to have any way to reliably disconnect and reconnect using same client object.
-            // Deinitialize does not appear to completely reset connection state & resources and any attempts to call Initialize afterwards will fail.
-            // A hacky solution is to dispose current client object and create and initialize a new one.
+            // HACK 警告
+            // 目前DiscordRpcClient似乎没有任何可靠的方式使用同一个客户端对象断开并重新连接。
+            // Deinitialize似乎没有完全重置连接状态和资源，之后任何调用Initialize的尝试都会失败。
+            // 一个权宜之计是释放当前客户端对象并创建和初始化一个新的。
             InitializeClient(); //client.Deinitialize();
 
             Logger.Log("DiscordHandler: Disconnected Discord RPC client.");
         }
 
         /// <summary>
-        /// Updates Discord Rich Presence with default info.
+        /// 使用默认信息更新Discord Rich Presence。
         /// </summary>
         public void UpdatePresence()
         {
             CurrentPresence = new RichPresence()
             {
-                Details = "In Client",
+                Details = "在客户端中",
                 Assets = new Assets()
                 {
                     LargeImageKey = "logo"
@@ -139,7 +139,7 @@ namespace DTAClient.Domain
         }
 
         /// <summary>
-        /// Updates Discord Rich Presence with info from game lobbies.
+        /// 使用游戏大厅的信息更新Discord Rich Presence。
         /// </summary>
         public void UpdatePresence(string map, string mode, string type, string state,
             int players, int maxPlayers, string side, string roomName,
@@ -170,7 +170,7 @@ namespace DTAClient.Domain
         }
 
         /// <summary>
-        /// Updates Discord Rich Presence with info from game loading lobbies.
+        /// 使用游戏加载大厅的信息更新Discord Rich Presence。
         /// </summary>
         public void UpdatePresence(string map, string mode, string type, string state,
             int players, int maxPlayers, string roomName,
@@ -194,7 +194,7 @@ namespace DTAClient.Domain
         }
 
         /// <summary>
-        /// Updates Discord Rich Presence with info from skirmish "lobby".
+        /// 使用遭遇战"大厅"的信息更新Discord Rich Presence。
         /// </summary>
         public void UpdatePresence(string map, string mode, string state, string side, bool resetTimer = false)
         {
@@ -202,7 +202,7 @@ namespace DTAClient.Domain
             CurrentPresence = new RichPresence()
             {
                 State = $"{state}",
-                Details = $"Skirmish • {map} • {mode}",
+                Details = $"遭遇战 • {map} • {mode}",
                 Assets = new Assets()
                 {
                     LargeImageKey = "logo",
@@ -215,14 +215,14 @@ namespace DTAClient.Domain
         }
 
         /// <summary>
-        /// Updates Discord Rich Presence with info from campaign screen.
+        /// 使用战役屏幕的信息更新Discord Rich Presence。
         /// </summary>
         public void UpdatePresence(string mission, string difficulty, string side, bool resetTimer = false)
         {
             string sideKey = new Regex("[^a-zA-Z0-9]").Replace(side.ToLower(), "");
             CurrentPresence = new RichPresence()
             {
-                State = "Playing Mission",
+                State = "正在执行任务",
                 Details = $"{mission} • {difficulty}",
                 Assets = new Assets()
                 {
@@ -236,13 +236,13 @@ namespace DTAClient.Domain
         }
 
         /// <summary>
-        /// Updates Discord Rich Presence with info from game loading screen.
+        /// 使用游戏加载屏幕的信息更新Discord Rich Presence。
         /// </summary>
         public void UpdatePresence(string save, bool resetTimer = false)
         {
             CurrentPresence = new RichPresence()
             {
-                State = "Playing Saved Game",
+                State = "正在玩存档",
                 Details = $"{save}",
                 Assets = new Assets()
                 {

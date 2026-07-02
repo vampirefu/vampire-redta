@@ -28,16 +28,16 @@ using System.Xml.Linq;
 namespace DTAClient.DXGUI.Generic
 {
     /// <summary>
-    /// The main menu of the client.
+    /// 客户端的主菜单。
     /// </summary>
     class MainMenu : XNAWindow, ISwitchable
     {
         private const float MEDIA_PLAYER_VOLUME_FADE_STEP = 0.01f;
         private const float MEDIA_PLAYER_VOLUME_EXIT_FADE_STEP = 0.025f;
-        private const double UPDATE_RE_CHECK_THRESHOLD = 30.0;
+
 
         /// <summary>
-        /// Creates a new instance of the main menu.
+        /// 创建主菜单的新实例。
         /// </summary>
         public MainMenu(
             WindowManager windowManager,
@@ -116,7 +116,6 @@ namespace DTAClient.DXGUI.Generic
 
         private bool customComponentDialogQueued = false;
 
-        private DateTime lastUpdateCheckTime;
 
         private Song themeSong;
 
@@ -128,7 +127,7 @@ namespace DTAClient.DXGUI.Generic
 
         private CancellationTokenSource cncnetPlayerCountCancellationSource;
 
-        // Main Menu Buttons
+        // 主菜单按钮
         private XNAClientButton btnNewCampaign;
         private XNAClientButton btnLoadGame;
         private XNAClientButton btnSkirmish;
@@ -141,7 +140,7 @@ namespace DTAClient.DXGUI.Generic
         private XNAClientButton btnExtras;
 
         /// <summary>
-        /// Initializes the main menu's controls.
+        /// 初始化主菜单的控件。
         /// </summary>
         public override void Initialize()
         {
@@ -224,7 +223,7 @@ namespace DTAClient.DXGUI.Generic
             btnCredits.HoverTexture = AssetLoader.LoadTexture("MainMenu/credits_c.png");
             btnCredits.HoverSoundEffect = new EnhancedSoundEffect("MainMenu/button.wav");
             btnCredits.LeftClick += BtnCredits_LeftClick;
-            btnCredits.Text = "View Credits";
+            btnCredits.Text = "查看鸣谢";
 
             btnExtras = new XNAClientButton(WindowManager);
             btnExtras.Name = nameof(btnExtras);
@@ -243,7 +242,7 @@ namespace DTAClient.DXGUI.Generic
 
             XNALabel lblCnCNetStatus = new XNALabel(WindowManager);
             lblCnCNetStatus.Name = nameof(lblCnCNetStatus);
-            lblCnCNetStatus.Text = "DTAplayersonCnCNet:";
+            lblCnCNetStatus.Text = "DTA玩家在CnCNet:";
             lblCnCNetStatus.ClientRectangle = new Rectangle(12, 9, 0, 0);
 
             lblCnCNetPlayerCount = new XNALabel(WindowManager);
@@ -258,7 +257,7 @@ namespace DTAClient.DXGUI.Generic
             lblSoftState = new XNALabel(WindowManager);
             lblSoftState.Name = nameof(lblSoftState);
 
-            // Update UI removed
+            // 更新 UI 已移除
 
             AddChild(btnNewCampaign);
             AddChild(btnLoadGame);
@@ -277,7 +276,7 @@ namespace DTAClient.DXGUI.Generic
 
             if (!ClientConfiguration.Instance.ModMode)
             {
-                // Updater removed: only show version label without update features
+                // 更新器已移除：仅显示版本标签，无更新功能
                 AddChild(lblVersion);
             }
 
@@ -295,7 +294,7 @@ namespace DTAClient.DXGUI.Generic
             }
 
 
-            base.Initialize(); // Read control attributes from INI
+            base.Initialize(); // 从 INI 读取控件属性
             lblSoftState.Text = "本平台及Mod均不收费";
             lblSoftState.ClientRectangle = new Rectangle(1000, 740, lblSoftState.Width, lblSoftState.Height);
 
@@ -331,7 +330,7 @@ namespace DTAClient.DXGUI.Generic
 
             UserINISettings.Instance.SettingsSaved += SettingsSaved;
 
-            // Updater removed: restart handling disabled
+            // 更新器已移除：重启处理已禁用
 
             SetButtonHotkeys(true);
 
@@ -375,12 +374,12 @@ namespace DTAClient.DXGUI.Generic
         {
             if (!optionsWindow.Enabled)
             {
-                // Updater removed: no custom component dialog
+                // 更新器已移除：无自定义组件对话框
             }
         }
 
         /// <summary>
-        /// Refreshes settings. Called when the game process is starting.
+        /// 刷新设置。在游戏进程启动时调用。
         /// </summary>
         private void SharedUILogic_GameProcessStarting()
         {
@@ -393,17 +392,16 @@ namespace DTAClient.DXGUI.Generic
             catch (Exception ex)
             {
                 Logger.Log("Refreshing settings failed! Exception message: " + ex.Message);
-                // We don't want to show the dialog when starting a game
+                // 我们不想在启动游戏时显示对话框
                 //XNAMessageBox.Show(WindowManager, "Saving settings failed",
                 //    "Saving settings failed! Error message: " + ex.Message);
             }
         }
 
-        // Updater restart handling removed
+        // 更新器重启处理已移除
 
         /// <summary>
-        /// Applies configuration changes (music playback and volume)
-        /// when settings are saved.
+        /// 保存设置时应用配置更改（音乐播放和音量）。
         /// </summary>
         private void SettingsSaved(object sender, EventArgs e)
         {
@@ -436,9 +434,8 @@ namespace DTAClient.DXGUI.Generic
         }
 
         /// <summary>
-        /// Checks files which are required for the mod to function
-        /// but not distributed with the mod (usually base game files
-        /// for YR mods which can't be standalone).
+        /// 检查 Mod 运行所需但未随 Mod 分发的文件
+        /// （通常是尤里的复仇 Mod 无法独立运行的基础游戏文件）。
         /// </summary>
         private void CheckRequiredFiles()
         {
@@ -485,9 +482,8 @@ namespace DTAClient.DXGUI.Generic
         }
 
         /// <summary>
-        /// Checks whether the client is running for the first time.
-        /// If it is, displays a dialog asking the user if they'd like
-        /// to configure settings.
+        /// 检查客户端是否首次运行。
+        /// 如果是，则显示对话框询问用户是否要配置设置。
         /// </summary>
         private void CheckIfFirstRun()
         {
@@ -510,7 +506,7 @@ namespace DTAClient.DXGUI.Generic
         private void FirstRunMessageBox_NoClicked(XNAMessageBox messageBox)
         {
             if (customComponentDialogQueued)
-                customComponentDialogQueued = false; // Updater removed
+                customComponentDialogQueued = false; // 更新器已移除
         }
 
         private void FirstRunMessageBox_YesClicked(XNAMessageBox messageBox) => optionsWindow.Open();
@@ -541,18 +537,18 @@ namespace DTAClient.DXGUI.Generic
             lock (locker)
             {
                 if (e.PlayerCount == -1)
-                    lblCnCNetPlayerCount.Text = "N/A";
+                    lblCnCNetPlayerCount.Text = "不可用";
                 else
                     lblCnCNetPlayerCount.Text = e.PlayerCount.ToString();
             }
         }
 
         /// <summary>
-        /// Attemps to "clean" the client session in a nice way if the user closes the game.
+        /// 尝试在用户关闭游戏时"优雅地"清理客户端会话。
         /// </summary>
         private void Clean()
         {
-            // Updater removed: no update event unsubscription
+            // 更新器已移除：无更新事件取消订阅
             if (cncnetPlayerCountCancellationSource != null) cncnetPlayerCountCancellationSource.Cancel();
             topBar.Clean();
             if (UpdateInProgress)
@@ -563,9 +559,9 @@ namespace DTAClient.DXGUI.Generic
         }
 
         /// <summary>
-        /// Starts playing music, initiates an update check if automatic updates
-        /// are enabled and checks whether the client is run for the first time.
-        /// Called after all internal client UI logic has been initialized.
+        /// 开始播放音乐，如果启用了自动更新则发起更新检查，
+        /// 并检查客户端是否首次运行。
+        /// 在所有内部客户端 UI 逻辑初始化完成后调用。
         /// </summary>
         public void PostInit()
         {
@@ -599,7 +595,7 @@ namespace DTAClient.DXGUI.Generic
 
             PlayMusic();
 
-            // Updater removed: update checks disabled
+            // 更新器已移除：更新检查已禁用
             CheckMap();
             CheckRequiredFiles();
             CheckForbiddenFiles();
@@ -633,7 +629,7 @@ namespace DTAClient.DXGUI.Generic
 #endif
         }
 
-        // Updater functionality removed
+        // 更新器功能已移除
 
         private void BtnOptions_LeftClick(object sender, EventArgs e)
             => optionsWindow.Open();
@@ -699,10 +695,10 @@ namespace DTAClient.DXGUI.Generic
             innerPanel.GameLoadingWindow.ListSaves();
             innerPanel.Hide();
 
-            // If music is disabled on menus, check if the main menu is the top-most
-            // window of the top bar and only play music if it is
-            // LAN has the top bar disabled, so to detect the LAN game lobby
-            // we'll check whether the top bar is enabled
+            // 如果菜单音乐被禁用，检查主菜单是否为顶部栏的
+            // 最上层窗口，只有是时才播放音乐
+            // LAN 模式下顶部栏被禁用，所以检测 LAN 游戏大厅
+            // 我们通过检查顶部栏是否启用来判断
             if (!UserINISettings.Instance.StopMusicOnMenu ||
                 (topBar.Enabled && topBar.LastSwitchType == SwitchType.PRIMARY &&
                 topBar.GetTopMostPrimarySwitchable() == this))
@@ -710,7 +706,7 @@ namespace DTAClient.DXGUI.Generic
         }
 
         /// <summary>
-        /// Switches to the main menu and performs a check for updates.
+        /// 切换到主菜单并执行更新检查。
         /// </summary>
         private void CncnetLobby_UpdateCheck(object sender, EventArgs e)
         {
@@ -735,12 +731,12 @@ namespace DTAClient.DXGUI.Generic
         }
 
         /// <summary>
-        /// Attempts to start playing the menu music.
+        /// 尝试开始播放菜单音乐。
         /// </summary>
         private void PlayMusic()
         {
             if (!isMediaPlayerAvailable)
-                return; // SharpDX fails at music playback on Vista
+                return; // SharpDX 在 Vista 上无法播放音乐
 
             if (themeSong != null && UserINISettings.Instance.PlayMainMenuMusic)
             {
@@ -761,25 +757,24 @@ namespace DTAClient.DXGUI.Generic
 
         private void LblVersion_LeftClick(object sender, EventArgs e)
         {
-            // Updater removed: no action on version click
+            // 更新器已移除：点击版本号无操作
         }
 
         private void CheckForUpdates()
         {
-            // Updater removed: update checks disabled
+            // 更新器已移除：更新检查已禁用
         }
 
         /// <summary>
-        /// Lowers the volume of the menu music, or stops playing it if the
-        /// volume is unaudibly low.
+        /// 降低菜单音乐的音量，如果音量低到听不见则停止播放。
         /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        /// <param name="gameTime">提供时间值的快照。</param>
         private void FadeMusic(GameTime gameTime)
         {
             if (!isMediaPlayerAvailable || !isMusicFading || themeSong == null)
                 return;
 
-            // Fade during 1 second
+            // 在 1 秒内淡出
             float step = SoundPlayer.Volume * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             if (MediaPlayer.Volume > step)
@@ -792,7 +787,7 @@ namespace DTAClient.DXGUI.Generic
         }
 
         /// <summary>
-        /// Exits the client. Quickly fades the music if it's playing.
+        /// 退出客户端。如果正在播放音乐则快速淡出。
         /// </summary>
         private void FadeMusicExit()
         {
@@ -831,13 +826,7 @@ namespace DTAClient.DXGUI.Generic
             if (UserINISettings.Instance.StopMusicOnMenu)
                 PlayMusic();
 
-            if (!ClientConfiguration.Instance.ModMode && UserINISettings.Instance.CheckForUpdates)
-            {
-                // Re-check for updates
-
-                if ((DateTime.Now - lastUpdateCheckTime) > TimeSpan.FromSeconds(UPDATE_RE_CHECK_THRESHOLD))
-                    CheckForUpdates();
-            }
+            // 更新检查已移除
         }
 
         public void SwitchOff()
@@ -863,10 +852,10 @@ namespace DTAClient.DXGUI.Generic
         }
 
         /// <summary>
-        /// Checks if media player is available currently.
-        /// It is not available on Windows Vista or other systems without the appropriate media player components.
+        /// 检查媒体播放器当前是否可用。
+        /// 在 Windows Vista 或其他没有适当媒体播放器组件的系统上不可用。
         /// </summary>
-        /// <returns>True if media player is available, false otherwise.</returns>
+        /// <returns>如果媒体播放器可用则为 true，否则为 false。</returns>
         private bool IsMediaPlayerAvailable()
         {
             try

@@ -1,4 +1,4 @@
-﻿using Rampastring.Tools;
+using Rampastring.Tools;
 using System.IO;
 
 namespace ClientCore
@@ -56,7 +56,7 @@ namespace ClientCore
             else
                 baseIniFile = SafePath.GetFile(SafePath.GetFileDirectoryName(FileName), basedOn);
 
-            // Consolidate with the INI file that this INI file is based on
+            // 与此 INI 文件所基于的基础 INI 文件合并
             if (!baseIniFile.Exists)
                 Logger.Log(FileName + ": Base INI file not found! " + baseIniFile.FullName);
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ClientCore;
@@ -10,11 +10,11 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
     public static class MapCodeHelper
     {
         /// <summary>
-        /// Applies code from a component custom INI file to a map INI file.
+        /// 将组件自定义INI文件中的代码应用到地图INI文件。
         /// </summary>
-        /// <param name="mapIni">The map INI file.</param>
-        /// <param name="customIniPath">The custom INI file path.</param>
-        /// <param name="gameMode">Currently selected gamemode, if set.</param>
+        /// <param name="mapIni">地图INI文件。</param>
+        /// <param name="customIniPath">自定义INI文件路径。</param>
+        /// <param name="gameMode">当前选中的游戏模式（如果已设置）。</param>
         public static void ApplyMapCode(IniFile mapIni, string customIniPath, GameMode gameMode)
         {
             IniFile associatedIni = new IniFile(SafePath.CombineFilePath(ProgramConstants.GamePath, customIniPath));
@@ -28,10 +28,10 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Apply map code from an arbitrary INI file to a map INI file.
+        /// 将任意INI文件中的地图代码应用到地图INI文件。
         /// </summary>
-        /// <param name="mapIni">The map INI file.</param>
-        /// <param name="mapCodeIni">The INI file to apply to map INI file.</param>
+        /// <param name="mapIni">地图INI文件。</param>
+        /// <param name="mapCodeIni">要应用到地图INI文件的INI文件。</param>
         public static void ApplyMapCode(IniFile mapIni, IniFile mapCodeIni)
         {
             ReplaceMapObjects(mapIni, mapCodeIni, "Aircraft");
@@ -43,11 +43,11 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Replace all instances of objects defined in specific map section that match ID's with new object ID's.
+        /// 替换特定地图节中与ID匹配的所有对象实例为新的对象ID。
         /// </summary>
-        /// <param name="mapIni">The map INI file.</param>
-        /// <param name="mapCodeIni">The INI file to apply to map INI file.</param>
-        /// <param name="sectionName">The object section ID.</param>
+        /// <param name="mapIni">地图INI文件。</param>
+        /// <param name="mapCodeIni">要应用到地图INI文件的INI文件。</param>
+        /// <param name="sectionName">对象节ID。</param>
         private static void ReplaceMapObjects(IniFile mapIni, IniFile mapCodeIni, string sectionName)
         {
             string replaceSectionName = "ReplaceMap" + sectionName;
@@ -83,10 +83,10 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Get object ID from an object section value.
+        /// 从对象节值中获取对象ID。
         /// </summary>
-        /// <param name="value">Object section value.</param>
-        /// <param name="sectionName">Section ID.</param>
+        /// <param name="value">对象节值。</param>
+        /// <param name="sectionName">节ID。</param>
         /// <returns></returns>
         private static string GetObjectID(string value, string sectionName)
         {
@@ -101,11 +101,11 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Get key/value pairs from ini file section.
+        /// 从INI文件节中获取键值对。
         /// </summary>
-        /// <param name="iniFile">Ini file.</param>
-        /// <param name="sectionName">Ini file section.</param>
-        /// <returns>List of key/value pairs from the chosen ini file section. If ini file section has no keys, an empty list is returned.</returns>
+        /// <param name="iniFile">INI文件。</param>
+        /// <param name="sectionName">INI文件节。</param>
+        /// <returns>所选INI文件节的键值对列表。如果节没有键，则返回空列表。</returns>
         private static List<KeyValuePair<string, string>> GetKeyValuePairs(IniFile iniFile, string sectionName)
         {
             IniSection section = iniFile.GetSection(sectionName);

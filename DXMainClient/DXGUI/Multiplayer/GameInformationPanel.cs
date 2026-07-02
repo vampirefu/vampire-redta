@@ -6,7 +6,7 @@ using DTAClient.Domain.Multiplayer;
 namespace DTAClient.DXGUI.Multiplayer
 {
     /// <summary>
-    /// A UI panel that displays information about a hosted CnCNet or LAN game.
+    /// 显示关于已托管的CnCNet或LAN游戏信息的UI面板。
     /// </summary>
     public class GameInformationPanel : XNAPanel
     {

@@ -1,4 +1,4 @@
-﻿using Rampastring.XNAUI.XNAControls;
+using Rampastring.XNAUI.XNAControls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +12,7 @@ using DTAClient.Domain.Multiplayer;
 namespace DTAClient.DXGUI.Multiplayer.GameLobby
 {
     /// <summary>
-    /// A player location indicator for the map preview.
+    /// 地图预览的玩家位置指示器。
     /// </summary>
     public class PlayerLocationIndicator : XNAControl
     {
@@ -251,8 +251,8 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             if (WaypointTexture != null)
             {
-                // Non-premultiplied blending makes the indicators look sharper for some reason
-                // TODO figure out why
+                // 非预乘混合由于某种原因使指示器看起来更清晰
+                // TODO 弄清楚原因
                 Renderer.PushSettings(new SpriteBatchSettings(SpriteSortMode.Deferred, BlendState.NonPremultiplied, null, null, null, null));
 
                 Renderer.DrawTexture(WaypointTexture,

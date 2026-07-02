@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using ClientGUI;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
@@ -37,7 +37,7 @@ namespace DTAConfig.Settings
 
         private string _parentCheckBoxName;
         /// <summary>
-        /// Name of parent check-box control.
+        /// 父复选框控件的名称。
         /// </summary>
         public string ParentCheckBoxName
         {
@@ -51,7 +51,7 @@ namespace DTAConfig.Settings
 
         private XNAClientCheckBox _parentCheckBox;
         /// <summary>
-        /// Parent check-box control.
+        /// 父复选框控件。
         /// </summary>
         public XNAClientCheckBox ParentCheckBox
         {
@@ -64,7 +64,7 @@ namespace DTAConfig.Settings
         }
 
         /// <summary>
-        /// Value required from parent check-box control if set.
+        /// 如果设置了父复选框控件，则要求的值。
         /// </summary>
         public bool ParentCheckBoxRequiredValue { get; set; } = true;
 

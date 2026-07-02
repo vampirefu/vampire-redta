@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using Rampastring.Tools;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace DTAClient.Domain.Multiplayer
 {
     /// <summary>
-    /// A multiplayer game mode.
+    /// 多人游戏模式。
     /// </summary>
     public class GameMode
     {
@@ -20,42 +20,42 @@ namespace DTAClient.Domain.Multiplayer
         private const string SPAWN_INI_OPTIONS_SECTION = "ForcedSpawnIniOptions";
 
         /// <summary>
-        /// The internal (INI) name of the game mode.
+        /// 游戏模式的内部（INI）名称。
         /// </summary>
         public string Name { get; set; }
 
         /// <summary>
-        /// The user-interface name of the game mode.
+        /// 游戏模式的用户界面名称。
         /// </summary>
         public string UIName { get; private set; }
 
         /// <summary>
-        /// If set, this game mode cannot be played on Skirmish.
+        /// 如果设置，此游戏模式不能在遭遇战中使用。
         /// </summary>
         public bool MultiplayerOnly { get; private set; }
 
         /// <summary>
-        /// If set, this game mode cannot be played with AI players.
+        /// 如果设置，此游戏模式不能与AI玩家一起游玩。
         /// </summary>
         public bool HumanPlayersOnly { get; private set; }
 
         /// <summary>
-        /// If set, players are forced to random starting locations on this game mode.
+        /// 如果设置，在此游戏模式中玩家将被强制随机起始位置。
         /// </summary>
         public bool ForceRandomStartLocations { get; private set; }
 
         /// <summary>
-        /// If set, players are forced to different teams on this game mode.
+        /// 如果设置，在此游戏模式中玩家将被强制分配到不同队伍。
         /// </summary>
         public bool ForceNoTeams { get; private set; }
 
         /// <summary>
-        /// List of side indices players cannot select in this game mode.
+        /// 此游戏模式中玩家不能选择的阵营索引列表。
         /// </summary>
         public List<int> DisallowedPlayerSides = new List<int>();
 
         /// </summary>
-        /// Override for minimum amount of players needed to play any map in this game mode.
+        /// 覆盖此游戏模式下任意地图所需的最少玩家数量。
         /// </summary>
         public int MinPlayersOverride { get; private set; } = -1;
 

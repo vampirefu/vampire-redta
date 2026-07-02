@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using ClientGUI;
 using DTAClient.Domain.Multiplayer;
@@ -138,9 +138,9 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
         }
 
         /// <summary>
-        /// Show the window.
+        /// 显示窗口。
         /// </summary>
-        /// <param name="isLoad">The "mode" for the window: load vs save.</param>
+        /// <param name="isLoad">窗口的"模式"：加载还是保存。</param>
         public void Show(bool isLoad)
         {
             _isLoad = isLoad;
@@ -158,7 +158,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
         }
 
         /// <summary>
-        /// Callback when the Preset drop down selection has changed
+        /// 当预设下拉选择更改时的回调
         /// </summary>
         private void DropDownPresetSelect_SelectedIndexChanged(object sender, EventArgs eventArgs)
         {
@@ -169,26 +169,26 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
         }
 
         /// <summary>
-        /// Callback when the Preset drop down selection has changed during "save" mode
+        /// 当"保存"模式下预设下拉选择更改时的回调
         /// </summary>
         private void DropDownPresetSelect_SelectedIndexChanged_IsSave()
         {
             if (IsCreatePresetSelected)
             {
-                // show the field to specify a new name when "create" option is selected in drop down
+                // 当在下拉菜单中选择了"创建"选项时，显示指定新名称的字段
                 tbNewPresetName.Enable();
                 lblNewPresetName.Enable();
             }
             else
             {
-                // hide the field to specify a new name when an existing preset is selected
+                // 当选择了现有预设时，隐藏指定新名称的字段
                 tbNewPresetName.Disable();
                 lblNewPresetName.Disable();
             }
         }
 
         /// <summary>
-        /// Refresh the state of the load/save button
+        /// 刷新加载/保存按钮的状态
         /// </summary>
         private void RefreshButtons()
         {
@@ -205,7 +205,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
         private bool IsNewPresetNameFieldEmpty => string.IsNullOrWhiteSpace(tbNewPresetName.Text);
 
         /// <summary>
-        /// Populate the preset drop down from saved presets
+        /// 从已保存的预设中填充预设下拉列表
         /// </summary>
         private void LoadPresets()
         {
@@ -223,25 +223,25 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
         }
 
         /// <summary>
-        /// Show the current window in the "load" mode context
+        /// 在"加载"模式上下文中显示当前窗口
         /// </summary>
         private void ShowLoad()
         {
             LoadPresets();
 
-            // do not show fields to specify a preset name during "load" mode
+            // 在"加载"模式下不显示指定预设名称的字段
             lblNewPresetName.Disable();
             tbNewPresetName.Disable();
         }
 
         /// <summary>
-        /// Show the current window in the "save" mode context
+        /// 在"保存"模式上下文中显示当前窗口
         /// </summary>
         private void ShowSave()
         {
             LoadPresets();
 
-            // show fields to specify a preset name during "save" mode
+            // 在"保存"模式下显示指定预设名称的字段
             lblNewPresetName.Enable();
             tbNewPresetName.Enable();
             tbNewPresetName.Text = string.Empty;

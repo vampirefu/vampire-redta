@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using Rampastring.Tools;
 using System;
 using System.Collections.Generic;
@@ -8,16 +8,15 @@ using System.Linq;
 namespace DTAConfig
 {
     /// <summary>
-    /// A DirectDraw wrapper option.
+    /// DirectDraw包装器选项。
     /// </summary>
     class DirectDrawWrapper
     {
         /// <summary>
-        /// Creates a new DirectDrawWrapper instance and parses its configuration
-        /// from an INI file.
+        /// 创建新的DirectDrawWrapper实例并从INI文件解析其配置。
         /// </summary>
-        /// <param name="internalName">The internal name of the renderer.</param>
-        /// <param name="iniFile">The file to parse the renderer's options from.</param>
+        /// <param name="internalName">渲染器的内部名称。</param>
+        /// <param name="iniFile">用于解析渲染器选项的文件。</param>
         public DirectDrawWrapper(string internalName, IniFile iniFile)
         {
             InternalName = internalName;
@@ -28,31 +27,29 @@ namespace DTAConfig
         public string UIName { get; private set; }
 
         /// <summary>
-        /// If not null or empty, windowed mode will be written to an INI key
-        /// in this section of the renderer settings file instead
-        /// of the regular game settings INI file.
+        /// 如果非空，窗口模式将写入渲染器设置文件中此节的INI键，
+        /// 而非常规游戏设置INI文件。
         /// </summary>
         public string WindowedModeSection { get; private set; }
 
         /// <summary>
-        /// If not null or empty, windowed mode will be written to this INI key
-        /// in the section defined in <see cref="DirectDrawWrapper.WindowedModeSection"/> 
-        /// instead of the regular settings INI file.
+        /// 如果非空，窗口模式将写入由
+        /// <see cref="DirectDrawWrapper.WindowedModeSection"/> 定义的节中的此INI键，
+        /// 而非常规设置INI文件。
         /// </summary>
         public string WindowedModeKey { get; private set; }
 
         /// <summary>
-        /// If not null or empty, the setting that controls whether the game is 
-        /// run in borderless windowed mode will be written to this INI key in
-        /// the section defined by
-        /// <see cref="DirectDrawWrapper.WindowedModeSection"/> instead of the
-        /// regular settings INI file.
+        /// 如果非空，控制游戏是否以无边框窗口模式运行的设置
+        /// 将写入由
+        /// <see cref="DirectDrawWrapper.WindowedModeSection"/> 定义的节中的此INI键，
+        /// 而非常规设置INI文件。
         /// </summary>
         public string BorderlessWindowedModeKey { get; private set; }
 
         /// <summary>
-        /// If set, borderless mode is enabled if the setting is "false"
-        /// and disabled if the setting is "true".
+        /// 如果设置，当值为"false"时启用无边框模式，
+        /// 当值为"true"时禁用无边框模式。
         /// </summary>
         public bool IsBorderlessWindowedModeKeyReversed { get; private set; }
 
@@ -64,8 +61,7 @@ namespace DTAConfig
         public bool UseQres { get; private set; } = true;
 
         /// <summary>
-        /// If set to false, the client won't set single-core affinity
-        /// to the game executable when this renderer is used.
+        /// 如果设为false，使用此渲染器时客户端不会为游戏可执行文件设置单核亲和性。
         /// </summary>
         public bool SingleCoreAffinity { get; private set; } = true;
 
@@ -80,9 +76,9 @@ namespace DTAConfig
         private List<OSVersion> disallowedOSList = new List<OSVersion>();
 
         /// <summary>
-        /// Reads the properties of this DirectDrawWrapper from an INI section.
+        /// 从INI节中读取此DirectDrawWrapper的属性。
         /// </summary>
-        /// <param name="section">The INI section.</param>
+        /// <param name="section">INI节。</param>
         private void Parse(IniSection section)
         {
             if (section == null)
@@ -91,11 +87,11 @@ namespace DTAConfig
                 return;
             }
 
-            UIName = section.GetStringValue("UIName", "Unnamed renderer");
+            UIName = section.GetStringValue("UIName", "未命名渲染器");
 
             if (section.GetBooleanValue("IsDxWnd", false))
             {
-                // For backwards compatibility with previous client versions
+                // 为了与先前客户端版本向后兼容
                 WindowedModeSection = "DxWnd";
                 WindowedModeKey = "RunInWindow";
                 BorderlessWindowedModeKey = "NoWindowFrame";
@@ -149,17 +145,16 @@ namespace DTAConfig
         }
 
         /// <summary>
-        /// Returns true if this wrapper is compatible with the given operating
-        /// system, otherwise false.
+        /// 如果此包装器与给定操作系统兼容则返回true，否则返回false。
         /// </summary>
-        /// <param name="os">The operating system.</param>
+        /// <param name="os">操作系统。</param>
         public bool IsCompatibleWithOS(OSVersion os)
         {
             return !disallowedOSList.Contains(os);
         }
 
         /// <summary>
-        /// Applies the renderer's files to the game directory.
+        /// 将渲染器的文件应用到游戏目录。
         /// </summary>
         public void Apply()
         {
@@ -172,7 +167,7 @@ namespace DTAConfig
 
 
             if (!string.IsNullOrEmpty(ConfigFileName) && !string.IsNullOrEmpty(resConfigFileName)
-                && !SafePath.GetFile(ProgramConstants.GamePath, ConfigFileName).Exists) // Do not overwrite settings
+                && !SafePath.GetFile(ProgramConstants.GamePath, ConfigFileName).Exists) // 不覆盖已有设置
             {
                 File.Copy(SafePath.CombineFilePath(ProgramConstants.GetBaseResourcePath(), resConfigFileName), SafePath.CombineFilePath(ProgramConstants.GamePath, Path.GetFileName(ConfigFileName)));
             }
@@ -184,7 +179,7 @@ namespace DTAConfig
         }
 
         /// <summary>
-        /// Call to clean the renderer's files from the game directory.
+        /// 从游戏目录中清除渲染器的文件。
         /// </summary>
         public void Clean()
         {
@@ -196,8 +191,7 @@ namespace DTAConfig
         }
 
         /// <summary>
-        /// Checks whether this renderer enables windowed mode through its
-        /// own configuration INI file instead of the game settings INI file.
+        /// 检查此渲染器是否通过其自身配置INI文件而非游戏设置INI文件启用窗口模式。
         /// </summary>
         public bool UsesCustomWindowedOption()
         {
@@ -207,8 +201,8 @@ namespace DTAConfig
     }
 
     /// <summary>
-    /// An exception that is thrown when configuration for DirectDraw wrapper contains
-    /// invalid or unexpected settings / data or required settings / data are missing.
+    /// 当DirectDraw包装器配置包含无效或意外的设置/数据，
+    /// 或缺少必需的设置/数据时抛出的异常。
     /// </summary>
     class DirectDrawWrapperConfigurationException : Exception
     {

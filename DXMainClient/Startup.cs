@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading;
 using Microsoft.Win32;
@@ -22,12 +22,12 @@ using Microsoft.Xna.Framework.Graphics;
 namespace DTAClient
 {
     /// <summary>
-    /// A class that handles initialization of the Client.
+    /// 处理客户端初始化的类。
     /// </summary>
     public class Startup
     {
         /// <summary>
-        /// The main method for startup and initialization.
+        /// 启动和初始化的主方法。
         /// </summary>
         public void Execute()
         {
@@ -51,7 +51,7 @@ namespace DTAClient
             if (!resourcesDirectory.Exists)
                 throw new DirectoryNotFoundException("Theme directory not found!" + Environment.NewLine + ProgramConstants.RESOURCES_DIR);
 
-            // Updater removed: initialization skipped
+            // 更新器已移除：跳过初始化
 
             Logger.Log("OSDescription: " + RuntimeInformation.OSDescription);
             Logger.Log("OSArchitecture: " + RuntimeInformation.OSArchitecture);
@@ -63,8 +63,8 @@ namespace DTAClient
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                // The query in CheckSystemSpecifications takes lots of time,
-                // so we'll do it in a separate thread to make startup faster
+                // CheckSystemSpecifications 中的查询需要大量时间，
+                // 因此我们在单独的线程中执行以加快启动速度
                 Thread thread = new Thread(CheckSystemSpecifications);
                 thread.Start();
             }
@@ -107,7 +107,7 @@ namespace DTAClient
                 }
             }
 
-            // Updater removed: no custom components to clean up
+            // 更新器已移除：无需清理自定义组件
 
             FinalSunSettings.WriteFinalSunIni();
 
@@ -116,7 +116,7 @@ namespace DTAClient
 
             ClientConfiguration.Instance.RefreshSettings();
 
-            // Start INI file preprocessor
+            // 启动 INI 文件预处理器
             PreprocessorBackgroundTask.Instance.Run();
 
             GameClass gameClass = new GameClass();
@@ -132,11 +132,11 @@ namespace DTAClient
 
 #if ARES
         /// <summary>
-        /// Recursively deletes all files from the specified directory that were created at <paramref name="pruneThresholdTime"/> or before.
-        /// If directory is empty after deleting files, the directory itself will also be deleted.
+        /// 递归删除指定目录中在 <paramref name="pruneThresholdTime"/> 或之前创建的所有文件。
+        /// 如果删除文件后目录为空，则目录本身也将被删除。
         /// </summary>
-        /// <param name="directory">Directory to prune files from.</param>
-        /// <param name="pruneThresholdTime">Time at or before which files must have been created for them to be pruned.</param>
+        /// <param name="directory">要清理文件的目录。</param>
+        /// <param name="pruneThresholdTime">文件创建时间等于或早于此时间才会被清理。</param>
         private void PruneFiles(DirectoryInfo directory, DateTime pruneThresholdTime)
         {
             if (!directory.Exists)
@@ -177,7 +177,7 @@ namespace DTAClient
 #endif
 
         /// <summary>
-        /// Move log files from obsolete directories to currently used ones and adjust filenames to match currently used timestamp scheme.
+        /// 将日志文件从过时目录移动到当前使用的目录，并调整文件名以匹配当前使用的时间戳方案。
         /// </summary>
         private void MigrateOldLogFiles()
         {
@@ -187,10 +187,10 @@ namespace DTAClient
         }
 
         /// <summary>
-        /// Move log files matching given search pattern from specified directory to another one and adjust filename timestamps.
+        /// 将匹配给定搜索模式的日志文件从指定目录移动到另一个目录，并调整文件名时间戳。
         /// </summary>
-        /// <param name="newDirectory">New log files directory.</param>
-        /// <param name="searchPattern">Search string the log file names must match against to be copied. Can contain wildcard characters (* and ?) but doesn't support regular expressions.</param>
+        /// <param name="newDirectory">新的日志文件目录。</param>
+        /// <param name="searchPattern">日志文件名必须匹配的搜索字符串。可包含通配符（* 和 ?），但不支持正则表达式。</param>
         private static void MigrateLogFiles(DirectoryInfo newDirectory, string searchPattern)
         {
             DirectoryInfo currentDirectory = SafePath.GetDirectory(ProgramConstants.ClientUserFilesPath, "ErrorLogs");
@@ -232,7 +232,7 @@ namespace DTAClient
         }
 
         /// <summary>
-        /// Writes processor, graphics card and memory info to the log file.
+        /// 将处理器、显卡和内存信息写入日志文件。
         /// </summary>
         [SupportedOSPlatform("windows")]
         private static void CheckSystemSpecifications()
@@ -300,7 +300,7 @@ namespace DTAClient
         }
 
         /// <summary>
-        /// Generate an ID for online play.
+        /// 生成用于在线游戏的ID。
         /// </summary>
         private static async Task GenerateOnlineIdAsync()
         {
@@ -372,7 +372,7 @@ namespace DTAClient
         }
 
         /// <summary>
-        /// Writes the game installation path to the Windows registry.
+        /// 将游戏安装路径写入 Windows 注册表。
         /// </summary>
         [SupportedOSPlatform("windows")]
         private static void WriteInstallPathToRegistry()

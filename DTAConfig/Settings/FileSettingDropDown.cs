@@ -7,7 +7,7 @@ using System.IO;
 namespace DTAConfig.Settings
 {
     /// <summary>
-    /// A dropdown that switches between multiple sets of files.
+    /// 在多组文件之间切换的下拉框。
     /// </summary>
     public class FileSettingDropDown : SettingDropDownBase, IFileSetting
     {
@@ -108,7 +108,7 @@ namespace DTAConfig.Settings
 
                 itemFilesList[SelectedIndex].ForEach(f => f.Apply());
             }
-            else // selected item is unavailable, don't do anything
+            else // 所选项不可用，不做任何操作
             {
                 Logger.Log($"{nameof(FileSettingDropDown)}: " +
                     $"The selected item ({Items[SelectedIndex].Text}) is unavailable in {Name}");

@@ -7,20 +7,20 @@ using System;
 namespace ClientGUI
 {
     /// <summary>
-    /// A tool tip.
+    /// 工具提示。
     /// </summary>
     public class ToolTip : XNAControl
     {
         /// <summary>
-        /// If set to true - makes tooltip not appear and instantly hides it if currently shown.
+        /// 如果设为true - 使工具提示不出现，如果当前已显示则立即隐藏。
         /// </summary>
         public bool Blocked { get; set; }
 
         /// <summary>
-        /// Creates a new tool tip and attaches it to the given control.
+        /// 创建新的工具提示并附加到给定控件。
         /// </summary>
-        /// <param name="windowManager">The window manager.</param>
-        /// <param name="masterControl">The control to attach the tool tip to.</param>
+        /// <param name="windowManager">窗口管理器。</param>
+        /// <param name="masterControl">要附加工具提示的控件。</param>
         public ToolTip(WindowManager windowManager, XNAControl masterControl) : base(windowManager)
         {
             this.masterControl = masterControl ?? throw new ArgumentNullException("masterControl");
@@ -89,17 +89,17 @@ namespace ClientGUI
         {
             if (!Visible && !string.IsNullOrEmpty(Text))
             {
-                // Move the tooltip if the cursor has moved while staying 
-                // on the control area and we're invisible
+                // 如果光标在控件区域内移动但工具提示仍不可见，
+                // 则移动工具提示位置
                 DisplayAtLocation(SumPoints(WindowManager.Cursor.Location,
                     new Point(ClientConfiguration.Instance.ToolTipOffsetX, ClientConfiguration.Instance.ToolTipOffsetY)));
             }
         }
 
         /// <summary>
-        /// Sets the tool tip's location, checking that it doesn't exceed the window's bounds.
+        /// 设置工具提示的位置，检查是否超出窗口边界。
         /// </summary>
-        /// <param name="location">The point at location coordinates.</param>
+        /// <param name="location">位置坐标点。</param>
         public void DisplayAtLocation(Point location)
         {
             X = location.X + Width > WindowManager.RenderResolutionX ?
@@ -150,7 +150,7 @@ namespace ClientGUI
         }
 
         private Point SumPoints(Point p1, Point p2)
-            // This is also needed for XNA compatibility
+            // 这也是XNA兼容性所需要的
 #if XNA
             => new Point(p1.X + p2.X, p1.Y + p2.Y);
 #else

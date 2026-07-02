@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -7,7 +7,7 @@ using System.Threading;
 #if !(XNA||GL)
 using System.Windows.Forms;
 #endif
-/* !! We cannot use references to other projects or non-framework assemblies in this class, assembly loading events not hooked up yet !! */
+/* !! 在此类中不能使用对其他项目或非框架程序集的引用，程序集加载事件尚未挂接 !! */
 
 namespace DTAClient
 {
@@ -19,10 +19,9 @@ namespace DTAClient
 #if !DEBUG
         static Program()
         {
-            /* We have different binaries depending on build platform, but for simplicity
-             * the target projects (DTA, TI, MO, YR) supply them all in a single download.
-             * To avoid DLL hell, we load the binaries from different directories
-             * depending on the build platform. */
+            /* 根据构建平台不同，我们有不同的二进制文件，但为简便起见
+             * 目标项目（DTA、TI、MO、YR）将它们全部打包在一个下载中。
+             * 为避免 DLL 地狱，我们根据构建平台从不同目录加载二进制文件。 */
 
             string startupPath = new FileInfo(Assembly.GetEntryAssembly().Location).Directory.Parent.Parent.FullName + Path.DirectorySeparatorChar;
 
@@ -40,23 +39,22 @@ namespace DTAClient
             Yuri has won
 #endif
 
-            // Set up DLL load paths as early as possible
+            // 尽早设置 DLL 加载路径
             AssemblyLoadContext.Default.Resolving += DefaultAssemblyLoadContextOnResolving;
         }
 #endif
 
         /// <summary>
-        /// The main entry point for the application.
+        /// 应用程序的主入口点。
         /// </summary>
 #if WINFORMS
         [STAThread]
 #endif
         static void Main(string[] args)
         {
-            /* We have different binaries depending on build platform, but for simplicity
-             * the target projects (DTA, TI, MO, YR) supply them all in a single download.
-             * To avoid DLL hell, we load the binaries from different directories
-             * depending on the build platform. */
+            /* 根据构建平台不同，我们有不同的二进制文件，但为简便起见
+             * 目标项目（DTA、TI、MO、YR）将它们全部打包在一个下载中。
+             * 为避免 DLL 地狱，我们根据构建平台从不同目录加载二进制文件。 */
 
             string startupPath = new FileInfo(Assembly.GetEntryAssembly().Location).Directory.Parent.Parent.FullName + Path.DirectorySeparatorChar;
 
@@ -74,7 +72,7 @@ namespace DTAClient
             Yuri has won
 #endif
 
-            // Set up DLL load paths as early as possible
+            // 尽早设置 DLL 加载路径
             AssemblyLoadContext.Default.Resolving += DefaultAssemblyLoadContextOnResolving;
 
 #if !(XNA||GL) && DEBUG
@@ -106,14 +104,14 @@ namespace DTAClient
 
             if (multipleInstanceMode)
             {
-                // Proceed to client startup
+                // 继续客户端启动
                 PreStartup.Initialize(parameters);
                 return;
             }
 
-            // We're a single instance application!
+            // 我们是单实例应用程序！
             // http://stackoverflow.com/questions/229565/what-is-a-good-pattern-for-using-a-global-mutex-in-c/229567
-            // Global prefix means that the mutex is global to the machine
+            // Global 前缀意味着该互斥体在整个机器上全局有效
             string mutexId = FormattableString.Invariant($"Global{Guid.Parse("1CC9F8E7-9F69-4BBC-B045-E734204027A9")}");
             using var mutex = new Mutex(false, mutexId, out _);
             bool hasHandle = false;
@@ -135,7 +133,7 @@ namespace DTAClient
                     return;
                 }
 
-                // Proceed to client startup
+                // 继续客户端启动
                 PreStartup.Initialize(parameters);
             }
             finally

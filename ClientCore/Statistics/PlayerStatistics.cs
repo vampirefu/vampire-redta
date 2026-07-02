@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 
 namespace ClientCore.Statistics
@@ -38,31 +38,31 @@ namespace ClientCore.Statistics
         public void Write(Stream stream)
         {
             stream.WriteInt(Economy);
-            // 1 byte for IsAI
+            // IsAI 占1个字节
             stream.WriteBool(IsAI);
-            // 1 byte for IsLocalPlayer
+            // IsLocalPlayer 占1个字节
             stream.WriteBool(IsLocalPlayer);
-            // 4 bytes for kills
+            // 击杀数占4个字节
             stream.Write(BitConverter.GetBytes(Kills), 0, 4);
-            // 4 bytes for losses
+            // 损失数占4个字节
             stream.Write(BitConverter.GetBytes(Losses), 0, 4);
-            // Name takes 32 bytes
+            // 名称占32个字节
             stream.WriteString(Name, 32);
-            // 1 byte for SawEnd
+            // SawEnd 占1个字节
             stream.WriteBool(SawEnd);
-            // 4 bytes for Score
+            // 分数占4个字节
             stream.WriteInt(Score);
-            // 1 byte for Side
+            // 阵营占1个字节
             stream.WriteByte(Convert.ToByte(Side));
-            // 1 byte for Team
+            // 队伍占1个字节
             stream.WriteByte(Convert.ToByte(Team));
-            // 1 byte color Color
+            // 颜色占1个字节
             stream.WriteByte(Convert.ToByte(Color));
-            // 1 byte for WasSpectator
+            // WasSpectator 占1个字节
             stream.WriteBool(WasSpectator);
-            // 1 byte for Won
+            // Won 占1个字节
             stream.WriteBool(Won);
-            // 1 byte for AI level
+            // AI 等级占1个字节
             stream.WriteByte(Convert.ToByte(AILevel));
         }
     }

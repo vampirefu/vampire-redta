@@ -1,4 +1,4 @@
-﻿using Rampastring.XNAUI.XNAControls;
+using Rampastring.XNAUI.XNAControls;
 using System;
 using Rampastring.XNAUI;
 using Microsoft.Xna.Framework;
@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 namespace ClientGUI
 {
     /// <summary>
-    /// A panel that darkens the whole screen.
+    /// 使整个屏幕变暗的面板。
     /// </summary>
     public class DarkeningPanel : XNAPanel
     {

@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using ClientGUI;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
@@ -7,7 +7,7 @@ using Rampastring.XNAUI.XNAControls;
 namespace DTAConfig.Settings
 {
     /// <summary>
-    /// Dropdown for toggling options in user settings INI file.
+    /// 用于切换用户设置INI文件中选项的下拉框。
     /// </summary>
     public class SettingDropDown : SettingDropDownBase
     {
@@ -21,7 +21,7 @@ namespace DTAConfig.Settings
 
         private bool _writeItemValue;
         /// <summary>
-        /// If set, dropdown item's value instead of index is written to the user settings INI.
+        /// 如果设置，将下拉框项的值而非索引写入用户设置INI。
         /// </summary>
         public bool WriteItemValue
         {

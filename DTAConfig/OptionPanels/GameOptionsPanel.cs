@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using ClientCore.CnCNet5;
 using ClientGUI;
 using DTAConfig.Settings;
@@ -92,7 +92,7 @@ namespace DTAConfig.OptionPanels
             var lblGameMod = new XNALabel(WindowManager);
             lblGameMod.Name = "lblGameMod";
             lblGameMod.ClientRectangle = new Rectangle(400, chkScrollCoasting.Y, 0, 0);
-            lblGameMod.Text = "Mod:";
+            lblGameMod.Text = "模组:";
 
             ddGameMod = new XNAClientDropDown(WindowManager);
             ddGameMod.Name = "ddGameMod";
@@ -145,7 +145,7 @@ namespace DTAConfig.OptionPanels
             chkBlackChatBackground.ClientRectangle = new Rectangle(
                 chkScrollCoasting.X,
                 chkTooltips.Bottom + 24, 0, 0);
-            chkBlackChatBackground.Text = "Use black background for in-game chat messages";
+            chkBlackChatBackground.Text = "游戏中聊天消息使用黑色背景";
 
             AddChild(chkBlackChatBackground);
 
@@ -154,7 +154,7 @@ namespace DTAConfig.OptionPanels
             chkAltToUndeploy.ClientRectangle = new Rectangle(
                 chkScrollCoasting.X,
                 chkBlackChatBackground.Bottom + 24, 0, 0);
-            chkAltToUndeploy.Text = "Undeploy units by holding Alt key instead of a regular move command";
+            chkAltToUndeploy.Text = "按住Alt键取消部署而不是使用常规移动命令";
 
             AddChild(chkAltToUndeploy);
 

@@ -1,34 +1,32 @@
-﻿namespace DTAConfig.Settings
+namespace DTAConfig.Settings
 {
     interface IUserSetting
     {
 
         /// <summary>
-        /// INI section name in user settings file this setting's value is stored in.
+        /// 用户设置文件中存储此设置值的INI节名称。
         /// </summary>
         string SettingSection { get; }
 
         /// <summary>
-        /// INI key name in user settings file this setting's value is stored in.
+        /// 用户设置文件中存储此设置值的INI键名称。
         /// </summary>
         string SettingKey { get; }
 
         /// <summary>
-        /// Determines if this setting requires the client to be restarted
-        /// in order to be correctly applied.
+        /// 确定此设置是否需要重启客户端才能正确应用。
         /// </summary>
         bool RestartRequired { get; }
 
         /// <summary>
-        /// Loads the current value for the user setting.
+        /// 加载用户设置的当前值。
         /// </summary>
         void Load();
 
         /// <summary>
-        /// Applies operations based on current setting state.
+        /// 根据当前设置状态应用操作。
         /// </summary>
-        /// <returns>A bool that determines whether the 
-        /// client needs to restart for changes to apply.</returns>
+        /// <returns>一个布尔值，指示客户端是否需要重启以应用更改。</returns>
         bool Save();
     }
 }

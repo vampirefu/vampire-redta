@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace DTAClient.Online
 {
     /// <summary>
-    /// A user on an IRC server.
+    /// IRC 服务器上的用户。
     /// </summary>
     public class IRCUser : ICloneable
     {

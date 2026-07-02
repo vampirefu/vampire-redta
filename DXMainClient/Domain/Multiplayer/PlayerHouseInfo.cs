@@ -9,8 +9,7 @@ namespace DTAClient.Domain.Multiplayer
         public int SideIndex { get; set; }
 
         /// <summary>
-        /// A side (or, more correctly, house or country depending on the game)
-        /// index that is used in rules file of the game.
+        /// 在游戏规则文件中使用的阵营（或更准确地说，根据游戏不同称为House或Country）索引。
         /// </summary>
         public int InternalSideIndex
         {
@@ -33,19 +32,18 @@ namespace DTAClient.Domain.Multiplayer
         public bool IsSpectator { get; set; }
 
         /// <summary>
-        /// Applies the player's side into the information
-        /// and randomizes it if necessary.
+        /// 将玩家的阵营应用到信息中，必要时进行随机化。
         /// </summary>
-        /// <param name="pInfo">The PlayerInfo of the player.</param>
-        /// <param name="sideCount">The number of sides in the game.</param>
-        /// <param name="random">Random number generator.</param>
-        /// <param name="disallowedSideArray">A bool array that determines which side indexes are disallowed by game options.</param>
+        /// <param name="pInfo">玩家的PlayerInfo。</param>
+        /// <param name="sideCount">游戏中的阵营数量。</param>
+        /// <param name="random">随机数生成器。</param>
+        /// <param name="disallowedSideArray">确定哪些阵营索引被游戏选项禁止的布尔数组。</param>
         public void RandomizeSide(PlayerInfo pInfo, int sideCount, Random random,
             bool[] disallowedSideArray, List<int[]> randomSelectors, int randomCount)
         {
             if (pInfo.SideId == 0 || pInfo.SideId == sideCount + randomCount)
             {
-                // The player has selected Random or Spectator
+                // 玩家选择了随机或观战
 
                 int sideId;
 
@@ -56,7 +54,7 @@ namespace DTAClient.Domain.Multiplayer
             }
             else
             {
-                // Use custom random selector.
+                // 使用自定义随机选择器。
                 if (pInfo.SideId < randomCount)
                 {
                     int[] randomsides = randomSelectors[pInfo.SideId - 1];
@@ -68,25 +66,23 @@ namespace DTAClient.Domain.Multiplayer
 
                     SideIndex = sideId;
                 }
-                else SideIndex = pInfo.SideId - randomCount; // The player has selected a side
+                else SideIndex = pInfo.SideId - randomCount; // 玩家选择了一个阵营
             }
         }
 
         /// <summary>
-        /// Applies the player's color into the information and randomizes
-        /// it if necessary. If the color is randomized, it's removed
-        /// from the list of available colors.
+        /// 将玩家的颜色应用到信息中，必要时进行随机化。如果颜色被随机化，则从可用颜色列表中移除。
         /// </summary>
-        /// <param name="pInfo">The PlayerInfo of the player.</param>
-        /// <param name="freeColors">The list of available (un-used) colors.</param>
-        /// <param name="mpColors">The list of all multiplayer colors.</param>
-        /// <param name="random">Random number generator.</param>
+        /// <param name="pInfo">玩家的PlayerInfo。</param>
+        /// <param name="freeColors">可用（未使用）颜色列表。</param>
+        /// <param name="mpColors">所有多人游戏颜色列表。</param>
+        /// <param name="random">随机数生成器。</param>
         public void RandomizeColor(PlayerInfo pInfo, List<int> freeColors, 
             List<MultiplayerColor> mpColors, Random random)
         {
             if (pInfo.ColorId == 0)
             {
-                // The player has selected Random for their color
+                // 玩家选择了随机颜色
 
                 int randomizedColorIndex = random.Next(0, freeColors.Count);
                 int actualColorId = freeColors[randomizedColorIndex];
@@ -102,17 +98,14 @@ namespace DTAClient.Domain.Multiplayer
         }
 
         /// <summary>
-        /// Applies the player's starting location into the information and
-        /// randomizes it if necessary. If the starting location is randomized,
-        /// the starting location is removed from the list of available starting locations.
+        /// 将玩家的起始位置应用到信息中，必要时进行随机化。如果起始位置被随机化，则从可用起始位置列表中移除。
         /// </summary>
-        /// <param name="pInfo">The PlayerInfo of the player.</param>
-        /// <param name="freeStartingLocations">List of free starting locations.</param>
-        /// <param name="random">Random number generator.</param>
-        /// <param name="takenStartingLocations">A list of starting locations that are already occupied.</param>
+        /// <param name="pInfo">玩家的PlayerInfo。</param>
+        /// <param name="freeStartingLocations">空闲起始位置列表。</param>
+        /// <param name="random">随机数生成器。</param>
+        /// <param name="takenStartingLocations">已被占用的起始位置列表。</param>
         /// <param name="overrideGameRandomLocations"></param>
-        /// <returns>True if the player's starting location index exceeds the map's number of starting waypoints,
-        /// otherwise false.</returns>
+        /// <returns>如果玩家的起始位置索引超过地图的起始路径点数量则返回true，否则返回false。</returns>
         public void RandomizeStart(
             PlayerInfo pInfo, 
             Random random,
@@ -130,21 +123,19 @@ namespace DTAClient.Domain.Multiplayer
 
             if (pInfo.StartingLocation == 0)
             {
-                // Randomize starting location
+                // 随机化起始位置
 
                 if (!overrideGameRandomLocations)
                 {
-                    // The game uses its own randomization logic that places
-                    // randomized players on the opposite side of the map
-                    // Players seem to prefer this behaviour, so use -1 to
-                    // leave randomizing the starting location to the game itself
+                    // 游戏使用自己的随机化逻辑，将随机玩家放在地图的另一侧。
+                    // 玩家似乎更喜欢这种行为，所以使用-1将起始位置的随机化交给游戏本身
                     RealStartingWaypoint = -1;
                     StartingWaypoint = -1;
                     return;
                 }
 
-                // Let the client pick starting positions.
-                if (freeStartingLocations.Count == 0) // No free starting locs available
+                // 让客户端选择起始位置。
+                if (freeStartingLocations.Count == 0) // 没有可用的空闲起始位置
                 {
                     RealStartingWaypoint = -1;
                     StartingWaypoint = -1;
@@ -158,12 +149,12 @@ namespace DTAClient.Domain.Multiplayer
                 return;
             }
 
-            // Use the player's selected starting location
+            // 使用玩家选择的起始位置
             RealStartingWaypoint = pInfo.StartingLocation - 1;
 
             if (takenStartingLocations.Contains(RealStartingWaypoint))
             {
-                StartingWaypoint = -1; // Unknown starting location, stacked with another player
+                StartingWaypoint = -1; // 未知起始位置，与另一玩家重叠
                 return;
             }
 

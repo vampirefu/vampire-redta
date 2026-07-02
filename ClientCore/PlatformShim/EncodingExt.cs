@@ -12,8 +12,8 @@ public static class EncodingExt
     }
 
     /// <summary>
-    /// Gets the legacy ANSI encoding (not Windows-1252 and also not any specific encoding).
-    /// ANSI doesn't mean a specific codepage, it means the default non-Unicode codepage which can be changed from Control Panel.
+    /// 获取传统 ANSI 编码（不是 Windows-1252，也不是任何特定编码）。
+    /// ANSI 并不指代特定的代码页，它指的是默认的非 Unicode 代码页，可以从控制面板中更改。
     /// </summary>
     public static Encoding ANSI { get; }
 }

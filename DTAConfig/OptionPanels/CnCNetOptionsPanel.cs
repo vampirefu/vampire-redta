@@ -51,7 +51,7 @@ namespace DTAConfig.OptionPanels
 
         private void InitOptions()
         {
-            // LEFT COLUMN
+            // 左列
             
             chkPingUnofficialTunnels = new XNAClientCheckBox(WindowManager);
             chkPingUnofficialTunnels.Name = nameof(chkPingUnofficialTunnels);
@@ -100,7 +100,7 @@ namespace DTAConfig.OptionPanels
 
             InitAllowPrivateMessagesFromDropdown();
             
-            // RIGHT COLUMN
+            // 右列
 
             chkSkipLoginWindow = new XNAClientCheckBox(WindowManager);
             chkSkipLoginWindow.Name = nameof(chkSkipLoginWindow);
@@ -216,22 +216,22 @@ namespace DTAConfig.OptionPanels
 
             gameListPanel.AddChild(lblFollowedGames);
 
-            // Max number of games per column
+            // 每列最大游戏数
             const int maxGamesPerColumn = 4;
-            // Spacing buffer between columns
+            // 列间距
             const int columnBuffer = 20;
-            // Spacing buffer between rows
+            // 行间距
             const int rowBuffer = 22;
-            // Render width of a game icon
+            // 游戏图标的渲染宽度
             const int gameIconWidth = 16;
-            // Spacing buffer between game icon and game check box
+            // 游戏图标与游戏复选框之间的间距
             const int gameIconBuffer = 6;
 
-            // List of supported games
+            // 支持的游戏列表
             IEnumerable<CnCNetGame> supportedGames = gameCollection.GameList
                 .Where(game => game.Supported && !string.IsNullOrEmpty(game.GameBroadcastChannel));
 
-            // Convert to a matrix of XNAPanels that contain the game icons and check boxes
+            // 转换为包含游戏图标和复选框的XNAPanel矩阵
             List<List<XNAPanel>> gamePanelMatrix = supportedGames
                 .Select(game =>
                 {
@@ -257,12 +257,12 @@ namespace DTAConfig.OptionPanels
                 .ToMatrix(maxGamesPerColumn);
 
 
-            // Calculate max widths for each column
+            // 计算每列的最大宽度
             List<int> columnWidths = gamePanelMatrix
                 .Select(columnList => columnList.Max(gamePanel => gamePanel.Children.Last().Right + columnBuffer))
                 .ToList();
 
-            // Reposition each game panel and then add them to the overall list panel
+            // 重新定位每个游戏面板，然后将其添加到总列表面板
             int startY = lblFollowedGames.Bottom + 12;
             for (int col = 0; col < gamePanelMatrix.Count; col++)
             {

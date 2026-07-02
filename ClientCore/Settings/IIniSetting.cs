@@ -1,7 +1,7 @@
-﻿namespace ClientCore.Settings
+namespace ClientCore.Settings
 {
     /// <summary>
-    /// A dummy interface for checking for INISetting in reflection.
+    /// 用于在反射中检查 INISetting 的虚拟接口。
     /// </summary>
     interface IIniSetting
     {
