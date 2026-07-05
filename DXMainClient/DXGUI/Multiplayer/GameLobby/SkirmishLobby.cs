@@ -159,7 +159,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 return "合作战役不能观战.你必须作出更多的努力才能作弊.";
             }
 
-            //������
+            // 检查国家
             foreach(PlayerInfo pInfo in Players)
             {
 

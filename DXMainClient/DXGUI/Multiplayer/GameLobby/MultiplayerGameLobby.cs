@@ -660,7 +660,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             btnPickRandomMap.Disable();
             btnAginLoadMaps.Disable();
             btnMapSortAlphabetically.Disable();
-            //���������ؼ�
+            // 禁用人数控件
             lblscreen.Disable();
             ddPeople.Disable();
 
@@ -694,7 +694,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             ReadINIForControl(lblMapSize);
             ReadINIForControl(btnMapSortAlphabetically);
 
-            //��ʾ�����ؼ�
+            // 显示人数控件
             lblscreen.Enable();
             ddPeople.Enable();
         }
@@ -1094,19 +1094,19 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// �����л���ͼʱ���ؼ�������������
+        /// 初始化切换地图时控件可见性的逻辑方法
         /// </summary>
         public void IniControlVisibleWhenChangeMap()
         {
             if (!IsHost)
             {
-                //�����߼����ж��Ƿ���ʾ��ͼ�淨
+                // 根据逻辑判断是否显示地图玩法
                 if (string.IsNullOrEmpty(GameModeMap.Map?.PlayDescription))
                     lblPlayDescription.Visible = false;
                 else
                     lblPlayDescription.Visible = true;
 
-                //�����߼����жϵ�ǰ��ͼ�Ƿ�Ϊ���ص�ͼ��ȷ��chkDefenceAiTrigger�Ƿ���ʾ
+                // 根据逻辑判断当前地图是否为防守地图并确定chkDefenceAiTrigger是否显示
                 bool isShow = DefenceAiHelper.IsShowCKH(GameModeMap.Map.BaseFilePath);
                 var chkDefenceAiTrigger = CheckBoxes.FirstOrDefault(p => p.Name == "chkDefenceAiTrigger");
                 chkDefenceAiTrigger.Visible = isShow;

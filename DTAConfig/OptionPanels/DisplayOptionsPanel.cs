@@ -228,7 +228,7 @@ namespace DTAConfig.OptionPanels
             chkBorderlessClient.CheckedChanged += ChkBorderlessMenu_CheckedChanged;
             chkBorderlessClient.Checked = true;
 
-            //����������
+            // 随机封面
             chkRandom_wallpaper = new XNAClientCheckBox(WindowManager);
             chkRandom_wallpaper.Name = "chkRandom_wallpaper";
             chkRandom_wallpaper.ClientRectangle = new Rectangle(
@@ -389,7 +389,7 @@ namespace DTAConfig.OptionPanels
             AddChild(ddLanguage);
             AddChild(lblVoice);
             AddChild(ddVoice);
-            //�������
+            // 随机封面
             AddChild(chkRandom_wallpaper);
         }
 
@@ -733,7 +733,7 @@ namespace DTAConfig.OptionPanels
                 chkBorderlessWindowedMode.Checked = UserINISettings.Instance.BorderlessWindowedMode;
             }
 
-            //�����ֽ
+            // 随机壁纸
             chkRandom_wallpaper.Checked = UserINISettings.Instance.Random_wallpaper;
 
             int selectedLanguageIndex = ddLanguage.Items.FindIndex(
@@ -826,7 +826,7 @@ namespace DTAConfig.OptionPanels
                 {
                     string name = System.IO.Path.GetFileName(folder);
                     string dest = System.IO.Path.Combine(saveDirPath, name);
-                    CopyDirectory(folder, dest);//����Ŀ��·��,�ݹ鸴���ļ�
+                    CopyDirectory(folder, dest);// 构建目标路径,递归复制文件
                 }
             }
         }
@@ -930,7 +930,7 @@ namespace DTAConfig.OptionPanels
             IniSettings.Voice.Value = (string)ddVoice.SelectedItem.Tag;
             IniSettings.ClientTheme.Value = (string)ddClientTheme.SelectedItem.Tag;
 
-            //�����ֽ
+            // 随机壁纸
             IniSettings.Random_wallpaper.Value = chkRandom_wallpaper.Checked;
 
 #if TS
@@ -1015,7 +1015,7 @@ namespace DTAConfig.OptionPanels
                 screenResolutions.Add(resolution);
             }
 
-            //����1000*600�ֱ���֧��
+            // 添加1000*600低分辨率支持
             var subResolutions = new List<ScreenResolution>
             { 
                 new ScreenResolution(1000, 600),

@@ -699,7 +699,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             sb.Append(0); // 已加载游戏ID
 
             broadcastChannel.SendCTCPMessage(sb.ToString(), QueuedMessageType.SYSTEM_MESSAGE, 20);
-            //���������㲥
+            // 发送游戏广播
             Logger.Log($"/***************[CnCNetGameLoadingLobby]BroadcastGame:{sb}***************/");
         }
 
