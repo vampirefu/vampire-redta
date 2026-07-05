@@ -35,8 +35,6 @@ namespace DTAConfig.OptionPanels
         {
         }
 
-        private XNAClientCheckBox chkRandom_wallpaper;
-
         private XNAClientDropDown ddIngameResolution;
         private XNAClientDropDown ddDetailLevel;
         private XNAClientDropDown ddRenderer;
@@ -228,15 +226,6 @@ namespace DTAConfig.OptionPanels
             chkBorderlessClient.CheckedChanged += ChkBorderlessMenu_CheckedChanged;
             chkBorderlessClient.Checked = true;
 
-            // 随机封面
-            chkRandom_wallpaper = new XNAClientCheckBox(WindowManager);
-            chkRandom_wallpaper.Name = "chkRandom_wallpaper";
-            chkRandom_wallpaper.ClientRectangle = new Rectangle(
-                lblClientResolution.X,
-                ddRenderer.Bottom + 16 + 24, 0, 0);//ddRenderer.Bottom + 16
-            chkRandom_wallpaper.Text = "随机启动封面";
-            chkRandom_wallpaper.Checked = false;
-
             var lblClientTheme = new XNALabel(WindowManager);
             lblClientTheme.Name = "lblClientTheme";
             lblClientTheme.ClientRectangle = new Rectangle(
@@ -389,8 +378,6 @@ namespace DTAConfig.OptionPanels
             AddChild(ddLanguage);
             AddChild(lblVoice);
             AddChild(ddVoice);
-            // 随机封面
-            AddChild(chkRandom_wallpaper);
         }
 
         /// <summary>
@@ -733,9 +720,6 @@ namespace DTAConfig.OptionPanels
                 chkBorderlessWindowedMode.Checked = UserINISettings.Instance.BorderlessWindowedMode;
             }
 
-            // 随机壁纸
-            chkRandom_wallpaper.Checked = UserINISettings.Instance.Random_wallpaper;
-
             int selectedLanguageIndex = ddLanguage.Items.FindIndex(
                 ddi => (string)ddi.Tag == UserINISettings.Instance.Language);
             ddLanguage.SelectedIndex = selectedLanguageIndex > -1 ? selectedLanguageIndex : 0;
@@ -929,9 +913,6 @@ namespace DTAConfig.OptionPanels
 
             IniSettings.Voice.Value = (string)ddVoice.SelectedItem.Tag;
             IniSettings.ClientTheme.Value = (string)ddClientTheme.SelectedItem.Tag;
-
-            // 随机壁纸
-            IniSettings.Random_wallpaper.Value = chkRandom_wallpaper.Checked;
 
 #if TS
             IniSettings.BackBufferInVRAM.Value = !chkBackBufferInVRAM.Checked;

@@ -111,9 +111,6 @@ namespace ClientCore
 
             PrivacyPolicyAccepted = new BoolSetting(iniFile, OPTIONS, "PrivacyPolicyAccepted", false);
 
-            //随机壁纸
-            Random_wallpaper = new BoolSetting(iniFile, OPTIONS, "Random_wallpaper", false);
-
             IsFirstRun = new BoolSetting(iniFile, OPTIONS, "IsFirstRun", true);
             CustomComponentsDenied = new BoolSetting(iniFile, OPTIONS, "CustomComponentsDenied", false);
             Difficulty = new IntSetting(iniFile, OPTIONS, "Difficulty", 1);
@@ -240,10 +237,6 @@ namespace ClientCore
         public BoolSetting PrivacyPolicyAccepted { get; private set; }
         public BoolSetting IsFirstRun { get; private set; }
 
-        /// <summary>
-        /// 随机壁纸
-        /// </summary>
-        public BoolSetting Random_wallpaper { get; private set; }
         public BoolSetting CustomComponentsDenied { get; private set; }
 
         public IntSetting Difficulty { get; private set; }
