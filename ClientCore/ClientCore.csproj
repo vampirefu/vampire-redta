@@ -1,4 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$(MSBuildThisFileDirectory)..\MSBuild\Shared.props" />
   <PropertyGroup>
     <Title>CnCNet Client</Title>
     <Description>CnCNet Client Core Library</Description>
@@ -11,8 +12,9 @@
     <InformationalVersion>2.0.0.3</InformationalVersion>
     <AssemblyName>ClientCore</AssemblyName>
     <RootNamespace>ClientCore</RootNamespace>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
-  <Import Project="$(MSBuildThisFileDirectory)..\build\WinForms.props" />
   <ItemGroup>
     <None Remove="Resources\cncneticon.png" />
     <None Remove="Resources\cncricon.png" />

@@ -1,0 +1,52 @@
+<Project>
+  <PropertyGroup>
+    <ComVisible>false</ComVisible>
+    <CLSCompliant>false</CLSCompliant>
+    <Platforms>AnyCPU;x64;ARM64;x86</Platforms>
+    <Configurations>AresWindowsDXDebug;AresWindowsDXRelease</Configurations>
+
+    <Engine Condition="'$(Engine)' == ''">WindowsDX</Engine>
+    <Game Condition="'$(Game)' == ''">Ares</Game>
+
+    <DefineConstants Condition="'$(Configuration.Contains(Debug))' == 'True'">$(DefineConstants);DEBUG</DefineConstants>
+    <DefineConstants>$(DefineConstants);DX;WINFORMS;ISWINDOWS;ARES</DefineConstants>
+
+    <AnalysisMode Condition="'$(Configuration.Contains(Debug))' == 'True'">All</AnalysisMode>
+    <EnforceCodeStyleInBuild Condition="'$(Configuration.Contains(Debug))' == 'True'">true</EnforceCodeStyleInBuild>
+    <AnalysisMode Condition="'$(Configuration.Contains(Debug))' != 'True'">Recommended</AnalysisMode>
+    <AnalysisModeDocumentation Condition="'$(Configuration.Contains(Debug))' != 'True'">None</AnalysisModeDocumentation>
+    <AnalysisModeNaming Condition="'$(Configuration.Contains(Debug))' != 'True'">None</AnalysisModeNaming>
+    <AnalysisModeStyle Condition="'$(Configuration.Contains(Debug))' != 'True'">None</AnalysisModeStyle>
+
+    <AssemblyVersion>2.8.0.1</AssemblyVersion>
+    <FileVersion>2.8.0.1</FileVersion>
+    <InformationalVersion>2.8.0.1</InformationalVersion>
+
+    <_OutputConfiguration Condition="'$(BuildingInsideVisualStudio)' == 'True' and '$(Configuration.Contains(Debug))' == 'True'">Debug</_OutputConfiguration>
+    <_OutputConfiguration Condition="'$(BuildingInsideVisualStudio)' == 'True' and '$(Configuration.Contains(Release))' == 'True'">Release</_OutputConfiguration>
+
+    <OutputPath Condition="'$(BuildingInsideVisualStudio)' == 'True' and '$(_OutputConfiguration)' != ''">$(BaseOutputPath)bin\$(_OutputConfiguration)\$(Game)\$(Engine)\</OutputPath>
+    <IntermediateOutputPath Condition="'$(BuildingInsideVisualStudio)' == 'True' and '$(_OutputConfiguration)' != ''">$(BaseIntermediateOutputPath)obj\$(_OutputConfiguration)\$(Game)\$(Engine)\</IntermediateOutputPath>
+
+    <OutputPath Condition="'$(BuildingInsideVisualStudio)' != 'True'">$(BaseOutputPath)bin\$(Configuration)\$(Game)\$(Engine)\</OutputPath>
+    <IntermediateOutputPath Condition="'$(BuildingInsideVisualStudio)' != 'True'">$(BaseIntermediateOutputPath)obj\$(Configuration)\$(Game)\$(Engine)\</IntermediateOutputPath>
+  </PropertyGroup>
+
+  <Target Name="CheckEngineAndGame" BeforeTargets="CoreCompile">
+    <Error Text="Engine is not set! Please retry with /p:Engine={Engine}. Supported Engines are WindowsDX." Condition=" '$(Engine)' == '' " />
+    <Error Text="Engine '$(Engine)' is not supported. Supported Engines are WindowsDX." Condition=" '$(Engine)' != 'WindowsDX' " />
+    <Error Text="Game is not set! Please retry with /p:Game={Game}. Supported Games are Ares." Condition=" '$(Game)' == '' " />
+    <Error Text="Game '$(Game)' is not supported. Supported Games are Ares." Condition=" '$(Game)' != 'Ares' " />
+  </Target>
+
+  <Target Name="ShowBuildInfo" BeforeTargets="CoreCompile">
+    <Message Importance="high" Text="Engine: $(Engine); Game: $(Game); Platform: $(Platform); TargetFramework: $(TargetFramework); Configuration: $(Configuration)" />
+  </Target>
+
+  <ItemGroup>
+    <PackageReference Condition="'$(Configuration.Contains(Debug))' == 'True'" Include="StyleCop.Analyzers" Version="1.2.0-beta.435">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+</Project>
