@@ -886,8 +886,10 @@ namespace DTAClient.DXGUI.Generic
 
         private void LoadFallbackWallpaper()
         {
-            string[] wallpaper = Directory.GetFiles("Resources/" + ClientConfiguration.Instance.GetThemePath(UserINISettings.Instance.ClientTheme) + "Wallpaper");
-            BackgroundTexture = AssetLoader.LoadTexture(wallpaper[0]);
+            //string[] wallpaper = Directory.GetFiles("Resources/" + ClientConfiguration.Instance.GetThemePath(UserINISettings.Instance.ClientTheme) + "Wallpaper");
+            //BackgroundTexture = AssetLoader.LoadTexture(wallpaper[0]);
+            if (!string.IsNullOrEmpty(configuredBackgroundPath))
+                BackgroundTexture = AssetLoader.LoadTexture(configuredBackgroundPath);
         }
     }
 }
