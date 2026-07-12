@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Engine>WindowsDX</Engine>
-    <Game>YR</Game>
+    <Game>Ares</Game>
   </PropertyGroup>
 
   <ItemGroup>

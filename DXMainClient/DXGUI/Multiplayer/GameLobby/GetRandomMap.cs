@@ -64,9 +64,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             base.Initialize();
             Name = "GetRandomMap";
             CenterOnParent();
-#if WINFORMS
             System.Windows.Forms.Control.CheckForIllegalCrossThreadCalls = false;
-#endif
             ClientRectangle = new Rectangle(200, 100, 800, 500);
 
             lblTitle = new XNALabel(WindowManager);

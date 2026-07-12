@@ -16,10 +16,6 @@ namespace DTAConfig.OptionPanels
     class GameOptionsPanel : XNAOptionsPanel
     {
 
-#if TS
-        private const string TEXT_BACKGROUND_COLOR_TRANSPARENT = "0";
-        private const string TEXT_BACKGROUND_COLOR_BLACK = "12";
-#endif
         private const int MAX_SCROLL_RATE = 6;
 
         public GameOptionsPanel(WindowManager windowManager, UserINISettings iniSettings, XNAControl topBar)
@@ -34,12 +30,7 @@ namespace DTAConfig.OptionPanels
         private XNAClientCheckBox chkTargetLines;
         private XNAClientCheckBox chkScrollCoasting;
         private XNAClientCheckBox chkTooltips;
-#if TS
-        private XNAClientCheckBox chkAltToUndeploy;
-        private XNAClientCheckBox chkBlackChatBackground;
-#else
         private XNAClientCheckBox chkShowHiddenObjects;
-#endif
 
         private XNADropDown ddGameMod;
 
@@ -116,11 +107,6 @@ namespace DTAConfig.OptionPanels
             lblPlayerName.Name = "lblPlayerName";
             lblPlayerName.Text = "玩家名称*:";
 
-#if TS
-            chkTooltips.ClientRectangle = new Rectangle(
-                lblScrollRate.X,
-                chkTargetLines.Bottom + 24, 0, 0);
-#else
             chkShowHiddenObjects = new SettingCheckBox(WindowManager, true, UserINISettings.OPTIONS, "ShowHidden");
             chkShowHiddenObjects.Name = "chkShowHiddenObjects";
             chkShowHiddenObjects.ClientRectangle = new Rectangle(
@@ -137,31 +123,6 @@ namespace DTAConfig.OptionPanels
                 chkTooltips.Bottom + 30, 0, 0);
 
             AddChild(chkShowHiddenObjects);
-#endif
-
-#if TS
-            chkBlackChatBackground = new SettingCheckBox(WindowManager, false, UserINISettings.OPTIONS, "TextBackgroundColor", true, TEXT_BACKGROUND_COLOR_BLACK, TEXT_BACKGROUND_COLOR_TRANSPARENT);
-            chkBlackChatBackground.Name = "chkBlackChatBackground";
-            chkBlackChatBackground.ClientRectangle = new Rectangle(
-                chkScrollCoasting.X,
-                chkTooltips.Bottom + 24, 0, 0);
-            chkBlackChatBackground.Text = "游戏中聊天消息使用黑色背景";
-
-            AddChild(chkBlackChatBackground);
-
-            chkAltToUndeploy = new SettingCheckBox(WindowManager, true, UserINISettings.OPTIONS, "MoveToUndeploy");
-            chkAltToUndeploy.Name = "chkAltToUndeploy";
-            chkAltToUndeploy.ClientRectangle = new Rectangle(
-                chkScrollCoasting.X,
-                chkBlackChatBackground.Bottom + 24, 0, 0);
-            chkAltToUndeploy.Text = "按住Alt键取消部署而不是使用常规移动命令";
-
-            AddChild(chkAltToUndeploy);
-
-            lblPlayerName.ClientRectangle = new Rectangle(
-                lblScrollRate.X,
-                chkAltToUndeploy.Bottom + 30, 0, 0);
-#endif
 
             tbPlayerName = new XNATextBox(WindowManager);
             tbPlayerName.Name = "tbPlayerName";

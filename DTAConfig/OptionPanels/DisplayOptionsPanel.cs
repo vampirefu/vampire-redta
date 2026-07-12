@@ -11,16 +11,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Linq;
 
-#if WINFORMS
 using System.Windows.Forms;
-#endif
-#if TS
-using Microsoft.Win32;
-using System.Diagnostics;
-using System.IO;
-using System.Runtime.InteropServices;
-using System.Runtime.Versioning;
-#endif
 
 namespace DTAConfig.OptionPanels
 {
@@ -51,19 +42,6 @@ namespace DTAConfig.OptionPanels
 
         private string defaultRenderer;
         private DirectDrawWrapper selectedRenderer = null;
-
-#if TS
-        private XNALabel lblCompatibilityFixes;
-        private XNALabel lblGameCompatibilityFix;
-        private XNALabel lblMapEditorCompatibilityFix;
-        private XNAClientButton btnGameCompatibilityFix;
-        private XNAClientButton btnMapEditorCompatibilityFix;
-
-        private bool GameCompatFixInstalled = false;
-        private bool FinalSunCompatFixInstalled = false;
-        private bool GameCompatFixDeclined = false;
-        //private bool FinalSunCompatFixDeclined = false;
-#endif
 
 
         public override void Initialize()
@@ -305,61 +283,6 @@ namespace DTAConfig.OptionPanels
                 item1.Tag = ClientConfiguration.Instance.GetThemeInfoFromIndex(i)[0];
                 ddClientTheme.AddItem(item1);
             }
-#if TS
-            lblCompatibilityFixes = new XNALabel(WindowManager);
-            lblCompatibilityFixes.Name = "lblCompatibilityFixes";
-            lblCompatibilityFixes.FontIndex = 1;
-            lblCompatibilityFixes.Text = "兼容性修复 (高级):";
-            AddChild(lblCompatibilityFixes);
-            lblCompatibilityFixes.CenterOnParent();
-            lblCompatibilityFixes.Y = Height - 103;
-
-            lblGameCompatibilityFix = new XNALabel(WindowManager);
-            lblGameCompatibilityFix.Name = "lblGameCompatibilityFix";
-            lblGameCompatibilityFix.ClientRectangle = new Rectangle(132,
-                lblCompatibilityFixes.Bottom + 20, 0, 0);
-            lblGameCompatibilityFix.Text = "DTA/TI/TS兼容性修复:";
-
-            btnGameCompatibilityFix = new XNAClientButton(WindowManager);
-            btnGameCompatibilityFix.Name = "btnGameCompatibilityFix";
-            btnGameCompatibilityFix.ClientRectangle = new Rectangle(
-                lblGameCompatibilityFix.Right + 20,
-                lblGameCompatibilityFix.Y - 4, UIDesignConstants.BUTTON_WIDTH_133, UIDesignConstants.BUTTON_HEIGHT);
-            btnGameCompatibilityFix.FontIndex = 1;
-            btnGameCompatibilityFix.Text = "启用";
-
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                btnGameCompatibilityFix.LeftClick += BtnGameCompatibilityFix_LeftClick;
-            else
-                btnGameCompatibilityFix.AllowClick = false;
-
-            lblMapEditorCompatibilityFix = new XNALabel(WindowManager);
-            lblMapEditorCompatibilityFix.Name = "lblMapEditorCompatibilityFix";
-            lblMapEditorCompatibilityFix.ClientRectangle = new Rectangle(
-                lblGameCompatibilityFix.X,
-                lblGameCompatibilityFix.Bottom + 20, 0, 0);
-            lblMapEditorCompatibilityFix.Text = "FinalSun兼容性修复:";
-
-            btnMapEditorCompatibilityFix = new XNAClientButton(WindowManager);
-            btnMapEditorCompatibilityFix.Name = "btnMapEditorCompatibilityFix";
-            btnMapEditorCompatibilityFix.ClientRectangle = new Rectangle(
-                btnGameCompatibilityFix.X,
-                lblMapEditorCompatibilityFix.Y - 4,
-                btnGameCompatibilityFix.Width,
-                btnGameCompatibilityFix.Height);
-            btnMapEditorCompatibilityFix.FontIndex = 1;
-            btnMapEditorCompatibilityFix.Text = "启用";
-
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                btnMapEditorCompatibilityFix.LeftClick += BtnMapEditorCompatibilityFix_LeftClick;
-            else
-                btnMapEditorCompatibilityFix.AllowClick = false;
-
-            AddChild(lblGameCompatibilityFix);
-            AddChild(btnGameCompatibilityFix);
-            AddChild(lblMapEditorCompatibilityFix);
-            AddChild(btnMapEditorCompatibilityFix);
-#endif
             AddChild(chkWindowedMode);
             AddChild(chkBorderlessWindowedMode);
             AddChild(chkBackBufferInVRAM);
@@ -439,192 +362,18 @@ namespace DTAConfig.OptionPanels
             GameProcessLogic.UseQres = selectedRenderer.UseQres;
             GameProcessLogic.SingleCoreAffinity = selectedRenderer.SingleCoreAffinity;
         }
-#if TS
-
-        /// <summary>
-        /// 询问用户是否要安装DTA/TI/TS兼容性修复。
-        /// </summary>
-        public void PostInit()
-        {
-            Load();
-
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                return;
-
-            if (!GameCompatFixInstalled && !GameCompatFixDeclined)
-            {
-                string defaultGame = ClientConfiguration.Instance.LocalGame;
-
-                var messageBox = XNAMessageBox.ShowYesNoDialog(WindowManager, "新的兼容性修复",
-                    string.Format("此版本的{0}包含了适用于现代Windows版本的性能增强兼容性修复" + Environment.NewLine +
-                        "启用它需要管理员权限。您想安装此兼容性修复吗?" + Environment.NewLine + Environment.NewLine +
-                        "您随时可以在选项菜单中安装或卸载此兼容性修复。", defaultGame
-                    ));
-                messageBox.YesClickedAction = MessageBox_YesClicked;
-                messageBox.NoClickedAction = MessageBox_NoClicked;
-            }
-        }
-
-        [SupportedOSPlatform("windows")]
-        private void MessageBox_NoClicked(XNAMessageBox messageBox)
-        {
-            // 在注册表中设置兼容性修复已拒绝标志
-            try
-            {
-                RegistryKey regKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Tiberian Sun Client");
-
-                try
-                {
-                    regKey = Registry.CurrentUser.OpenSubKey("SOFTWARE", true);
-                    regKey = regKey.CreateSubKey("Tiberian Sun Client");
-                    regKey.SetValue("TSCompatFixDeclined", "Yes");
-                }
-                catch (Exception ex)
-                {
-                    Logger.Log("Setting TSCompatFixDeclined failed! Returned error: " + ex.Message);
-                }
-            }
-            catch { }
-        }
-
-        [SupportedOSPlatform("windows")]
-        private void MessageBox_YesClicked(XNAMessageBox messageBox)
-        {
-            BtnGameCompatibilityFix_LeftClick(messageBox, EventArgs.Empty);
-        }
-
-        [SupportedOSPlatform("windows")]
-        private void BtnGameCompatibilityFix_LeftClick(object sender, EventArgs e)
-        {
-            if (GameCompatFixInstalled)
-            {
-                try
-                {
-                    Process sdbinst = Process.Start("sdbinst.exe", "-q -n \"TS Compatibility Fix\"");
-
-                    sdbinst.WaitForExit();
-
-                    Logger.Log("DTA/TI/TS Compatibility Fix succesfully uninstalled.");
-                    XNAMessageBox.Show(WindowManager, "兼容性修复已卸载",
-                        "DTA/TI/TS兼容性修复已成功卸载。");
-
-                    RegistryKey regKey = Registry.CurrentUser.OpenSubKey("SOFTWARE", true);
-                    regKey = regKey.CreateSubKey("Tiberian Sun Client");
-                    regKey.SetValue("TSCompatFixInstalled", "No");
-
-                    btnGameCompatibilityFix.Text = "启用";
-
-                    GameCompatFixInstalled = false;
-                }
-                catch (Exception ex)
-                {
-                    Logger.Log("Uninstalling DTA/TI/TS Compatibility Fix failed. Error message: " + ex.Message);
-                    XNAMessageBox.Show(WindowManager, "卸载兼容性修复失败",
-                        "卸载DTA/TI/TS兼容性修复失败。错误信息:" + " " + ex.Message);
-                }
-
-                return;
-            }
-
-            try
-            {
-                Process sdbinst = Process.Start("sdbinst.exe", "-q \"" + ProgramConstants.GamePath + "Resources/compatfix.sdb\"");
-
-                sdbinst.WaitForExit();
-
-                Logger.Log("DTA/TI/TS Compatibility Fix succesfully installed.");
-                XNAMessageBox.Show(WindowManager, "兼容性修复已安装",
-                    "DTA/TI/TS兼容性修复已成功安装。");
-
-                RegistryKey regKey = Registry.CurrentUser.OpenSubKey("SOFTWARE", true);
-                regKey = regKey.CreateSubKey("Tiberian Sun Client");
-                regKey.SetValue("TSCompatFixInstalled", "Yes");
-
-                btnGameCompatibilityFix.Text = "禁用";
-
-                GameCompatFixInstalled = true;
-            }
-            catch (Exception ex)
-            {
-                Logger.Log("Installing DTA/TI/TS Compatibility Fix failed. Error message: " + ex.Message);
-                XNAMessageBox.Show(WindowManager, "安装兼容性修复失败",
-                    "安装DTA/TI/TS兼容性修复失败。错误信息:" + " " + ex.Message);
-            }
-        }
-
-        [SupportedOSPlatform("windows")]
-        private void BtnMapEditorCompatibilityFix_LeftClick(object sender, EventArgs e)
-        {
-            if (FinalSunCompatFixInstalled)
-            {
-                try
-                {
-                    Process sdbinst = Process.Start("sdbinst.exe", "-q -n \"Final Sun Compatibility Fix\"");
-
-                    sdbinst.WaitForExit();
-
-                    RegistryKey regKey = Registry.CurrentUser.OpenSubKey("SOFTWARE", true);
-                    regKey = regKey.CreateSubKey("Tiberian Sun Client");
-                    regKey.SetValue("FSCompatFixInstalled", "No");
-
-                    btnMapEditorCompatibilityFix.Text = "启用";
-
-                    Logger.Log("FinalSun Compatibility Fix succesfully uninstalled.");
-                    XNAMessageBox.Show(WindowManager, "兼容性修复已卸载",
-                        "FinalSun兼容性修复已成功卸载。");
-
-                    FinalSunCompatFixInstalled = false;
-                }
-                catch (Exception ex)
-                {
-                    Logger.Log("Uninstalling FinalSun Compatibility Fix failed. Error message: " + ex.Message);
-                    XNAMessageBox.Show(WindowManager, "卸载兼容性修复失败",
-                        "卸载FinalSun兼容性修复失败。错误信息:" + " " + ex.Message);
-                }
-
-                return;
-            }
-
-            try
-            {
-                Process sdbinst = Process.Start("sdbinst.exe", "-q \"" + ProgramConstants.GamePath + "Resources/FSCompatFix.sdb\"");
-
-                sdbinst.WaitForExit();
-
-                RegistryKey regKey = Registry.CurrentUser.OpenSubKey("SOFTWARE", true);
-                regKey = regKey.CreateSubKey("Tiberian Sun Client");
-                regKey.SetValue("FSCompatFixInstalled", "Yes");
-
-                btnMapEditorCompatibilityFix.Text = "禁用";
-
-                Logger.Log("FinalSun Compatibility Fix succesfully installed.");
-                XNAMessageBox.Show(WindowManager, "兼容性修复已安装",
-                    "FinalSun兼容性修复已成功安装。");
-
-                FinalSunCompatFixInstalled = true;
-            }
-            catch (Exception ex)
-            {
-                Logger.Log("Installing FinalSun Compatibility Fix failed. Error message: " + ex.Message);
-                XNAMessageBox.Show(WindowManager, "安装兼容性修复失败",
-                    "安装FinalSun兼容性修复失败。错误信息:" + " " + ex.Message);
-            }
-        }
-#endif
 
         private void ChkBorderlessMenu_CheckedChanged(object sender, EventArgs e)
         {
             if (chkBorderlessClient.Checked)
             {
                 ddClientResolution.AllowDropDown = false;
-#if WINFORMS
                 string nativeRes = Screen.PrimaryScreen.Bounds.Width +
                     "x" + Screen.PrimaryScreen.Bounds.Height;
 
                 int nativeResIndex = ddClientResolution.Items.FindIndex(i => (string)i.Tag == nativeRes);
                 if (nativeResIndex > -1)
                     ddClientResolution.SelectedIndex = nativeResIndex;
-#endif
             }
             else
             {
@@ -740,51 +489,7 @@ namespace DTAConfig.OptionPanels
                 ddi => (string)ddi.Tag == UserINISettings.Instance.ClientTheme);
             ddClientTheme.SelectedIndex = selectedThemeIndex > -1 ? selectedThemeIndex : 0;
 
-#if TS
-            chkBackBufferInVRAM.Checked = !UserINISettings.Instance.BackBufferInVRAM;
-
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                return;
-
-            RegistryKey regKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Tiberian Sun Client");
-
-            if (regKey == null)
-                return;
-
-            object tsCompatFixValue = regKey.GetValue("TSCompatFixInstalled", "No");
-            string tsCompatFixString = (string)tsCompatFixValue;
-
-            if (tsCompatFixString == "Yes")
-            {
-                GameCompatFixInstalled = true;
-                btnGameCompatibilityFix.Text = "禁用";
-            }
-
-            object fsCompatFixValue = regKey.GetValue("FSCompatFixInstalled", "No");
-            string fsCompatFixString = (string)fsCompatFixValue;
-
-            if (fsCompatFixString == "Yes")
-            {
-                FinalSunCompatFixInstalled = true;
-                btnMapEditorCompatibilityFix.Text = "禁用";
-            }
-
-            object tsCompatFixDeclinedValue = regKey.GetValue("TSCompatFixDeclined", "No");
-
-            if (((string)tsCompatFixDeclinedValue) == "Yes")
-            {
-                GameCompatFixDeclined = true;
-            }
-
-            //object fsCompatFixDeclinedValue = regKey.GetValue("FSCompatFixDeclined", "No");
-
-            //if (((string)fsCompatFixDeclinedValue) == "Yes")
-            //{
-            //    FinalSunCompatFixDeclined = true;
-            //}
-#else
             chkBackBufferInVRAM.Checked = UserINISettings.Instance.BackBufferInVRAM;
-#endif
         }
 
         private void CopyDirectory(string sourceDirPath, string saveDirPath)
@@ -914,11 +619,7 @@ namespace DTAConfig.OptionPanels
             IniSettings.Voice.Value = (string)ddVoice.SelectedItem.Tag;
             IniSettings.ClientTheme.Value = (string)ddClientTheme.SelectedItem.Tag;
 
-#if TS
-            IniSettings.BackBufferInVRAM.Value = !chkBackBufferInVRAM.Checked;
-#else
             IniSettings.BackBufferInVRAM.Value = chkBackBufferInVRAM.Checked;
-#endif
 
             if (selectedRenderer != originalRenderer ||
                 !SafePath.GetFile(ProgramConstants.GamePath, selectedRenderer.ConfigFileName).Exists)
@@ -956,22 +657,6 @@ namespace DTAConfig.OptionPanels
             }
 
             IniSettings.Renderer.Value = selectedRenderer.InternalName;
-
-#if TS
-            if (ClientConfiguration.Instance.CopyResolutionDependentLanguageDLL)
-            {
-                string languageDllDestinationPath = SafePath.CombineFilePath(ProgramConstants.GamePath, "Language.dll");
-
-                SafePath.DeleteFileIfExists(languageDllDestinationPath);
-
-                if (ingameRes[0] >= 1024 && ingameRes[1] >= 720)
-                    System.IO.File.Copy(SafePath.CombineFilePath(ProgramConstants.GamePath, "Resources", "language_1024x720.dll"), languageDllDestinationPath);
-                else if (ingameRes[0] >= 800 && ingameRes[1] >= 600)
-                    System.IO.File.Copy(SafePath.CombineFilePath(ProgramConstants.GamePath, "Resources", "language_800x600.dll"), languageDllDestinationPath);
-                else
-                    System.IO.File.Copy(SafePath.CombineFilePath(ProgramConstants.GamePath, "Resources", "language_640x480.dll"), languageDllDestinationPath);
-            }
-#endif
 
             return restartRequired;
         }

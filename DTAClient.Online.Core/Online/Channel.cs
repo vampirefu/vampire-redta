@@ -93,11 +93,7 @@ namespace DTAClient.Online
 
         private void Instance_SettingsSaved(object sender, EventArgs e)
         {
-#if YR
-            notifyOnUserListChange = false;
-#else
             notifyOnUserListChange = UserINISettings.Instance.NotifyOnUserListChange;
-#endif
         }
 
         public void AddUser(ChannelUser user)
@@ -116,10 +112,8 @@ namespace DTAClient.Online
                     string.Format("{0}已加入{1}.", user.IRCUser.Name, UIName)));
             }
 
-#if !YR
             if (Persistent && IsChatChannel && user.IRCUser.Name == ProgramConstants.PLAYERNAME)
                 RequestUserInfo();
-#endif
         }
 
         public void OnUserListReceived(List<ChannelUser> userList)

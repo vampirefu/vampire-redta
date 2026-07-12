@@ -21,15 +21,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Rampastring.XNAUI.XNAControls;
 using MainMenu = DTAClient.DXGUI.Generic.MainMenu;
-#if DX || (GL && WINFORMS)
 using System.Diagnostics;
 using System.IO;
-#endif
-#if WINFORMS
 using System.Windows.Forms;
-using System.IO;
 using System.Text.RegularExpressions;
-#endif
 
 namespace DTAClient.DXGUI
 {
@@ -42,9 +37,7 @@ namespace DTAClient.DXGUI
         {
             graphics = new GraphicsDeviceManager(this);
             graphics.SynchronizeWithVerticalRetrace = false;
-#if !XNA
             graphics.HardwareModeSwitch = false;
-#endif
             content = new ContentManager(Services);
         }
 
@@ -66,13 +59,8 @@ namespace DTAClient.DXGUI
             AssetLoader.AssetSearchPaths.Add(ProgramConstants.GetBaseResourcePath());
             AssetLoader.AssetSearchPaths.Add(ProgramConstants.GamePath);
 
-#if DX || (GL && WINFORMS)
             // 尝试创建并加载纹理以检查 MonoGame 兼容性
-#if DX
             const string startupFailureFile = ".dxfail";
-#elif GL && WINFORMS
-            const string startupFailureFile = ".oglfail";
-#endif
 
             try
             {
@@ -119,7 +107,6 @@ namespace DTAClient.DXGUI
                 }
             }
 
-#endif
             InitializeUISettings();
 
             WindowManager wm = new WindowManager(this, graphics);
@@ -138,11 +125,9 @@ namespace DTAClient.DXGUI
             };
 
             SetGraphicsMode(wm);
-#if WINFORMS
 
             wm.SetIcon(SafePath.CombineFilePath(ProgramConstants.GetBaseResourcePath(), "clienticon.ico"));
             wm.SetControlBox(true);
-#endif
 
             wm.Cursor.Textures = new Texture2D[]
             {
@@ -150,7 +135,6 @@ namespace DTAClient.DXGUI
                 AssetLoader.LoadTexture("waitCursor.png")
             };
 
-#if WINFORMS
             FileInfo primaryNativeCursorPath = SafePath.GetFile(ProgramConstants.GetResourcePath(), "cursor.cur");
             FileInfo alternativeNativeCursorPath = SafePath.GetFile(ProgramConstants.GetBaseResourcePath(), "cursor.cur");
 
@@ -159,7 +143,6 @@ namespace DTAClient.DXGUI
             else if (alternativeNativeCursorPath.Exists)
                 wm.Cursor.LoadNativeCursor(alternativeNativeCursorPath.FullName);
 
-#endif
             Components.Add(wm);
 
             string playerName = UserINISettings.Instance.PlayerName.Value.Trim();
@@ -373,7 +356,6 @@ namespace DTAClient.DXGUI
             }
 
             wm.SetBorderlessMode(borderlessWindowedClient);
-#if !XNA
 
             if (borderlessWindowedClient)
             {
@@ -381,7 +363,6 @@ namespace DTAClient.DXGUI
                 graphics.ApplyChanges();
             }
 
-#endif
             wm.CenterOnScreen();
             wm.SetRenderResolution(renderResolutionX, renderResolutionY);
         }

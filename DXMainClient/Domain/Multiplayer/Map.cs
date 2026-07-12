@@ -394,11 +394,8 @@ namespace DTAClient.Domain.Multiplayer
                 }
 
                 GetTeamStartMappingPresets(section);
-#if !GL
-
                 if (UserINISettings.Instance.PreloadMapPreviews)
                     PreviewTexture = LoadPreviewTexture();
-#endif
 
                 // 解析强制选项
 

@@ -71,9 +71,7 @@ namespace DTAClient
 
             GenerateOnlineIdAsync();
 
-#if ARES
             Task.Factory.StartNew(() => PruneFiles(SafePath.GetDirectory(ProgramConstants.GamePath, "debug"), DateTime.Now.AddDays(-7)));
-#endif
             Task.Factory.StartNew(MigrateOldLogFiles);
 
             DirectoryInfo updaterFolder = SafePath.GetDirectory(ProgramConstants.GamePath, "Updater");
@@ -130,7 +128,6 @@ namespace DTAClient
             gameClass.Run();
         }
 
-#if ARES
         /// <summary>
         /// 递归删除指定目录中在 <paramref name="pruneThresholdTime"/> 或之前创建的所有文件。
         /// 如果删除文件后目录为空，则目录本身也将被删除。
@@ -174,7 +171,6 @@ namespace DTAClient
                    directory.Name + ". Message: " + ex.Message);
             }
         }
-#endif
 
         /// <summary>
         /// 将日志文件从过时目录移动到当前使用的目录，并调整文件名以匹配当前使用的时间戳方案。
@@ -304,10 +300,6 @@ namespace DTAClient
         /// </summary>
         private static async Task GenerateOnlineIdAsync()
         {
-#if !WINFORMS
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-#endif
 #pragma warning disable format
                 try
                 {
@@ -353,22 +345,6 @@ namespace DTAClient
                     Connection.SetId(str);
                 }
 #pragma warning restore format
-#if !WINFORMS
-            }
-            else
-            {
-                try
-                {
-                    string machineId = await File.ReadAllTextAsync("/var/lib/dbus/machine-id");
-
-                    Connection.SetId(machineId);
-                }
-                catch (Exception)
-                {
-                    Connection.SetId(new Random().Next(int.MaxValue - 1).ToString());
-                }
-            }
-#endif
         }
 
         /// <summary>

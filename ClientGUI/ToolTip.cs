@@ -151,10 +151,6 @@ namespace ClientGUI
 
         private Point SumPoints(Point p1, Point p2)
             // 这也是XNA兼容性所需要的
-#if XNA
-            => new Point(p1.X + p2.X, p1.Y + p2.Y);
-#else
             => p1 + p2;
-#endif
     }
 }

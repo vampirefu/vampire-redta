@@ -1,9 +1,7 @@
 
 using System;
 using System.Runtime.InteropServices;
-#if WINFORMS
 using System.Windows.Forms;
-#endif
 namespace ClientGUI
 {
     public enum CompositionAttributes
@@ -55,7 +53,6 @@ namespace ClientGUI
     /// <summary>
     /// 处理IME的原生窗口类。
     /// </summary>
-#if WINFORMS
     public sealed class IMENativeWindow : NativeWindow, IDisposable
     {
 
@@ -429,5 +426,4 @@ namespace ClientGUI
 
         #endregion
     }
-#endif
 }

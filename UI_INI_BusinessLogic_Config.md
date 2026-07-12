@@ -21,7 +21,6 @@
 
 ```ini
 [DisplayOptionsPanelExtraControls]
-0=chkMEDDraw:FileSettingCheckBox
 
 [GameOptionsPanelExtraControls]
 0=chkTooltipsExtra:SettingCheckBox
@@ -130,30 +129,7 @@
 
 > 来源：`AGWar1.3.1\Resources\OptionsWindow.ini`
 
-### 7.1 chkMEDDraw（FileSettingCheckBox）
-
-| 属性 | 值 |
-|------|-----|
-| 控件类型 | `FileSettingCheckBox` |
-| 所属面板 | DisplayOptionsPanel |
-| 位置 | 285,114 |
-| 文本 | Enable DDWrapper for map editor |
-| 提示 | Enables DirectDraw wrapper & emulation for map editor. Turning this option on can help if you are encountering problems with editor viewport not displaying or being laggy. |
-| 默认值 | false |
-| INI节/键 | Video / UseDDWrapperForMapEditor |
-
-**文件操作：**
-
-| 条件 | 操作 | 源文件 | 目标文件 | 选项 |
-|------|------|--------|----------|------|
-| 勾选 | EnabledFile0 | `Resources/Compatibility/DLL/ddwrapper.dll` | `FinalAlert2SP/ddraw32.dll` | OverwriteOnMismatch |
-| 勾选 | EnabledFile1 | `Resources/Compatibility/Configs/aqrit.cfg` | `FinalAlert2SP/aqrit.cfg` | KeepChanges |
-
-**业务逻辑：** 为地图编辑器（FinalAlert2SP）启用 DDWrapper (ddraw32.dll) 和对应配置文件 (aqrit.cfg)，解决编辑器视口不显示或卡顿的问题。
-
----
-
-### 7.2 chkTooltipsExtra（SettingCheckBox，已注释）
+### 7.1 chkTooltipsExtra（SettingCheckBox，已注释）
 
 | 属性 | 值 |
 |------|-----|
@@ -169,7 +145,7 @@
 
 ---
 
-### 7.3 chkPrioritySelection（SettingCheckBox，已注释）
+### 7.2 chkPrioritySelection（SettingCheckBox，已注释）
 
 | 属性 | 值 |
 |------|-----|
@@ -184,7 +160,7 @@
 
 ---
 
-### 7.4 chkBuildingPlacement（SettingCheckBox，已注释）
+### 7.3 chkBuildingPlacement（SettingCheckBox，已注释）
 
 | 属性 | 值 |
 |------|-----|

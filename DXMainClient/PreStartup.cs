@@ -1,7 +1,5 @@
 using System;
-#if WINFORMS
 using System.Windows.Forms;
-#endif
 using System.Diagnostics;
 using System.IO;
 using DTAClient.Domain;
@@ -46,10 +44,8 @@ namespace DTAClient
         /// <param name="parameters">客户端的启动参数。</param>
         public static void Initialize(StartupParams parameters)
         {
-#if WINFORMS
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
             Application.ThreadException += (sender, args) => HandleException(sender, args.Exception);
-#endif
             AppDomain.CurrentDomain.UnhandledException += (sender, args) =>HandleException(sender, (Exception)args.ExceptionObject);
 
             DirectoryInfo gameDirectory = SafePath.GetDirectory(ProgramConstants.GamePath);
@@ -115,9 +111,7 @@ namespace DTAClient
                 ProgramConstants.DisplayErrorAction(null, error, true);
             }
 
-#if WINFORMS
             ApplicationConfiguration.Initialize();
-#endif
 
             new Startup().Execute();
         }

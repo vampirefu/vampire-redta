@@ -1,7 +1,6 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <OutputType Condition="'$(Engine)' != 'UniversalGL'">WinExe</OutputType>
-    <OutputType Condition="'$(Engine)' == 'UniversalGL'">Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <Title>CnCNet Client</Title>
     <Description>CnCNet Main Client Library</Description>
     <Company>CnCNet</Company>
@@ -11,13 +10,10 @@
     <AssemblyVersion>2.8.0.0</AssemblyVersion>
     <FileVersion>2.8.0.0</FileVersion>
     <InformationalVersion>2.8.0.0</InformationalVersion>
-    <AssemblyName>DXMainClient</AssemblyName>
     <RootNamespace>DTAClient</RootNamespace>
     <ApplicationIcon>clienticon.ico</ApplicationIcon>
-    <ApplicationHighDpiMode Condition="'$(Engine)' != 'UniversalGL'">PerMonitorV2</ApplicationHighDpiMode>
-    <AssemblyName Condition="'$(Engine)' == 'WindowsDX'">clientdx</AssemblyName>
-    <AssemblyName Condition="'$(Engine)' == 'UniversalGL' Or '$(Engine)' == 'WindowsGL'">clientogl</AssemblyName>
-    <AssemblyName Condition="'$(Engine)' == 'WindowsXNA'">clientxna</AssemblyName>
+    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+    <AssemblyName>clientdx</AssemblyName>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <UseAppHost>false</UseAppHost>

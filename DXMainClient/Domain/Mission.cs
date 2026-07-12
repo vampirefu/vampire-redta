@@ -24,11 +24,7 @@ namespace DTAClient.Domain
             GUIDescription = iniFile.GetStringValue(sectionName, "LongDescription", string.Empty);
             FinalMovie = iniFile.GetStringValue(sectionName, nameof(FinalMovie), "none");
             RequiredAddon = iniFile.GetBooleanValue(sectionName, nameof(RequiredAddon),
-#if YR || ARES
                 true  // 对于YR，这会切换Ra2Mode，不应该作为默认值
-#else
-                false
-#endif
             );
             Enabled = iniFile.GetBooleanValue(sectionName, nameof(Enabled), true);
             BuildOffAlly = iniFile.GetBooleanValue(sectionName, nameof(BuildOffAlly), false);

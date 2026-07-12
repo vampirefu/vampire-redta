@@ -8,12 +8,10 @@ using System.IO;
 using Color = Microsoft.Xna.Framework.Color;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 using System.Diagnostics;
-#if ARES
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SixLabors.ImageSharp;
-#endif
 
 namespace DTAClient.DXGUI
 {
@@ -33,12 +31,8 @@ namespace DTAClient.DXGUI
         private bool initialized = false;
         private bool nativeCursorUsed = false;
 
-#if ARES
         private List<string> debugSnapshotDirectories;
         private DateTime debugLogLastWriteTime;
-#else
-        private bool deletingLogFilesFailed = false;
-#endif
 
         public override void Initialize()
         {
@@ -83,7 +77,6 @@ namespace DTAClient.DXGUI
             Visible = false;
             Enabled = false;
 
-#if ARES
             try
             {
                 FileInfo debugLogFileInfo = SafePath.GetFile(ProgramConstants.GamePath, "debug", "debug.log");
@@ -92,32 +85,12 @@ namespace DTAClient.DXGUI
                     debugLogLastWriteTime = debugLogFileInfo.LastWriteTime;
             }
             catch { }
-
-
-#endif
         }
 
         private void SharedUILogic_GameProcessStarted()
         {
 
-#if ARES
             debugSnapshotDirectories = GetAllDebugSnapshotDirectories();
-#else
-            try
-            {
-                SafePath.DeleteFileIfExists(ProgramConstants.GamePath, "EXCEPT.TXT");
-
-                for (int i = 0; i < 8; i++)
-                    SafePath.DeleteFileIfExists(ProgramConstants.GamePath, "SYNC" + i + ".TXT");
-
-                deletingLogFilesFailed = false;
-            }
-            catch (Exception ex)
-            {
-                Logger.Log("Exception when deleting error log files! Message: " + ex.Message);
-                deletingLogFilesFailed = true;
-            }
-#endif
 
             Visible = true;
             Enabled = true;
@@ -126,12 +99,10 @@ namespace DTAClient.DXGUI
             Game.IsMouseVisible = false;
             ProgramConstants.IsInGame = true;
             Game.TargetElapsedTime = TimeSpan.FromMilliseconds(1000.0 / POWER_SAVING_FPS);
-#if WINFORMS
 
             if (UserINISettings.Instance.MinimizeWindowsOnGameStart)
                 WindowManager.MinimizeWindow();
-#endif
-            
+
 
         }
 
@@ -151,11 +122,9 @@ namespace DTAClient.DXGUI
             ProgramConstants.IsInGame = false;
             Game.TargetElapsedTime = TimeSpan.FromMilliseconds(1000.0 / UserINISettings.Instance.ClientFPS);
 
-#if WINFORMS
             if (UserINISettings.Instance.MinimizeWindowsOnGameStart)
                 WindowManager.MaximizeWindow();
 
-#endif
             UserINISettings.Instance.ReloadSettings();
 
             if (UserINISettings.Instance.BorderlessWindowedClient)
@@ -173,7 +142,6 @@ namespace DTAClient.DXGUI
 
             DateTime dtn = DateTime.Now;
 
-#if ARES
             Task.Factory.StartNew(ProcessScreenshots);
 
             // TODO: Ares 调试日志处理应该在 Ares DLL 本身中解决。
@@ -210,13 +178,6 @@ namespace DTAClient.DXGUI
 
                 CopyErrorLog(snapshotDirectory, "syringe.log", null);
             }
-#else
-            if (deletingLogFilesFailed)
-                return;
-
-            CopyErrorLog(SafePath.CombineDirectoryPath(ProgramConstants.ClientUserFilesPath, "GameCrashLogs"), "EXCEPT.TXT", dtn);
-            CopySyncErrorLogs(SafePath.CombineDirectoryPath(ProgramConstants.ClientUserFilesPath, "SyncErrorLogs"), dtn);
-#endif
         }
 
         /// <summary>
@@ -303,7 +264,6 @@ namespace DTAClient.DXGUI
             return copied;
         }
 
-#if ARES
         /// <summary>
         /// 返回在 Ares 调试日志目录中找到的第一个在上次游戏启动后创建且不为空的调试快照目录。
         /// 此外，遇到的任何空快照目录都会被删除。
@@ -394,6 +354,5 @@ namespace DTAClient.DXGUI
                 file.Delete();
             }
         }
-#endif
     }
 }

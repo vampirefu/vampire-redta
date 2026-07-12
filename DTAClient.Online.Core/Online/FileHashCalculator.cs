@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using Rampastring.Tools;
 using System;
 using System.Collections.Generic;
@@ -16,7 +16,6 @@ namespace DTAClient.Online
 
         string[] fileNamesToCheck = new string[]
         {
-#if ARES
             "Ares.dll",
             "Ares.dll.inj",
             "Ares.mix",
@@ -27,45 +26,6 @@ namespace DTAClient.Online
             "soundmd.ini",
             "aimd.ini",
             "shroud.shp",
-#elif YR
-            "spawner.xdp",
-            "spawner2.xdp",
-            "artmd.ini",
-            "soundmd.ini",
-            "aimd.ini",
-            "shroud.shp",
-            "INI/Map Code/Cooperative.ini",
-            "INI/Map Code/Free For All.ini",
-            "INI/Map Code/Land Rush.ini",
-            "INI/Map Code/Meat Grinder.ini",
-            "INI/Map Code/Megawealth.ini",
-            "INI/Map Code/Naval War.ini",
-            "INI/Map Code/Standard.ini",
-            "INI/Map Code/Team Alliance.ini",
-            "INI/Map Code/Unholy Alliance.ini",
-            "INI/Game Options/Allies Allowed.ini",
-            "INI/Game Options/Brutal AI.ini",
-            "INI/Game Options/No Dog Engi Eat.ini",
-            "INI/Game Options/No Spawn Previews.ini",
-            "INI/Game Options/RA2 Classic Mode.ini",
-            "INI/Map Code/GlobalCode.ini",
-            "INI/Map Code/MultiplayerGlobalCode.ini",
-#elif TS
-            "spawner.xdp",
-            "rules.ini",
-            "ai.ini",
-            "art.ini",
-            "shroud.shp",
-            "INI/Rules.ini",
-            "INI/Enhance.ini",
-            "INI/Firestrm.ini",
-            "INI/Art.ini",
-            "INI/ArtE.ini",
-            "INI/ArtFS.ini",
-            "INI/AI.ini",
-            "INI/AIE.ini",
-            "INI/AIFS.ini",
-#endif
         };
 
         public FileHashCalculator() => ParseConfigFile();
@@ -110,9 +70,7 @@ namespace DTAClient.Online
 
             DirectoryInfo[] iniPaths =
             {
-#if !YR
                SafePath.GetDirectory(ProgramConstants.GamePath, "INI", "Map Code"),
-#endif
                SafePath.GetDirectory(ProgramConstants.GamePath, "INI", "Game Options")
             };
 

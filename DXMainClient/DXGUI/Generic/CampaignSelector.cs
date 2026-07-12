@@ -437,11 +437,7 @@ namespace DTAClient.DXGUI.Generic
             spawnStreamWriter.WriteLine("CampaignID=" + mission.Index);
             //spawnStreamWriter.WriteLine("GameSpeed=" + UserINISettings.Instance.GameSpeed);
             spawnStreamWriter.WriteLine("GameSpeed=" + ddGameSpeed.SelectedItem?.Text);
-#if YR || ARES
             spawnStreamWriter.WriteLine("Ra2Mode=" + !mission.RequiredAddon);
-#else
-            spawnStreamWriter.WriteLine("Firestorm=" + mission.RequiredAddon);
-#endif
             string customLoadScreen = LoadingScreenController.GetLoadScreenName(mission.Side.ToString());
             spawnStreamWriter.WriteLine("CustomLoadScreen=" + customLoadScreen);
             spawnStreamWriter.WriteLine("IsSinglePlayer=Yes");

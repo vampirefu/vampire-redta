@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <Engine>WindowsDX</Engine>
-    <Game>YR</Game>
+    <Game>Ares</Game>
   </PropertyGroup>
 
   <ItemGroup>

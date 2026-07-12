@@ -517,9 +517,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 AIPlayers.RemoveAt(AIPlayers.Count - 1);
 
             sndJoinSound.Play();
-#if WINFORMS
             WindowManager.FlashWindow();
-#endif
 
             if (!IsHost)
             {
@@ -1334,9 +1332,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         protected override void GetReadyNotification()
         {
             base.GetReadyNotification();
-#if WINFORMS
             WindowManager.FlashWindow();
-#endif
             TopBar.SwitchToPrimary();
 
             if (IsHost)

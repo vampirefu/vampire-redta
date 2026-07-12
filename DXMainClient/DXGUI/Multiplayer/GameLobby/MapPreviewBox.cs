@@ -169,9 +169,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             Name = "MapPreviewBox";
             PanelBackgroundDrawMode = PanelBackgroundImageDrawMode.STRETCHED;
             BackgroundTexture = AssetLoader.CreateTexture(new Color(0, 0, 0, 128), 1, 1);
-#if !GL
             disposeTextures = !UserINISettings.Instance.PreloadMapPreviews;
-#endif
             mainContextMenu = new XNAContextMenu(WindowManager);
             mainContextMenu.Name = nameof(mainContextMenu);
             mainContextMenu.ClientRectangle = new Rectangle(0, 0, 150, 2);

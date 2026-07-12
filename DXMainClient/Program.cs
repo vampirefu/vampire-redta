@@ -4,9 +4,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Threading;
-#if !(XNA||GL)
 using System.Windows.Forms;
-#endif
 /* !! 在此类中不能使用对其他项目或非框架程序集的引用，程序集加载事件尚未挂接 !! */
 
 namespace DTAClient
@@ -27,17 +25,7 @@ namespace DTAClient
 
             COMMON_LIBRARY_PATH = Path.Combine(startupPath, "Binaries") + Path.DirectorySeparatorChar;
 
-#if XNA
-            SPECIFIC_LIBRARY_PATH = Path.Combine(startupPath, "Binaries", "XNA") + Path.DirectorySeparatorChar;
-#elif GL && ISWINDOWS
-            SPECIFIC_LIBRARY_PATH = Path.Combine(startupPath, "Binaries", "OpenGL") + Path.DirectorySeparatorChar;
-#elif GL && !ISWINDOWS
-            SPECIFIC_LIBRARY_PATH = Path.Combine(startupPath, "Binaries", "UniversalGL") + Path.DirectorySeparatorChar;
-#elif DX
             SPECIFIC_LIBRARY_PATH = Path.Combine(startupPath, "Binaries", "Windows") + Path.DirectorySeparatorChar;
-#else
-            Yuri has won
-#endif
 
             // 尽早设置 DLL 加载路径
             AssemblyLoadContext.Default.Resolving += DefaultAssemblyLoadContextOnResolving;
@@ -47,9 +35,7 @@ namespace DTAClient
         /// <summary>
         /// 应用程序的主入口点。
         /// </summary>
-#if WINFORMS
         [STAThread]
-#endif
         static void Main(string[] args)
         {
             /* 根据构建平台不同，我们有不同的二进制文件，但为简便起见
@@ -60,22 +46,12 @@ namespace DTAClient
 
             COMMON_LIBRARY_PATH = Path.Combine(startupPath, "Binaries") + Path.DirectorySeparatorChar;
 
-#if XNA
-            SPECIFIC_LIBRARY_PATH = Path.Combine(startupPath, "Binaries", "XNA") + Path.DirectorySeparatorChar;
-#elif GL && ISWINDOWS
-            SPECIFIC_LIBRARY_PATH = Path.Combine(startupPath, "Binaries", "OpenGL") + Path.DirectorySeparatorChar;
-#elif GL && !ISWINDOWS
-            SPECIFIC_LIBRARY_PATH = Path.Combine(startupPath, "Binaries", "UniversalGL") + Path.DirectorySeparatorChar;
-#elif DX
             SPECIFIC_LIBRARY_PATH = Path.Combine(startupPath, "Binaries", "Windows") + Path.DirectorySeparatorChar;
-#else
-            Yuri has won
-#endif
 
             // 尽早设置 DLL 加载路径
             AssemblyLoadContext.Default.Resolving += DefaultAssemblyLoadContextOnResolving;
 
-#if !(XNA||GL) && DEBUG
+#if DEBUG
             MessageBox.Show("233");
 #endif
             bool noAudio = false;

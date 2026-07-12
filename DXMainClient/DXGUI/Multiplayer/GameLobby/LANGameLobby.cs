@@ -575,9 +575,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         protected override void GetReadyNotification()
         {
             base.GetReadyNotification();
-#if WINFORMS
             WindowManager.FlashWindow();
-#endif
 
             if (IsHost)
                 BroadcastMessage(GET_READY_COMMAND);

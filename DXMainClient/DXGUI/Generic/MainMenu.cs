@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using ClientGUI;
 using DTAClient.Domain;
 using DTAClient.Domain.Multiplayer.CnCNet;
@@ -444,13 +444,9 @@ namespace DTAClient.DXGUI.Generic
 
             if (absentFiles.Count > 0)
                 XNAMessageBox.Show(WindowManager, "文件缺失",
-#if ARES
                     ("您缺少运行此Mod所需的尤里的复仇文件!" + Environment.NewLine +
                     "尤里的复仇Mod不是独立的," + Environment.NewLine +
                     "您需要将以下尤里的复仇(v. 1.001)文件放置在Mod文件夹中才能运行:") +
-#else
-                    "以下必需的文件缺失:" +
-#endif
                     Environment.NewLine + Environment.NewLine +
                     String.Join(Environment.NewLine, absentFiles) +
                     Environment.NewLine + Environment.NewLine +
@@ -464,20 +460,11 @@ namespace DTAClient.DXGUI.Generic
 
             if (presentFiles.Count > 0)
                 XNAMessageBox.Show(WindowManager, "检测到冲突文件",
-#if TS
-                    ("您已将Mod安装在泰伯利亚之日的副本上!" + Environment.NewLine +
-                    "此Mod是独立的,因此您必须" + Environment.NewLine +
-                    "将其安装在一个空文件夹中。否则Mod将无法" + Environment.NewLine +
-                    "正常运行。" +
-                    Environment.NewLine + Environment.NewLine +
-                    "请将Mod重新安装到一个空文件夹中以进行游戏。")
-#else
                     "以下冲突文件:" +
                     Environment.NewLine + Environment.NewLine +
                     String.Join(Environment.NewLine, presentFiles) +
                     Environment.NewLine + Environment.NewLine +
                     "这些文件会导致Mod选择器失效。@@如要修改数据请修改rules_custom.ini与art_custom.ini."
-#endif
                     );
         }
 
@@ -604,7 +591,6 @@ namespace DTAClient.DXGUI.Generic
 
         private void SwitchMainMenuMusicFormat()
         {
-#if GL || DX
             FileInfo wmaMainMenuMusicFile = SafePath.GetFile(ProgramConstants.GamePath, ProgramConstants.BASE_RESOURCE_PATH,
                 FormattableString.Invariant($"{ClientConfiguration.Instance.MainMenuMusicName}.wma"));
 
@@ -617,16 +603,7 @@ namespace DTAClient.DXGUI.Generic
             if (!wmaBackupMainMenuMusicFile.Exists)
                 wmaMainMenuMusicFile.CopyTo(wmaBackupMainMenuMusicFile.FullName);
 
-#endif
-#if DX
             wmaBackupMainMenuMusicFile.CopyTo(wmaMainMenuMusicFile.FullName, true);
-#elif GL
-            FileInfo oggMainMenuMusicFile = SafePath.GetFile(ProgramConstants.GamePath, ProgramConstants.BASE_RESOURCE_PATH,
-                FormattableString.Invariant($"{ClientConfiguration.Instance.MainMenuMusicName}.ogg"));
-
-            if (oggMainMenuMusicFile.Exists)
-                oggMainMenuMusicFile.CopyTo(wmaMainMenuMusicFile.FullName, true);
-#endif
         }
 
         // 更新器功能已移除
@@ -681,9 +658,7 @@ namespace DTAClient.DXGUI.Generic
 
         private void BtnExit_LeftClick(object sender, EventArgs e)
         {
-#if WINFORMS
             WindowManager.HideWindow();
-#endif
             FadeMusicExit();
         }
 
@@ -815,10 +790,8 @@ namespace DTAClient.DXGUI.Generic
         {
             Logger.Log("Exiting.");
             WindowManager.CloseGame();
-#if !XNA
             Thread.Sleep(1000);
             Environment.Exit(0);
-#endif
         }
 
         public void SwitchOn()
