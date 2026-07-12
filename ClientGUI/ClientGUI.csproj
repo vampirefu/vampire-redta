@@ -7,9 +7,6 @@
     <Product>CnCNet Client</Product>
     <Copyright>Copyright © CnCNet, Rampastring 2011-2022</Copyright>
     <Trademark>CnCNet</Trademark>
-    <Version>2.1.0.1</Version>
-    <FileVersion>2.1.0.1</FileVersion>
-    <InformationalVersion>2.1.0.1</InformationalVersion>
     <AssemblyName>ClientGUI</AssemblyName>
     <RootNamespace>ClientGUI</RootNamespace>
     <TargetFramework>net8.0-windows</TargetFramework>
@@ -19,9 +16,5 @@
     <ProjectReference Include="..\ClientCore\ClientCore.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="GitVersion.MsBuild" Version="5.11.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
   </ItemGroup>
 </Project>
