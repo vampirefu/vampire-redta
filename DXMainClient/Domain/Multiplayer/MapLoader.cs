@@ -178,11 +178,8 @@ namespace DTAClient.Domain.Multiplayer
 
                 var tasks = new List<Task>();
                 //新增逻辑：便利Custom的路径下.map会编译子文件夹
-#if DEBUG
-                var customMaps = customMapsDirectory.EnumerateFiles($"*{MAP_FILE_EXTENSION}", customMapsDirectory.FullName.Contains(CUSTOM_MAPS_DIRECTORY) ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly).ToList();
-#endif
                 foreach (IEnumerable<FileInfo> mapFiles in new List<IEnumerable<FileInfo>> { customMapsDirectory.EnumerateFiles($"*{MAP_FILE_EXTENSION}", customMapsDirectory.FullName.Contains(CUSTOM_MAPS_DIRECTORY) ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly), customMapsDirectory.EnumerateFiles($"*{"yrm"}"), customMapsDirectory.EnumerateFiles($"*{"mpr"}") })
-
+                {
                     foreach (FileInfo mapFile in mapFiles)
                     {
 
@@ -213,6 +210,7 @@ namespace DTAClient.Domain.Multiplayer
 
                         }));
                     }
+                }
 
                 Task.WaitAll(tasks.ToArray());
 

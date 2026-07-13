@@ -14,24 +14,6 @@ namespace DTAClient
         private static string COMMON_LIBRARY_PATH;
         private static string SPECIFIC_LIBRARY_PATH;
 
-#if !DEBUG
-        static Program()
-        {
-            /* 根据构建平台不同，我们有不同的二进制文件，但为简便起见
-             * 目标项目（DTA、TI、MO、YR）将它们全部打包在一个下载中。
-             * 为避免 DLL 地狱，我们根据构建平台从不同目录加载二进制文件。 */
-
-            string startupPath = new FileInfo(Assembly.GetEntryAssembly().Location).Directory.Parent.Parent.FullName + Path.DirectorySeparatorChar;
-
-            COMMON_LIBRARY_PATH = Path.Combine(startupPath, "Binaries") + Path.DirectorySeparatorChar;
-
-            SPECIFIC_LIBRARY_PATH = Path.Combine(startupPath, "Binaries", "Windows") + Path.DirectorySeparatorChar;
-
-            // 尽早设置 DLL 加载路径
-            AssemblyLoadContext.Default.Resolving += DefaultAssemblyLoadContextOnResolving;
-        }
-#endif
-
         /// <summary>
         /// 应用程序的主入口点。
         /// </summary>

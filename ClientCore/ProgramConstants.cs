@@ -15,9 +15,20 @@ namespace ClientCore
         public static readonly string StartupExecutable = Assembly.GetEntryAssembly().Location;
 
         public static readonly string StartupPath = SafePath.CombineDirectoryPath(new FileInfo(StartupExecutable).Directory.FullName);
-
+#if DEBUG
+        public static string GamePath
+        {
+            get
+            {
+                string path = SafePath.CombineDirectoryPath(SafePath.GetDirectory(StartupPath).Parent.Parent.Parent.FullName);
+                if (path.Contains("Debug"))
+                    return StartupPath;
+                return path;
+            }
+        }
+#else
         public static readonly string GamePath = SafePath.CombineDirectoryPath(SafePath.GetDirectory(StartupPath).Parent.Parent.Parent.FullName);
-
+#endif
         public static string ClientUserFilesPath => SafePath.CombineDirectoryPath(GamePath, "Client");
 
         public static event EventHandler PlayerNameChanged;
