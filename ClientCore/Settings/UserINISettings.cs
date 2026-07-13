@@ -4,9 +4,6 @@ using System;
 using System.Collections.Generic;
 using ClientCore.Enums;
 
-using System.Linq;
-
-
 namespace ClientCore
 {
     public class UserINISettings
@@ -17,7 +14,6 @@ namespace ClientCore
         public const string MULTIPLAYER = "MultiPlayer";
         public const string OPTIONS = "Options";
         public const string AUDIO = "Audio";
-        public const string COMPATIBILITY = "Compatibility";
         public const string GAME_FILTERS = "GameFilters";
         public const string GAMEMOD = "GameMod";
         private const string PHOBOS = "Phobos";
@@ -64,7 +60,6 @@ namespace ClientCore
             DetailLevel = new IntSetting(iniFile, OPTIONS, "DetailLevel", 2);
             Game = new StringSetting(iniFile, OPTIONS, "Game", "SkirmishLobby");
 
-            Renderer = new StringSetting(iniFile, COMPATIBILITY, "Renderer", string.Empty);
             WindowedMode = new BoolSetting(iniFile, VIDEO, WINDOWED_MODE_KEY, false);
             BorderlessWindowedMode = new BoolSetting(iniFile, VIDEO, "NoWindowFrame", false);
             BorderlessWindowedClient = new BoolSetting(iniFile, VIDEO, "BorderlessWindowedClient", true);
@@ -147,7 +142,6 @@ namespace ClientCore
 
         public StringSetting Voice { get; private set; }
         public IntSetting DetailLevel { get; private set; }
-        public StringSetting Renderer { get; private set; }
         public BoolSetting WindowedMode { get; private set; }
         public BoolSetting BorderlessWindowedMode { get; private set; }
         public BoolSetting BackBufferInVRAM { get; private set; }
