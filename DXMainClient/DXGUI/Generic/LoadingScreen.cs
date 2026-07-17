@@ -162,10 +162,31 @@ namespace DTAClient.DXGUI.Generic
             // 更新器已移除: no updater initialization
             mapLoadTask = mapLoader.LoadMapsAsync();
 
+            // 在载入视频播放期间并行解码主菜单 GIF 背景，
+            // 避免 MainMenu.Initialize() 时在主线程同步解码 100+ 帧 GIF 造成画面卡死。
+            StartMainMenuBackgroundPreloader();
+
             if (Cursor.Visible)
             {
                 Cursor.Visible = false;
                 visibleSpriteCursor = true;
+            }
+        }
+
+        private void StartMainMenuBackgroundPreloader()
+        {
+            try
+            {
+                string gifPath = MainMenuBackgroundSelector.GetGifBackgroundAbsolutePath();
+                if (string.IsNullOrEmpty(gifPath))
+                    return;
+
+                MainMenuBackgroundPreloader.EnsureStarted(gifPath);
+                Logger.Log("LoadingScreen: 已启动主菜单 GIF 背景预解码: " + gifPath);
+            }
+            catch (Exception ex)
+            {
+                Logger.Log("LoadingScreen: 启动主菜单 GIF 背景预解码失败: " + ex.Message);
             }
         }
 

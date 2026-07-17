@@ -8,6 +8,7 @@ using DTAClient.DXGUI.Multiplayer.GameLobby;
 using DTAClient.Online;
 using DTAConfig;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Rampastring.Tools;
@@ -123,6 +124,17 @@ namespace DTAClient.DXGUI.Generic
 
         private bool isMusicFading = false;
 
+        private Texture2D[] animatedBackgroundFrames;
+        private TimeSpan[] animatedBackgroundFrameDurations;
+        private int animatedBackgroundFrameIndex;
+        private TimeSpan animatedBackgroundFrameElapsed;
+
+        /// <summary>
+        /// 后台 GIF 预解码尚未完成时为 true。
+        /// 此时背景用 PNG 兜底，Update() 每帧检查预加载器，完成后切换到 GIF 动画。
+        /// </summary>
+        private bool pendingAnimatedBackgroundSwap;
+
         private readonly bool isMediaPlayerAvailable;
 
         private CancellationTokenSource cncnetPlayerCountCancellationSource;
@@ -148,7 +160,7 @@ namespace DTAClient.DXGUI.Generic
             GameProcessLogic.GameProcessExited += SharedUILogic_GameProcessExited;
 
             Name = nameof(MainMenu);
-            BackgroundTexture = AssetLoader.LoadTexture("MainMenu/mainmenubg.png");
+            InitializeBackgroundTexture();
             ClientRectangle = new Rectangle(0, 0, BackgroundTexture.Width, BackgroundTexture.Height);
 
             WindowManager.CenterControlOnScreen(this);
@@ -433,6 +445,100 @@ namespace DTAClient.DXGUI.Generic
 
         }
 
+        private void InitializeBackgroundTexture()
+        {
+            string backgroundPath = MainMenuBackgroundSelector.Select(BackgroundFileExists);
+
+            if (Path.GetExtension(backgroundPath).Equals(".gif", StringComparison.OrdinalIgnoreCase) &&
+                TryLoadAnimatedBackground(backgroundPath))
+            {
+                BackgroundTexture = animatedBackgroundFrames[0];
+                return;
+            }
+
+            BackgroundTexture = AssetLoader.LoadTexture(MainMenuBackgroundSelector.PngBackgroundPath);
+        }
+
+        private bool TryLoadAnimatedBackground(string assetPath)
+        {
+            FileInfo backgroundFile = GetBackgroundFile(assetPath);
+
+            if (!backgroundFile.Exists)
+                return false;
+
+            // 确保 LoadingScreen 阶段启动的后台预解码任务已经启动。
+            // 如果已经启动过同一路径，EnsureStarted 是幂等的。
+            MainMenuBackgroundPreloader.EnsureStarted(backgroundFile.FullName);
+
+            // 如果后台解码已完成，立即把 RGBA 字节数组上传成 Texture2D（仅 ~0.3 秒 GPU 上传）。
+            if (TryApplyPreloadedBackground())
+                return true;
+
+            // 后台仍在解码：先用 PNG 兜底，Update() 每帧轮询，解码完成后无缝切换到 GIF。
+            pendingAnimatedBackgroundSwap = true;
+            Logger.Log("MainMenu: GIF 后台解码尚未完成，先用 PNG 兜底，解码完成后切换。");
+            return false;
+        }
+
+        /// <summary>
+        /// 尝试把预加载器已完成的结果上传成 Texture2D 数组。
+        /// 成功返回 true；如果预加载器未启动、未完成或失败，返回 false。
+        /// </summary>
+        private bool TryApplyPreloadedBackground()
+        {
+            if (!MainMenuBackgroundPreloader.TryGetResult(out PreloadedBackground preloaded))
+                return false;
+
+            if (preloaded == null)
+            {
+                // 预解码失败或已结束无结果，调用方走兜底
+                return false;
+            }
+
+            try
+            {
+                GraphicsDevice device = WindowManager.Game.GraphicsDevice
+                    ?? throw new InvalidOperationException("GraphicsDevice 不可用");
+
+                var frames = new Texture2D[preloaded.Frames.Length];
+                var durations = new TimeSpan[preloaded.Frames.Length];
+
+                for (int i = 0; i < preloaded.Frames.Length; i++)
+                {
+                    frames[i] = new Texture2D(device, preloaded.Width, preloaded.Height, false, SurfaceFormat.Color);
+                    frames[i].SetData(preloaded.Frames[i].RgbaPixels);
+                    durations[i] = preloaded.Frames[i].Duration;
+                }
+
+                animatedBackgroundFrames = frames;
+                animatedBackgroundFrameDurations = durations;
+                animatedBackgroundFrameIndex = 0;
+                animatedBackgroundFrameElapsed = TimeSpan.Zero;
+
+                Logger.Log($"MainMenu: 已应用预解码 GIF 背景，{frames.Length} 帧。");
+                return frames.Length > 0;
+            }
+            catch (Exception ex)
+            {
+                Logger.Log("MainMenu: 应用预解码 GIF 背景失败! " + ex.Message);
+                animatedBackgroundFrames = null;
+                animatedBackgroundFrameDurations = null;
+                return false;
+            }
+        }
+
+        private static FileInfo GetBackgroundFile(string assetPath)
+        {
+            FileInfo themeFile = SafePath.GetFile(ProgramConstants.GetResourcePath(), assetPath);
+
+            if (themeFile.Exists)
+                return themeFile;
+
+            return SafePath.GetFile(ProgramConstants.GetBaseResourcePath(), assetPath);
+        }
+
+        private static bool BackgroundFileExists(string assetPath) => GetBackgroundFile(assetPath).Exists;
+
         /// <summary>
         /// 检查 Mod 运行所需但未随 Mod 分发的文件
         /// （通常是尤里的复仇 Mod 无法独立运行的基础游戏文件）。
@@ -694,7 +800,43 @@ namespace DTAClient.DXGUI.Generic
             if (isMusicFading)
                 FadeMusic(gameTime);
 
+            UpdateAnimatedBackground(gameTime);
+
             base.Update(gameTime);
+        }
+
+        private void UpdateAnimatedBackground(GameTime gameTime)
+        {
+            // 后台 GIF 解码还没完成时，每帧轮询预加载器；完成后把 RGBA 字节上传成 Texture2D 并切换背景。
+            if (pendingAnimatedBackgroundSwap)
+            {
+                if (TryApplyPreloadedBackground())
+                {
+                    pendingAnimatedBackgroundSwap = false;
+                    BackgroundTexture = animatedBackgroundFrames[0];
+                }
+                else
+                {
+                    // 仍在解码，继续用 PNG 兜底
+                    return;
+                }
+            }
+
+            if (animatedBackgroundFrames == null || animatedBackgroundFrames.Length < 2)
+                return;
+
+            animatedBackgroundFrameElapsed += gameTime.ElapsedGameTime;
+
+            while (animatedBackgroundFrameElapsed >= animatedBackgroundFrameDurations[animatedBackgroundFrameIndex])
+            {
+                animatedBackgroundFrameElapsed -= animatedBackgroundFrameDurations[animatedBackgroundFrameIndex];
+                animatedBackgroundFrameIndex++;
+
+                if (animatedBackgroundFrameIndex >= animatedBackgroundFrames.Length)
+                    animatedBackgroundFrameIndex = 0;
+
+                BackgroundTexture = animatedBackgroundFrames[animatedBackgroundFrameIndex];
+            }
         }
 
         public override void Draw(GameTime gameTime)
