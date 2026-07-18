@@ -535,8 +535,6 @@
   <Target Name="MoveCommonBinaries" AfterTargets="Publish">
     <Message Importance="high" Text="Moving common binaries" />
     <Move SourceFiles="$(PublishDir)DiscordRPC.dll" DestinationFolder="$(PublishDir)../" />
-    <Move SourceFiles="$(PublishDir)Localization.dll" DestinationFolder="$(PublishDir)../" />
-    <Move SourceFiles="$(PublishDir)Localization.pdb" DestinationFolder="$(PublishDir)../" />
     <Move SourceFiles="$(PublishDir)lzo.net.dll" DestinationFolder="$(PublishDir)../" />
     <Move SourceFiles="$(PublishDir)Microsoft.Extensions.Configuration.Abstractions.dll" DestinationFolder="$(PublishDir)../" />
     <Move SourceFiles="$(PublishDir)Microsoft.Extensions.Configuration.Binder.dll" DestinationFolder="$(PublishDir)../" />
@@ -563,12 +561,10 @@
     <Move SourceFiles="$(PublishDir)Microsoft.Extensions.Options.ConfigurationExtensions.dll" DestinationFolder="$(PublishDir)../" />
     <Move SourceFiles="$(PublishDir)Microsoft.Extensions.Options.dll" DestinationFolder="$(PublishDir)../" />
     <Move SourceFiles="$(PublishDir)Microsoft.Extensions.Primitives.dll" DestinationFolder="$(PublishDir)../" />
-    <Move SourceFiles="$(PublishDir)Newtonsoft.Json.Bson.dll" DestinationFolder="$(PublishDir)../" />
     <Move SourceFiles="$(PublishDir)Newtonsoft.Json.dll" DestinationFolder="$(PublishDir)../" />
     <Move SourceFiles="$(PublishDir)OpenMcdf.dll" DestinationFolder="$(PublishDir)../" />
     <Move SourceFiles="$(PublishDir)Rampastring.Tools.dll" DestinationFolder="$(PublishDir)../" />
     <Move SourceFiles="$(PublishDir)SixLabors.ImageSharp.dll" DestinationFolder="$(PublishDir)../" />
-    <Move SourceFiles="$(PublishDir)System.Net.Http.Formatting.dll" DestinationFolder="$(PublishDir)../" />
     <Move SourceFiles="$(PublishDir)TextCopy.dll" DestinationFolder="$(PublishDir)../" />
   </Target>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
