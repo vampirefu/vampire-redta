@@ -377,7 +377,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             RemoveChild(MapPreviewBox);
 
-            AddChild(MapPreviewBox);
+            AddChildWithoutInitialize(MapPreviewBox);
             InitializeGameOptionPresetUI();
 
             //屏蔽游戏说明
