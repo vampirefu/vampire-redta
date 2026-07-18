@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using ClientCore.CnCNet5;
 using ClientGUI;
 using DTAConfig.Settings;
@@ -16,10 +16,6 @@ namespace DTAConfig.OptionPanels
     class GameOptionsPanel : XNAOptionsPanel
     {
 
-#if TS
-        private const string TEXT_BACKGROUND_COLOR_TRANSPARENT = "0";
-        private const string TEXT_BACKGROUND_COLOR_BLACK = "12";
-#endif
         private const int MAX_SCROLL_RATE = 6;
 
         public GameOptionsPanel(WindowManager windowManager, UserINISettings iniSettings, XNAControl topBar)
@@ -34,12 +30,7 @@ namespace DTAConfig.OptionPanels
         private XNAClientCheckBox chkTargetLines;
         private XNAClientCheckBox chkScrollCoasting;
         private XNAClientCheckBox chkTooltips;
-#if TS
-        private XNAClientCheckBox chkAltToUndeploy;
-        private XNAClientCheckBox chkBlackChatBackground;
-#else
         private XNAClientCheckBox chkShowHiddenObjects;
-#endif
 
         private XNADropDown ddGameMod;
 
@@ -92,7 +83,7 @@ namespace DTAConfig.OptionPanels
             var lblGameMod = new XNALabel(WindowManager);
             lblGameMod.Name = "lblGameMod";
             lblGameMod.ClientRectangle = new Rectangle(400, chkScrollCoasting.Y, 0, 0);
-            lblGameMod.Text = "Mod:";
+            lblGameMod.Text = "模组:";
 
             ddGameMod = new XNAClientDropDown(WindowManager);
             ddGameMod.Name = "ddGameMod";
@@ -116,11 +107,6 @@ namespace DTAConfig.OptionPanels
             lblPlayerName.Name = "lblPlayerName";
             lblPlayerName.Text = "玩家名称*:";
 
-#if TS
-            chkTooltips.ClientRectangle = new Rectangle(
-                lblScrollRate.X,
-                chkTargetLines.Bottom + 24, 0, 0);
-#else
             chkShowHiddenObjects = new SettingCheckBox(WindowManager, true, UserINISettings.OPTIONS, "ShowHidden");
             chkShowHiddenObjects.Name = "chkShowHiddenObjects";
             chkShowHiddenObjects.ClientRectangle = new Rectangle(
@@ -137,31 +123,6 @@ namespace DTAConfig.OptionPanels
                 chkTooltips.Bottom + 30, 0, 0);
 
             AddChild(chkShowHiddenObjects);
-#endif
-
-#if TS
-            chkBlackChatBackground = new SettingCheckBox(WindowManager, false, UserINISettings.OPTIONS, "TextBackgroundColor", true, TEXT_BACKGROUND_COLOR_BLACK, TEXT_BACKGROUND_COLOR_TRANSPARENT);
-            chkBlackChatBackground.Name = "chkBlackChatBackground";
-            chkBlackChatBackground.ClientRectangle = new Rectangle(
-                chkScrollCoasting.X,
-                chkTooltips.Bottom + 24, 0, 0);
-            chkBlackChatBackground.Text = "Use black background for in-game chat messages";
-
-            AddChild(chkBlackChatBackground);
-
-            chkAltToUndeploy = new SettingCheckBox(WindowManager, true, UserINISettings.OPTIONS, "MoveToUndeploy");
-            chkAltToUndeploy.Name = "chkAltToUndeploy";
-            chkAltToUndeploy.ClientRectangle = new Rectangle(
-                chkScrollCoasting.X,
-                chkBlackChatBackground.Bottom + 24, 0, 0);
-            chkAltToUndeploy.Text = "Undeploy units by holding Alt key instead of a regular move command";
-
-            AddChild(chkAltToUndeploy);
-
-            lblPlayerName.ClientRectangle = new Rectangle(
-                lblScrollRate.X,
-                chkAltToUndeploy.Bottom + 30, 0, 0);
-#endif
 
             tbPlayerName = new XNATextBox(WindowManager);
             tbPlayerName.Name = "tbPlayerName";

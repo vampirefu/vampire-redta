@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using ClientGUI;
@@ -12,23 +12,23 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
     public enum CheckBoxMapScoringMode
     {
         /// <summary>
-        /// The value of the check box makes no difference for scoring maps.
+        /// 复选框的值对地图评分没有影响。
         /// </summary>
         Irrelevant = 0,
 
         /// <summary>
-        /// The check box prevents map scoring when it's checked.
+        /// 当复选框被选中时阻止地图评分。
         /// </summary>
         DenyWhenChecked = 1,
 
         /// <summary>
-        /// The check box prevents map scoring when it's unchecked.
+        /// 当复选框未选中时阻止地图评分。
         /// </summary>
         DenyWhenUnchecked = 2
     }
 
     /// <summary>
-    /// A game option check box for the game lobby.
+    /// 游戏大厅的游戏选项复选框。
     /// </summary>
     public class GameLobbyCheckBox : XNAClientCheckBox
     {
@@ -37,22 +37,22 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         public bool IsMultiplayer { get; set; }
 
         /// <summary>
-        /// The last host-defined value for this check box.
-        /// Defaults to the default value of Checked after the check-box
-        /// has been initialized, but its value is only changed by user interaction.
+        /// 此复选框最后由主机定义的值。
+        /// 在复选框初始化后默认为Checked的默认值，
+        /// 但其值仅在用户交互时更改。
         /// </summary>
         public bool HostChecked { get; set; }
 
         /// <summary>
-        /// The last value that the local player gave for this check box.
-        /// Defaults to the default value of Checked after the check-box
-        /// has been initialized, but its value is only changed by user interaction.
+        /// 此复选框最后由本地玩家设定的值。
+        /// 在复选框初始化后默认为Checked的默认值，
+        /// 但其值仅在用户交互时更改。
         /// </summary>
         public bool UserChecked { get; set; }
 
         /// <summary>
-        /// The side indices that this check box disallows when checked.
-        /// Defaults to -1, which means none.
+        /// 此复选框选中时不允许的阵营索引。
+        /// 默认为-1，表示无。
         /// </summary>
         public List<int> DisallowedSideIndices = new List<int>();
 
@@ -77,7 +77,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
         public override void Initialize()
         {
-            // Find the game lobby that this control belongs to and register ourselves as a game option.
+            // 找到此控件所属的游戏大厅并将自己注册为游戏选项。
 
             XNAControl parent = Parent;
             while (true)
@@ -85,7 +85,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 if (parent == null)
                     break;
 
-                // oh no, we have a circular class reference here!
+                // 哦不，我们这里有一个循环类引用！
                 if (parent is GameLobbyBase gameLobby)
                 {
                     if (gameLobby.CheckBoxes.Find(chk => chk.Name == this.Name)==null)
@@ -151,9 +151,9 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Applies the check-box's associated code to the spawn INI file.
+        /// 将复选框的关联代码应用到spawn INI文件。
         /// </summary>
-        /// <param name="spawnIni">The spawn INI file.</param>
+        /// <param name="spawnIni">spawn INI文件。</param>
         public void ApplySpawnINICode(IniFile spawnIni)
         {
             if (string.IsNullOrEmpty(spawnIniOption))
@@ -169,10 +169,10 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Applies the check-box's associated code to the map INI file.
+        /// 将复选框的关联代码应用到地图INI文件。
         /// </summary>
-        /// <param name="mapIni">The map INI file.</param>
-        /// <param name="gameMode">Currently selected gamemode, if set.</param>
+        /// <param name="mapIni">地图INI文件。</param>
+        /// <param name="gameMode">当前选中的游戏模式（如果已设置）。</param>
         public void ApplyMapCode(IniFile mapIni, GameMode gameMode)
         {
             if (Checked == reversed || String.IsNullOrEmpty(customIniPath))
@@ -182,10 +182,9 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Applies the check-box's disallowed side index to a bool
-        /// array that determines which sides are disabled.
+        /// 将复选框的不允许阵营索引应用到决定哪些阵营被禁用的布尔数组。
         /// </summary>
-        /// <param name="disallowedArray">An array that determines which sides are disabled.</param>
+        /// <param name="disallowedArray">决定哪些阵营被禁用的数组。</param>
         public void ApplyDisallowedSideIndex(bool[] disallowedArray)
         {
             if (DisallowedSideIndices == null || DisallowedSideIndices.Count == 0)

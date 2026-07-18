@@ -1,7 +1,7 @@
-﻿namespace ClientGUI
+namespace ClientGUI
 {
     /// <summary>
-    /// Contains constants used in user interface design.
+    /// 包含用户界面设计中使用的常量。
     /// </summary>
     public static class UIDesignConstants
     {

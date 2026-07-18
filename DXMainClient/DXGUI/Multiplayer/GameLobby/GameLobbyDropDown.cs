@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
@@ -14,7 +14,7 @@ using DTAClient.Domain.AI;
 namespace DTAClient.DXGUI.Multiplayer.GameLobby
 {
     /// <summary>
-    /// A game option drop-down for the game lobby.
+    /// 游戏大厅的游戏选项下拉框。
     /// </summary>
     public class GameLobbyDropDown : XNAClientDropDown
     {
@@ -44,7 +44,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         public List<string> ControlIndex;
         public override void Initialize()
         {
-            // Find the game lobby that this control belongs to and register ourselves as a game option.
+            // 找到此控件所属的游戏大厅并将自己注册为游戏选项。
 
             XNAControl parent = Parent;
             while (true)
@@ -52,7 +52,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 if (parent == null)
                     break;
 
-                // oh no, we have a circular class reference here!
+                // 哦不，我们这里有一个循环类引用！
                 if (parent is GameLobbyBase gameLobby)
                 {
                     gameLobby.DropDowns.Add(this);
@@ -132,9 +132,9 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Applies the drop down's associated code to spawn.ini.
+        /// 将下拉框的关联代码应用到spawn.ini。
         /// </summary>
-        /// <param name="spawnIni">The spawn INI file.</param>
+        /// <param name="spawnIni">spawn INI文件。</param>
         public void ApplySpawnIniCode(IniFile spawnIni)
         {
             if (dataWriteMode == DropDownDataWriteMode.MAPCODE || SelectedIndex < 0 || SelectedIndex >= Items.Count)
@@ -169,10 +169,10 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
         }
         /// <summary>
-        /// Applies the drop down's associated code to the map INI file.
+        /// 将下拉框的关联代码应用到地图INI文件。
         /// </summary>
-        /// <param name="mapIni">The map INI file.</param>
-        /// <param name="gameMode">Currently selected gamemode, if set.</param>
+        /// <param name="mapIni">地图INI文件。</param>
+        /// <param name="gameMode">当前选中的游戏模式（如果已设置）。</param>
         public void ApplyMapCode(IniFile mapIni, GameMode gameMode)
         {
             if (dataWriteMode != DropDownDataWriteMode.MAPCODE || SelectedIndex < 0 || SelectedIndex >= Items.Count)

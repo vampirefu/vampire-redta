@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Net;
 
 namespace DTAClient.Domain.Multiplayer.CnCNet
 {
     /// <summary>
-    /// A web client that supports customizing the timeout of the request.
+    /// 支持自定义请求超时的Web客户端。
     /// </summary>
     class ExtendedWebClient : WebClient
     {

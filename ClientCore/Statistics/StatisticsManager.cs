@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
@@ -63,10 +63,10 @@ namespace ClientCore.Statistics
         }
 
         /// <summary>
-        /// Reads a statistics file.
+        /// 读取统计文件。
         /// </summary>
-        /// <param name="filePath">The path to the statistics file.</param>
-        /// <returns>A bool that determines whether the database should be re-saved.</returns>
+        /// <param name="filePath">统计文件的路径。</param>
+        /// <returns>确定是否需要重新保存数据库的布尔值。</returns>
         private bool ReadFile(string filePath)
         {
             
@@ -78,7 +78,7 @@ namespace ClientCore.Statistics
                 string databaseVersion = GetStatDatabaseVersion(filePath);
 
                 if (databaseVersion == null)
-                    return false; // No score database exists
+                    return false; // 不存在分数数据库
 
              //   databaseVersion = "1.06";
 
@@ -122,42 +122,42 @@ namespace ClientCore.Statistics
 
         private void ReadDatabase(string filePath, int version)
         {
-            // TODO split this function with the MatchStatistics and PlayerStatistics classes
+            // TODO 使用 MatchStatistics 和 PlayerStatistics 类拆分此函数
 
             try
             {
                 using (FileStream fs = File.OpenRead(filePath))
                 {
                    
-                    fs.Position = 4; // Skip version
+                    fs.Position = 4; // 跳过版本号
                     byte[] readBuffer = new byte[128];
-                    fs.Read(readBuffer, 0, 4); // First 4 bytes following the version mean the amount of games
+                    fs.Read(readBuffer, 0, 4); // 版本号之后的4个字节表示游戏数量
                     int gameCount = BitConverter.ToInt32(readBuffer, 0);
 
                     for (int i = 0; i < gameCount; i++)
                     {
                         MatchStatistics ms = new MatchStatistics();
 
-                        // First 4 bytes of game info is the length in seconds
+                        // 游戏信息的前4个字节是以秒为单位的时长
                         fs.Read(readBuffer, 0, 4);
                         int lengthInSeconds = BitConverter.ToInt32(readBuffer, 0);
                         ms.LengthInSeconds = lengthInSeconds;
-                        // Next 8 are the game version
+                        // 接下来8个字节是游戏版本
                         fs.Read(readBuffer, 0, 8);
                         ms.GameVersion = System.Text.Encoding.ASCII.GetString(readBuffer, 0, 8);
-                        // Then comes the date and time, also 8 bytes
+                        // 接下来是日期和时间，也是8个字节
                         fs.Read(readBuffer, 0, 8);
                         long dateData = BitConverter.ToInt64(readBuffer, 0);
                         ms.DateAndTime = DateTime.FromBinary(dateData);
-                        // Then one byte for SawCompletion
+                        // 接下来1个字节是 SawCompletion
                         fs.Read(readBuffer, 0, 1);
                         ms.SawCompletion = Convert.ToBoolean(readBuffer[0]);
-                        // Then 1 byte for the amount of players
+                        // 接下来1个字节是玩家数量
                         fs.Read(readBuffer, 0, 1);
                         int playerCount = readBuffer[0];
                         if (version > 0)
                         {
-                            // 4 bytes for average FPS
+                            // 4个字节表示平均 FPS
                             fs.Read(readBuffer, 0, 4);
                             ms.AverageFPS = BitConverter.ToInt32(readBuffer, 0);
                         }
@@ -169,17 +169,17 @@ namespace ClientCore.Statistics
                             mapNameLength = 128;
                         }
 
-                        // Map name, 64 or 128 bytes of Unicode depending on version
+                        // 地图名称，根据版本为64或128字节的 Unicode
                         fs.Read(readBuffer, 0, mapNameLength);
                         ms.MapName = Encoding.Unicode.GetString(readBuffer).Replace("\0", "");
 
-                        // Game mode, 64 bytes
+                        // 游戏模式，64字节
                         fs.Read(readBuffer, 0, 64);
                         ms.GameMode = Encoding.Unicode.GetString(readBuffer, 0, 64).Replace("\0", "");
 
                         if (version > 2)
                         {
-                            // Unique game ID, 32 bytes (int32)
+                            // 唯一游戏ID，4字节（int32）
                             fs.Read(readBuffer, 0, 4);
                             ms.GameID = BitConverter.ToInt32(readBuffer, 0);
                         }
@@ -190,65 +190,65 @@ namespace ClientCore.Statistics
                             ms.IsValidForStar = Convert.ToBoolean(readBuffer[0]);
                         }
 
-                        // Player info comes right after the general match info
+                        // 玩家信息紧跟在通用比赛信息之后
                         for (int j = 0; j < playerCount; j++)
                         {
                             PlayerStatistics ps = new PlayerStatistics();
 
                             if (version > 4)
                             {
-                                // Economy is shared for the Built stat in YR
+                                // YR 中经济与建造统计共享
                                 fs.Read(readBuffer, 0, 4);
                                 ps.Economy = BitConverter.ToInt32(readBuffer, 0);
                             }
                             else
                             {
-                                // Economy is between 0 and 100 in old versions, so it takes only one byte
+                                // 在旧版本中经济值在0到100之间，所以只占1个字节
                                 fs.Read(readBuffer, 0, 1);
                                 ps.Economy = readBuffer[0];
                             }
 
-                            // IsAI is a bool, so obviously one byte
+                            // IsAI 是布尔值，所以占1个字节
                             fs.Read(readBuffer, 0, 1);
                             ps.IsAI = Convert.ToBoolean(readBuffer[0]);
-                            // IsLocalPlayer is also a bool
+                            // IsLocalPlayer 也是布尔值
                             fs.Read(readBuffer, 0, 1);
                             ps.IsLocalPlayer = Convert.ToBoolean(readBuffer[0]);
-                            // Kills take 4 bytes
+                            // 击杀数占4个字节
                             fs.Read(readBuffer, 0, 4);
                             ps.Kills = BitConverter.ToInt32(readBuffer, 0);
-                            // Losses also take 4 bytes
+                            // 损失数也占4个字节
                             fs.Read(readBuffer, 0, 4);
                             ps.Losses = BitConverter.ToInt32(readBuffer, 0);
-                            // 32 bytes for the name
+                            // 名称占32个字节
                             fs.Read(readBuffer, 0, 32);
                             ps.Name = System.Text.Encoding.Unicode.GetString(readBuffer, 0, 32);
                             ps.Name = ps.Name.Replace("\0", String.Empty);
-                            // 1 byte for SawEnd
+                            // SawEnd 占1个字节
                             fs.Read(readBuffer, 0, 1);
                             ps.SawEnd = Convert.ToBoolean(readBuffer[0]);
-                            // 4 bytes for Score
+                            // 分数占4个字节
                             fs.Read(readBuffer, 0, 4);
                             ps.Score = BitConverter.ToInt32(readBuffer, 0);
-                            // 1 byte for Side
+                            // 阵营占1个字节
                             fs.Read(readBuffer, 0, 1);
                             ps.Side = readBuffer[0];
-                            // 1 byte for Team
+                            // 队伍占1个字节
                             fs.Read(readBuffer, 0, 1);
                             ps.Team = readBuffer[0];
                             if (version > 2)
                             {
-                                // 1 byte for Color
+                                // 颜色占1个字节
                                 fs.Read(readBuffer, 0, 1);
                                 ps.Color = readBuffer[0];
                             }
-                            // 1 byte for WasSpectator
+                            // WasSpectator 占1个字节
                             fs.Read(readBuffer, 0, 1);
                             ps.WasSpectator = Convert.ToBoolean(readBuffer[0]);
-                            // 1 byte for Won
+                            // Won 占1个字节
                             fs.Read(readBuffer, 0, 1);
                             ps.Won = Convert.ToBoolean(readBuffer[0]);
-                            // 1 byte for AI level
+                            // AI 等级占1个字节
                             fs.Read(readBuffer, 0, 1);
                             ps.AILevel = readBuffer[0];
 
@@ -299,7 +299,7 @@ namespace ClientCore.Statistics
 
         public void AddMatchAndSaveDatabase(bool addMatch, MatchStatistics ms)
         {
-            // Skip adding stats if the game only had one player, make exception for co-op since it doesn't recognize pre-placed houses as players.
+            // 如果游戏只有一个玩家则跳过添加统计，但合作模式例外，因为它不会将预置的房屋识别为玩家
             if (ms.GetPlayerCount() <= 1 && !ms.MapIsCoop)
             {
                 Logger.Log("Skipping adding match to statistics because game only had one player.");
@@ -325,7 +325,7 @@ namespace ClientCore.Statistics
 
             using (FileStream fs = scoreFileInfo.Open(FileMode.Open, FileAccess.ReadWrite))
             {
-                fs.Position = 4; // First 4 bytes after the version mean the amount of games
+                fs.Position = 4; // 版本号之后的4个字节表示游戏数量
                 fs.WriteInt(Statistics.Count);
                 Logger.Log("11");
                 fs.Position = fs.Length;
@@ -344,7 +344,7 @@ namespace ClientCore.Statistics
         }
 
         /// <summary>
-        /// Deletes the statistics file on the file system and rewrites it.
+        /// 删除文件系统上的统计文件并重新写入。
         /// </summary>
         public void SaveDatabase()
         {
@@ -354,7 +354,7 @@ namespace ClientCore.Statistics
 
             using (FileStream fs = scoreFileInfo.Open(FileMode.Open, FileAccess.ReadWrite))
             {
-                fs.Position = 4; // First 4 bytes after the version mean the amount of games
+                fs.Position = 4; // 版本号之后的4个字节表示游戏数量
                 fs.WriteInt(Statistics.Count);
 
                 foreach (MatchStatistics ms in Statistics)
@@ -368,7 +368,7 @@ namespace ClientCore.Statistics
         {
             List<MatchStatistics> matches = new List<MatchStatistics>();
 
-            // Filter out unfitting games
+            // 过滤掉不符合条件的比赛
             foreach (MatchStatistics ms in Statistics)
             {
                 if (ms.SawCompletion &&
@@ -387,7 +387,7 @@ namespace ClientCore.Statistics
         {
             List<MatchStatistics> matches = new List<MatchStatistics>();
 
-            // Filter out unfitting games
+            // 过滤掉不符合条件的比赛
             foreach (MatchStatistics ms in Statistics)
             {
                 if (!ms.SawCompletion)
@@ -425,16 +425,16 @@ namespace ClientCore.Statistics
                 return -1;
 
             if (ms.Players.Find(p => p.WasSpectator) != null)
-                return -1; // Don't allow matches with spectators
+                return -1; // 不允许有观战者的比赛
 
             if (ms.Players.Count(p => !p.IsAI && p.Team != localPlayer.Team) > 0)
-                return -1; // Don't allow matches with human players who were on a different team
+                return -1; // 不允许有不同队伍的人类玩家的比赛
 
             if (ms.Players.Find(p => p.Team == 0) != null)
-                return -1; // Matches with non-allied players are discarded
+                return -1; // 有未结盟玩家的比赛被丢弃
 
             if (ms.Players.All(ps => ps.Team == localPlayer.Team))
-                return -1; // Discard matches that had no enemies
+                return -1; // 丢弃没有敌人的比赛
 
             int[] teamMemberCounts = new int[5];
             int lowestEnemyAILevel = 2;
@@ -465,12 +465,11 @@ namespace ClientCore.Statistics
 
             if (lowestEnemyAILevel < highestAllyAILevel)
             {
-                // Check that the player's AI allies weren't stronger 
+                // 检查玩家的 AI 盟友是否没有更强
                 return -1;
             }
 
-            // Check that all teams had at least as many players
-            // as the local player's team
+            // 检查所有队伍的玩家数是否至少与本地玩家的队伍相同
             int allyCount = teamMemberCounts[localPlayer.Team];
 
             for (int i = 1; i < 5; i++)
@@ -557,7 +556,7 @@ namespace ClientCore.Statistics
         {
             List<MatchStatistics> matches = new List<MatchStatistics>();
 
-            // Filter out unfitting games
+            // 过滤掉不符合条件的比赛
             foreach (MatchStatistics ms in Statistics)
             {
 
@@ -576,7 +575,7 @@ namespace ClientCore.Statistics
             foreach (MatchStatistics ms in matches)
             {
 
-                // TODO This code turned out pretty ugly, should design it better
+                // TODO 这段代码写得很丑陋，应该设计得更好
 
                 PlayerStatistics localPlayer = ms.Players.Find(p => p.IsLocalPlayer);
 
@@ -615,14 +614,14 @@ namespace ClientCore.Statistics
                 //Logger.Log(highestAllyAILevel.ToString() );
                 if (lowestEnemyAILevel < highestAllyAILevel)
                 {
-                    // Check that the player's AI allies weren't stronger 
+                    // 检查玩家的 AI 盟友是否没有更强
                     continue;
                 }
 
 
                 if (localPlayer.Team > 0)
                 {
-                    // Check that all teams had at least as many players as the human player's team
+                    // 检查所有队伍的玩家数是否至少与人类玩家的队伍相同
 
                     int allyCount = teamMemberCounts[localPlayer.Team];
                     bool pass = true;
@@ -636,7 +635,7 @@ namespace ClientCore.Statistics
                         {
                             if (teamMemberCounts[i] < allyCount)
                             {
-                                // The enemy team has fewer players than the player's team
+                                // 敌方队伍的玩家数少于玩家的队伍
                                 pass = false;
                                 break;
                             }
@@ -646,7 +645,7 @@ namespace ClientCore.Statistics
                     if (!pass)
                         continue;
 
-                    // Check that there is a team other than the players' team that is at least as large
+                    // 检查是否存在一个除了玩家所在队伍之外且规模至少相同的队伍
                     pass = false;
                     for (int i = 1; i < 5; i++)
                     {
@@ -671,7 +670,7 @@ namespace ClientCore.Statistics
                     rank = lowestEnemyAILevel;
 
                     if (rank == 2)
-                        return rank; // Best possible rank
+                        return rank; // 可能的最佳排名
                 }
             }
 

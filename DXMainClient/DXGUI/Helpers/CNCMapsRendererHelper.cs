@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.IO;
 using ClientCore;
@@ -31,7 +31,7 @@ internal class CNCMapsRendererHelper
             if (File.Exists(newMapPreviewPath))
                 return newMapPreviewPath;
 
-            // fallback: if renderer produced a thumb_ file
+            // 回退：如果渲染器生成了 thumb_ 文件
             string thumbPath = SafePath.CombineFilePath(mapDir, $"thumb_{mapName}.png");
             if (File.Exists(thumbPath))
             {
@@ -45,13 +45,13 @@ internal class CNCMapsRendererHelper
                 }
                 catch
                 {
-                    // ignore move error
+                    // 忽略移动错误
                 }
             }
         }
         catch (Exception)
         {
-            // swallow exceptions and return empty
+            // 吞掉异常并返回空值
         }
 
         return string.Empty;

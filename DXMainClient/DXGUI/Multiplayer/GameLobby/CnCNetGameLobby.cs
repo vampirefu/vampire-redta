@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using ClientCore.CnCNet5;
 using ClientGUI;
 using DTAClient.Domain.Multiplayer;
@@ -99,7 +99,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 "更换隧道服务器",
                 true, (s) => ShowTunnelSelectionWindow("选择隧道服务器:")));
             AddChatBoxCommand(new ChatBoxCommand("DOWNLOADMAP",
-                "Download a map from CNCNet's map server using a map ID and an optional filename.\nExample: \"/downloadmap MAPID [2] My Battle Map\"",
+            "通过地图ID从CNCNet地图服务器下载地图，可指定文件名。\n示例: \"/downloadmap MAPID [2] 我的战斗地图\"",
                 false, DownloadMapByIdCommand));
         }
 
@@ -140,20 +140,20 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         private MapSharingConfirmationPanel mapSharingConfirmationPanel;
 
         /// <summary>
-        /// The SHA1 of the latest selected map.
-        /// Used for map sharing.
+        /// 最近选中地图的SHA1。
+        /// 用于地图共享。
         /// </summary>
         private string lastMapSHA1;
 
         /// <summary>
-        /// The map name of the latest selected map.
-        /// Used for map sharing.
+        /// 最近选中地图的名称。
+        /// 用于地图共享。
         /// </summary>
         private string lastMapName;
 
         /// <summary>
-        /// The game mode of the latest selected map.
-        /// Used for map sharing.
+        /// 最近选中地图的游戏模式。
+        /// 用于地图共享。
         /// </summary>
         private string lastGameMode;
 
@@ -435,7 +435,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             string side = "";
             if (ddPlayerSides.Length > Players.IndexOf(player))
                 side = ddPlayerSides[Players.IndexOf(player)].SelectedItem.Text;
-            string currentState = ProgramConstants.IsInGame ? "In Game" : "In Lobby"; // not UI strings
+            string currentState = ProgramConstants.IsInGame ? "In Game" : "In Lobby"; // 非UI字符串
 
             discordHandler.UpdatePresence(
                 Map.Name, GameMode.Name, "Multiplayer",
@@ -517,9 +517,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 AIPlayers.RemoveAt(AIPlayers.Count - 1);
 
             sndJoinSound.Play();
-#if WINFORMS
             WindowManager.FlashWindow();
-#endif
 
             if (!IsHost)
             {
@@ -529,9 +527,9 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             if (e.User.IRCUser.Name != ProgramConstants.PLAYERNAME)
             {
-                // Changing the map applies forced settings (co-op sides etc.) to the
-                // new player, and it also sends an options broadcast message
-                //CopyPlayerDataToUI(); This is also called by ChangeMap()
+                // 更改地图会将强制设置(合作阵营等)应用到新玩家，
+                // 同时也会发送选项广播消息
+                //CopyPlayerDataToUI(); ChangeMap()也会调用此方法
                 ChangeMap(GameModeMap);
                 BroadcastPlayerOptions();
                 BroadcastPlayerExtraOptions();
@@ -560,7 +558,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
                 CopyPlayerDataToUI();
 
-                // This might not be necessary
+                // 这可能不是必需的
                 if (IsHost)
                     BroadcastPlayerOptions();
             }
@@ -623,7 +621,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Starts the game for the game host.
+        /// 为游戏主持启动游戏。
         /// </summary>
         protected override void HostLaunchGame()
         {
@@ -710,7 +708,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         protected override void AddNotice(string message, Color color) => channel.AddMessage(new ChatMessage(color, message));
 
         /// <summary>
-        /// Handles player option requests received from non-host players.
+        /// 处理从非主持玩家接收的玩家选项请求。
         /// </summary>
         private void HandleOptionsRequest(string playerName, int options)
         {
@@ -775,7 +773,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Handles "I'm ready" messages received from non-host players.
+        /// 处理从非主持玩家接收的"我准备好了"消息。
         /// </summary>
         private void HandleReadyRequest(string playerName, int readyStatus)
         {
@@ -795,11 +793,11 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Broadcasts player options to non-host players.
+        /// 向非主持玩家广播玩家选项。
         /// </summary>
         protected override void BroadcastPlayerOptions()
         {
-            // Broadcast player options
+            // 广播玩家选项
             StringBuilder sb = new StringBuilder("PO ");
             foreach (PlayerInfo pInfo in Players.Concat(AIPlayers))
             {
@@ -809,9 +807,9 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                     sb.Append(pInfo.Name);
                 sb.Append(";");
 
-                // Combine the options into one integer to save bandwidth in
-                // cases where the player uses default options (this is common for AI players)
-                // Will hopefully make GameSurge kicking people a bit less common
+                // 将选项合并为一个整数以节省带宽，
+                // 尤其是在玩家使用默认选项的情况下(这在AI玩家中很常见)
+                // 希望能让GameSurge踢人的情况少一些
                 byte[] byteArray = new byte[]
                 {
                     (byte)pInfo.TeamId,
@@ -853,7 +851,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Handles player option messages received from the game host.
+        /// 处理从游戏主持接收的玩家选项消息。
         /// </summary>
         private void ApplyPlayerOptions(string sender, string message)
         {
@@ -881,10 +879,9 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 {
                     pInfo.Name = pName;
 
-                    // If we can't find the player from the channel user list,
-                    // ignore the player
-                    // They've either left the channel or got kicked before the
-                    // player options message reached us
+                    // 如果在频道用户列表中找不到该玩家，
+                    // 则忽略该玩家
+                    // 他们可能已经离开频道或在玩家选项消息到达之前被踢出了
                     if (channel.Users.Find(pName) == null)
                     {
                         i += HUMAN_PLAYER_OPTIONS_LENGTH;
@@ -953,8 +950,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Broadcasts game options to non-host players
-        /// when the host has changed an option.
+        /// 当游戏主持更改选项时，向非主持玩家广播游戏选项。
         /// </summary>
         protected override void OnGameOptionChanged()
         {
@@ -967,7 +963,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             for (int i = 0; i < CheckBoxes.Count; i++)
                 optionValues[i] = CheckBoxes[i].Checked;
 
-            // Let's pack the booleans into bytes
+            // 让我们将布尔值打包成字节
             List<byte> byteList = Conversions.BoolArrayIntoBytes(optionValues).ToList();
 
             while (byteList.Count % 4 != 0)
@@ -981,9 +977,9 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             for (int i = 0; i < integerCount; i++)
                 sb.Append(BitConverter.ToInt32(byteArray, i * 4));
 
-            // We don't gain much in most cases by packing the drop-down values
-            // (because they're bytes to begin with, and usually non-zero),
-            // so let's just transfer them as usual
+            // 在大多数情况下，打包下拉框值并没有太多收益
+            // (因为它们本来就是字节，而且通常非零)，
+            // 所以我们照常传输它们
 
             foreach (GameLobbyDropDown dd in DropDowns)
                 sb.Append(dd.SelectedIndex);
@@ -1002,7 +998,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Handles game option messages received from the game host.
+        /// 处理从游戏主持接收的游戏选项消息。
         /// </summary>
         private void ApplyGameOptions(string sender, string message)
         {
@@ -1071,13 +1067,14 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 ChangeMap(GameModeMap);
             }
 
-            // By changing the game options after changing the map, we know which
-            // game options were changed by the map and which were changed by the game host
+            // 通过在更改地图之后更改游戏选项，我们可以知道
+            // 哪些选项是由地图更改的，哪些是由游戏主持更改的
 
-            // If the map doesn't exist on the local installation, it's impossible
-            // to know which options were set by the host and which were set by the
-            // map, so we'll just assume that the host has set all the options.
-            // Very few (if any) custom maps force options, so it'll be correct nearly always
+            // 如果本地安装中不存在该地图，则无法知道
+            // 哪些选项是由主持设置的，哪些是由地图设置的，
+            // 因此我们只能假设所有选项都是主持设置的。
+            // 极少(如果有的话)自定义地图会强制设置选项，
+            // 所以这在几乎所有情况下都是正确的
 
             for (int i = 0; i < checkBoxIntegerCount; i++)
             {
@@ -1204,8 +1201,8 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Signals other players that the local player has returned from the game,
-        /// and unlocks the game as well as generates a new random seed as the game host.
+        /// 通知其他玩家本地玩家已从游戏中返回，
+        /// 同时解锁游戏并作为游戏主持生成新的随机种子。
         /// </summary>
         protected override void GameProcessExited()
         {
@@ -1229,7 +1226,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Handles the "START" (game start) command sent by the game host.
+        /// 处理游戏主持发送的"START"(游戏启动)命令。
         /// </summary>
         private void NonHostLaunchGame(string sender, string message)
         {
@@ -1335,9 +1332,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         protected override void GetReadyNotification()
         {
             base.GetReadyNotification();
-#if WINFORMS
             WindowManager.FlashWindow();
-#endif
             TopBar.SwitchToPrimary();
 
             if (IsHost)
@@ -1563,9 +1558,9 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Changes the tunnel server used for the game.
+        /// 更改游戏使用的隧道服务器。
         /// </summary>
-        /// <param name="tunnel">The new tunnel server to use.</param>
+        /// <param name="tunnel">要使用的新隧道服务器。</param>
         private void HandleTunnelServerChange(CnCNetTunnel tunnel)
         {
             tunnelHandler.CurrentTunnel = tunnel;
@@ -1580,7 +1575,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
         private void MapSharer_HandleMapDownloadFailed(SHA1EventArgs e)
         {
-            // If the host has already uploaded the map, we shouldn't request them to re-upload it
+            // 如果游戏主持已经上传了地图，我们不应该请求他们重新上传
             if (hostUploadedMaps.Contains(e.SHA1))
             {
                 AddNotice("下载自定义地图失败.游戏主持需要更换地图否则您将不能参与游戏.");
@@ -1591,8 +1586,8 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             }
             else if (chatCommandDownloadedMaps.Contains(e.SHA1))
             {
-                // Notify the user that their chat command map download failed.
-                // Do not notify other users with a CTCP message as this is irrelevant to them.
+                // 通知用户其聊天命令下载地图失败。
+                // 不用CTCP消息通知其他用户，因为这与他们无关。
                 AddNotice("通过聊天命令下载地图失败.请检查地图ID后重试.");
                 mapSharingConfirmationPanel.SetFailedStatus();
                 return;
@@ -1623,8 +1618,8 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             }
             else if (chatCommandDownloadedMaps.Contains(e.SHA1))
             {
-                // Somehow the user has managed to download an already existing sha1 hash.
-                // This special case prevents user confusion from the file successfully downloading but showing an error anyway.
+                // 用户不知何故下载了一个已存在相同SHA1哈希的地图。
+                // 这种特殊情况可防止用户因文件成功下载但仍显示错误而感到困惑。
                 AddNotice(returnMessage, Color.Yellow);
                 AddNotice("地图已下载,但已存在相同SHA1的不同文件名的地图.这可能导致异常行为.",
                     Color.Yellow);
@@ -1670,10 +1665,10 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Handles a map upload request sent by a player.
+        /// 处理玩家发送的地图上传请求。
         /// </summary>
-        /// <param name="sender">The sender of the request.</param>
-        /// <param name="mapSHA1">The SHA1 of the requested map.</param>
+        /// <param name="sender">请求的发送者。</param>
+        /// <param name="mapSHA1">所请求地图的SHA1。</param>
         private void HandleMapUploadRequest(string sender, string mapSHA1)
         {
             if (hostUploadedMaps.Contains(mapSHA1))
@@ -1719,7 +1714,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Handles a map transfer failure message sent by either the player or the game host.
+        /// 处理玩家或游戏主持发送的地图传输失败消息。
         /// </summary>
         private void HandleMapTransferFailMessage(string sender, string sha1)
         {
@@ -1772,18 +1767,18 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Download a map from CNCNet using a map hash ID.
+        /// 使用地图哈希ID从CNCNet下载地图。
         ///
-        /// Users and testers can get map hash IDs from this URL template:
+        /// 用户和测试人员可以通过以下URL模板获取地图哈希ID：
         ///
         /// - http://mapdb.cncnet.org/search.php?game=GAME_ID&search=MAP_NAME_SEARCH_STRING
         ///
         /// </summary>
         /// <param name="parameters">
-        /// This is a string beginning with the sha1 hash map ID, and (optionally) the name to use as a local filename for the map file.
-        /// Every character after the first space will be treated as part of the map name.
+        /// 这是一个以sha1哈希地图ID开头的字符串，以及(可选的)用作地图文件本地文件名的名称。
+        /// 第一个空格之后的每个字符都将被视为地图名称的一部分。
         ///
-        /// "?" characters are removed from the sha1 due to weird copy and paste behavior from the map search endpoint.
+        /// 由于从地图搜索端点复制粘贴时会出现奇怪的空白字符行为，sha1中的"?"字符会被移除。
         /// </param>
         private void DownloadMapByIdCommand(string parameters)
         {
@@ -1791,31 +1786,31 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             string mapName;
             string message;
 
-            // Make sure no spaces at the beginning or end of the string will mess up arg parsing.
+            // 确保字符串开头或结尾没有空格会影响参数解析。
             parameters = parameters.Trim();
-            // Check if the parameter's contain spaces.
-            // The presence of spaces indicates a user-specified map name.
+            // 检查参数是否包含空格。
+            // 空格的存在表示用户指定了地图名称。
             int firstSpaceIndex = parameters.IndexOf(' ');
 
             if (firstSpaceIndex == -1)
             {
-                // The user did not supply a map name.
+                // 用户未提供地图名称。
                 sha1 = parameters;
                 mapName = "user_chat_command_download";
             }
             else
             {
-                // User supplied a map name.
+                // 用户提供了地图名称。
                 sha1 = parameters.Substring(0, firstSpaceIndex);
                 mapName = parameters.Substring(firstSpaceIndex + 1);
                 mapName = mapName.Trim();
             }
 
-            // Remove erroneous "?". These sneak in when someone double-clicks a map ID and copies it from the cncnet search endpoint.
-            // There is some weird whitespace that gets copied to chat as a "?" at the end of the hash. It's hard to spot, so just hold the user's hand.
+            // 移除错误的"?"。当有人双击地图ID并从cncnet搜索端点复制时，这些字符会混入。
+            // 哈希末尾有一些奇怪的空白字符会被复制为"?"。很难发现，所以直接帮用户处理掉。
             sha1 = sha1.Replace("?", "");
 
-            // See if the user already has this map, with any filename, before attempting to download it.
+            // 在尝试下载之前，检查用户是否已经拥有此地图(无论文件名如何)。
             GameModeMap loadedMap = GameModeMaps.Find(gmm => gmm.Map.SHA1 == sha1);
 
             if (loadedMap != null)
@@ -1829,9 +1824,9 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 return;
             }
 
-            // Replace any characters that are not safe for filenames.
+            // 替换文件名中不安全的字符。
             char replaceUnsafeCharactersWith = '-';
-            // Use a hashset instead of an array for quick lookups in `invalidChars.Contains()`.
+            // 使用HashSet而不是数组，以便在`invalidChars.Contains()`中快速查找。
             HashSet<char> invalidChars = new HashSet<char>(Path.GetInvalidFileNameChars());
             string safeMapName = new String(mapName.Select(c => invalidChars.Contains(c) ? replaceUnsafeCharactersWith : c).ToArray());
 
@@ -1849,7 +1844,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         #region Game broadcasting logic
 
         /// <summary>
-        /// Lowers the time until the next game broadcasting message.
+        /// 缩短到下一次游戏广播消息的时间。
         /// </summary>
         private void AccelerateGameBroadcasting() =>
             gameBroadcastTimer.Accelerate(TimeSpan.FromSeconds(GAME_BROADCAST_ACCELERATION));
@@ -1884,8 +1879,8 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 sb.Append("0");
             sb.Append(Convert.ToInt32(isCustomPassword));
             sb.Append(Convert.ToInt32(closed));
-            sb.Append("0"); // IsLoadedGame
-            sb.Append("0"); // IsLadder
+            sb.Append("0"); // 是否为加载的游戏
+            sb.Append("0"); // 是否为天梯游戏
             sb.Append(";");
             foreach (PlayerInfo pInfo in Players)
             {
@@ -1901,10 +1896,10 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             sb.Append(";");
             sb.Append(tunnelHandler.CurrentTunnel.Address + ":" + tunnelHandler.CurrentTunnel.Port);
             sb.Append(";");
-            sb.Append(0); // LoadedGameId
+            sb.Append(0); // 已加载游戏ID
 
             broadcastChannel.SendCTCPMessage(sb.ToString(), QueuedMessageType.SYSTEM_MESSAGE, 20);
-            //���������㲥
+            // 发送游戏广播
             Logger.Log($"/***************[CncNetGameLobby]BroadcastGame:{sb}***************/");
         }
 

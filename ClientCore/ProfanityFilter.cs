@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
@@ -9,7 +9,7 @@ namespace ClientCore
         public IList<string> CensoredWords { get; private set; }
 
         /// <summary>
-        /// Creates a new profanity filter with a default set of censored words.
+        /// 使用默认的审查词列表创建一个新的脏话过滤器。
         /// </summary>
         public ProfanityFilter()
         {

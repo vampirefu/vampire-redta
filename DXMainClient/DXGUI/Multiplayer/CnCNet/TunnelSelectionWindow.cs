@@ -1,4 +1,4 @@
-﻿using ClientGUI;
+using ClientGUI;
 using DTAClient.Domain.Multiplayer.CnCNet;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
@@ -7,7 +7,7 @@ using System;
 namespace DTAClient.DXGUI.Multiplayer.CnCNet
 {
     /// <summary>
-    /// A window for selecting a CnCNet tunnel server.
+    /// 用于选择CnCNet隧道服务器的窗口。
     /// </summary>
     class TunnelSelectionWindow : XNAWindow
     {
@@ -37,7 +37,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
             lblDescription = new XNALabel(WindowManager);
             lblDescription.Name = nameof(lblDescription);
-            lblDescription.Text = "Line 1" + Environment.NewLine + "Line 2";
+            lblDescription.Text = "第1行" + Environment.NewLine + "第2行";
             lblDescription.X = UIDesignConstants.EMPTY_SPACE_SIDES + UIDesignConstants.CONTROL_HORIZONTAL_MARGIN;
             lblDescription.Y = UIDesignConstants.EMPTY_SPACE_TOP + UIDesignConstants.CONTROL_VERTICAL_MARGIN;
             AddChild(lblDescription);
@@ -92,11 +92,10 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             btnApply.AllowClick = !lbTunnelList.IsTunnelSelected(originalTunnelAddress) && lbTunnelList.IsValidIndexSelected();
 
         /// <summary>
-        /// Sets the window's description and selects the tunnel server
-        /// with the given address.
+        /// 设置窗口描述并选择具有给定地址的隧道服务器。
         /// </summary>
-        /// <param name="description">The window description.</param>
-        /// <param name="tunnelAddress">The address of the tunnel server to select.</param>
+        /// <param name="description">窗口描述。</param>
+        /// <param name="tunnelAddress">要选择的隧道服务器地址。</param>
         public void Open(string description, string tunnelAddress = null)
         {
             lblDescription.Text = description;

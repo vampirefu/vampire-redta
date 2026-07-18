@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Rampastring.XNAUI;
@@ -71,7 +71,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
         protected override void AddNotice(string message, Color color)
         {
-            XNAMessageBox.Show(WindowManager, "Message", message);
+            XNAMessageBox.Show(WindowManager, "消息", message);
         }
 
         protected override void OnEnabledChanged(object sender, EventArgs args)
@@ -159,7 +159,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 return "合作战役不能观战.你必须作出更多的努力才能作弊.";
             }
 
-            //������
+            // 检查国家
             foreach(PlayerInfo pInfo in Players)
             {
 
@@ -241,7 +241,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         {
             base.GameProcessExited();
 
-            DdGameModeMapFilter_SelectedIndexChanged(null, EventArgs.Empty); // Refresh ranks
+            DdGameModeMapFilter_SelectedIndexChanged(null, EventArgs.Empty); // 刷新排名
 
             RandomSeed = new Random().Next();
         }
@@ -268,7 +268,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Saves skirmish settings to an INI file on the file system.
+        /// 将遭遇战设置保存到文件系统上的INI文件。
         /// </summary>
         private void SaveSettings()
         {
@@ -276,7 +276,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             {
                 FileInfo settingsFileInfo = SafePath.GetFile(ProgramConstants.GamePath, SETTINGS_PATH);
 
-                // Delete the file so we don't keep potential extra AI players that already exist in the file
+                // 删除文件，这样我们就不会保留文件中可能存在的额外AI玩家
                 settingsFileInfo.Delete();
 
                 var skirmishSettingsIni = new IniFile(settingsFileInfo.FullName);
@@ -313,7 +313,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Loads skirmish settings from an INI file on the file system.
+        /// 从文件系统上的INI文件加载遭遇战设置。
         /// </summary>
         private void LoadSettings()
         {
@@ -327,7 +327,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             string gameModeMapFilterName = skirmishSettingsIni.GetStringValue("Settings", "GameModeMapFilter", string.Empty);
             if (string.IsNullOrEmpty(gameModeMapFilterName))
-                gameModeMapFilterName = skirmishSettingsIni.GetStringValue("Settings", "GameMode", string.Empty); // legacy
+                gameModeMapFilterName = skirmishSettingsIni.GetStringValue("Settings", "GameMode", string.Empty); // 旧版兼容
 
             var gameModeMapFilter = ddGameModeMapFilter.Items.Find(i => i.Text == gameModeMapFilterName)?.Tag as GameModeMapFilter;
             if (gameModeMapFilter == null || !gameModeMapFilter.Any())
@@ -374,7 +374,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             if (keys == null)
             {
-                keys = new List<string>(); // No point skip parsing all settings if only AI info is missing.
+                keys = new List<string>(); // 如果仅缺少AI信息，没必要跳过解析所有设置。
                 //Logger.Log("AI player information doesn't exist in skirmish settings!");
                 //InitDefaultSettings();
                 //return;
@@ -403,8 +403,8 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             {
                 foreach (GameLobbyDropDown dd in DropDowns)
                 {
-                    // Maybe we should build an union of the game mode and map
-                    // forced options, we'd have less repetitive code that way
+                    // 也许我们应该构建游戏模式和地图强制选项的并集，
+                    // 这样可以减少重复代码
 
                     if (GameMode != null)
                     {
@@ -460,10 +460,9 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Checks that a player's color, team and starting location
-        /// don't exceed allowed bounds.
+        /// 检查玩家的颜色、队伍和起始位置是否超出允许范围。
         /// </summary>
-        /// <param name="pInfo">The PlayerInfo.</param>
+        /// <param name="pInfo">PlayerInfo对象。</param>
         private void CheckLoadedPlayerVariableBounds(PlayerInfo pInfo, bool isAIPlayer = false)
         {
             int sideCount = SideCount + RandomSelectorCount;

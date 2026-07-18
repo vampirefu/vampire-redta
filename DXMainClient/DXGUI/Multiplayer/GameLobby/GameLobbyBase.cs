@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using ClientCore.Statistics;
 using ClientGUI;
 using DTAClient.Domain;
@@ -23,8 +23,8 @@ using DTAClient.Domain.AI;
 namespace DTAClient.DXGUI.Multiplayer.GameLobby
 {
     /// <summary>
-    /// A generic base for all game lobbies (Skirmish, LAN and CnCNet).
-    /// Contains the common logic for parsing game options and handling player info.
+    /// 所有游戏大厅(遭遇战、局域网和CnCNet)的通用基类。
+    /// 包含解析游戏选项和处理玩家信息的通用逻辑。
     /// </summary>
     public abstract class GameLobbyBase : INItializableWindow
     {
@@ -45,10 +45,10 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         private const int RANK_HARD = 3;
 
         /// <summary>
-        /// Creates a new instance of the game lobby base.
+        /// 创建游戏大厅基类的新实例。
         /// </summary>
         /// <param name="windowManager"></param>
-        /// <param name="iniName">The name of the lobby in GameOptions.ini.</param>
+        /// <param name="iniName">GameOptions.ini中的大厅名称。</param>
         /// <param name="mapLoader"></param>
         /// <param name="isMultiplayer"></param>
         /// <param name="discordHandler"></param>
@@ -79,8 +79,8 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
         protected MapLoader MapLoader;
         /// <summary>
-        /// The list of multiplayer game mode maps.
-        /// Each is an instance of a map for a specific game mode.
+        /// 多人游戏模式地图列表。
+        /// 每个都是特定游戏模式的地图实例。
         /// </summary>
         protected GameModeMapCollection GameModeMaps => MapLoader.GameModeMaps;
 
@@ -89,7 +89,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         private GameModeMap _gameModeMap;
 
         /// <summary>
-        /// The currently selected game mode.
+        /// 当前选中的游戏模式。
         /// </summary>
         protected GameModeMap GameModeMap
         {
@@ -168,12 +168,12 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         protected Texture2D[] RankTextures;
 
         /// <summary>
-        /// The seed used for randomizing player options.
+        /// 用于随机化玩家选项的种子。
         /// </summary>
         protected int RandomSeed { get; set; }
 
         /// <summary>
-        /// An unique identifier for this game.
+        /// 此游戏的唯一标识符。
         /// </summary>
         protected int UniqueGameID { get; set; }
         protected int SideCount { get; private set; }
@@ -190,8 +190,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         protected EventHandler<MultiplayerNameRightClickedEventArgs> MultiplayerNameRightClicked;
 
         /// <summary>
-        /// If set, the client will remove all starting waypoints from the map
-        /// before launching it.
+        /// 如果设置，客户端将在启动地图之前移除所有起始航点。
         /// </summary>
         protected bool RemoveStartingLocations { get; set; } = false;
         protected IniFile GameOptionsIni { get; private set; }
@@ -272,7 +271,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             lblGameMode = FindChild<XNALabel>(nameof(lblGameMode));
             lblMapSize = FindChild<XNALabel>(nameof(lblMapSize));
 
-            lbGameModeMapList = FindChild<XNAMultiColumnListBox>("lbMapList"); //lbMapList for backwards compatibility
+            lbGameModeMapList = FindChild<XNAMultiColumnListBox>("lbMapList"); //lbMapList用于向后兼容
             lbGameModeMapList.SelectedIndexChanged += LbGameModeMapList_SelectedIndexChanged;
             lbGameModeMapList.RightClick += LbGameModeMapList_RightClick;
             lbGameModeMapList.AllowKeyboardInput = true; //!isMultiplayer
@@ -304,7 +303,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             lbGameModeMapList.AddColumn(rankHeader, rankListBox);
             lbGameModeMapList.AddColumn("地图名称", lbGameModeMapList.Width - RankTextures[1].Width - 3);
 
-            ddGameModeMapFilter = FindChild<XNAClientDropDown>("ddGameMode"); // ddGameMode for backwards compatibility
+            ddGameModeMapFilter = FindChild<XNAClientDropDown>("ddGameMode"); // ddGameMode用于向后兼容
             ddGameModeMapFilter.SelectedIndexChanged += DdGameModeMapFilter_SelectedIndexChanged;
 
             ddGameModeMapFilter.AddItem(CreateGameFilterItem(FavoriteMapsLabel, new GameModeMapFilter(GetFavoriteGameModeMaps)));
@@ -378,7 +377,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             RemoveChild(MapPreviewBox);
 
-            AddChild(MapPreviewBox);
+            AddChildWithoutInitialize(MapPreviewBox);
             InitializeGameOptionPresetUI();
 
             //屏蔽游戏说明
@@ -412,7 +411,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Until the GUICreator can handle typed classes, this must remain manually done.
+        /// 在GUICreator能够处理类型化类之前，这必须保持手动完成。
         /// </summary>
         private void InitBtnMapSort()
         {
@@ -432,7 +431,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             RefreshMapSortAlphabeticallyBtn();
             AddChild(btnMapSortAlphabetically);
 
-            // Allow repositioning / disabling in INI.
+            // 允许在INI中重新定位/禁用。
             ReadINIForControl(btnMapSortAlphabetically);
         }
 
@@ -684,7 +683,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             ListMaps();
 
             if (lbGameModeMapList.SelectedIndex == -1)
-                lbGameModeMapList.SelectedIndex = 0; // Select default GameModeMap
+                lbGameModeMapList.SelectedIndex = 0; // 选择默认GameModeMap
             else
                 ChangeMap(GameModeMap);
 
@@ -712,19 +711,19 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             var playerExtraOptions = PlayerExtraOptions.FromMessage(message);
 
             if (playerExtraOptions.IsForceRandomSides != PlayerExtraOptionsPanel.IsForcedRandomSides())
-                AddPlayerExtraOptionForcedNotice(playerExtraOptions.IsForceRandomSides, "side selection");
+                AddPlayerExtraOptionForcedNotice(playerExtraOptions.IsForceRandomSides, "阵营选择");
 
             if (playerExtraOptions.IsForceRandomColors != PlayerExtraOptionsPanel.IsForcedRandomColors())
-                AddPlayerExtraOptionForcedNotice(playerExtraOptions.IsForceRandomColors, "color selection");
+                AddPlayerExtraOptionForcedNotice(playerExtraOptions.IsForceRandomColors, "颜色选择");
 
             if (playerExtraOptions.IsForceRandomStarts != PlayerExtraOptionsPanel.IsForcedRandomStarts())
-                AddPlayerExtraOptionForcedNotice(playerExtraOptions.IsForceRandomStarts, "start selection");
+                AddPlayerExtraOptionForcedNotice(playerExtraOptions.IsForceRandomStarts, "起始位置选择");
 
             if (playerExtraOptions.IsForceRandomTeams != PlayerExtraOptionsPanel.IsForcedRandomTeams())
-                AddPlayerExtraOptionForcedNotice(playerExtraOptions.IsForceRandomTeams, "team selection");
+                AddPlayerExtraOptionForcedNotice(playerExtraOptions.IsForceRandomTeams, "队伍选择");
 
             if (playerExtraOptions.IsUseTeamStartMappings != PlayerExtraOptionsPanel.IsUseTeamStartMappings())
-                AddPlayerExtraOptionForcedNotice(!playerExtraOptions.IsUseTeamStartMappings, "auto ally");
+                AddPlayerExtraOptionForcedNotice(!playerExtraOptions.IsUseTeamStartMappings, "自动结盟");
 
             SetPlayerExtraOptions(playerExtraOptions);
             UpdateMapPreviewBoxEnabledStatus();
@@ -739,7 +738,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         {
             var gameModeMaps = gameModeMapFilter.GetGameModeMaps();
 
-            // Only apply sort if the map list sort button is available.
+            // 仅当地图列表排序按钮可用时才应用排序。
             if (btnMapSortAlphabetically.Enabled && btnMapSortAlphabetically.Visible)
             {
                 switch ((SortDirection)UserINISettings.Instance.MapSortState.Value)
@@ -891,7 +890,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             ListMaps();
             if (IsFavoriteMapsSelected())
-                lbGameModeMapList.SelectedIndex = 0; // the map was removed while viewing favorites
+                lbGameModeMapList.SelectedIndex = 0; // 在查看收藏夹时地图已被移除
         }
 
         private void DeleteSelectedMap(XNAMessageBox messageBox)
@@ -903,12 +902,12 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 tbMapSearch.Text = string.Empty;
                 if (GameMode.Maps.Count == 0)
                 {
-                    // this will trigger another GameMode to be selected
+                    // 这将触发选择另一个游戏模式
                     GameModeMap = GameModeMaps.Find(gm => gm.GameMode.Maps.Count > 0);
                 }
                 else
                 {
-                    // this will trigger another Map to be selected
+                    // 这将触发选择另一个地图
                     lbGameModeMapList.SelectedIndex = lbGameModeMapList.SelectedIndex == 0 ? 1 : lbGameModeMapList.SelectedIndex - 1;
                 }
 
@@ -992,8 +991,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Refreshes the map selection UI to match the currently selected map
-        /// and game mode.
+        /// 刷新地图选择UI以匹配当前选中的地图和游戏模式。
         /// </summary>
         protected void RefreshMapSelectionUI()
         {
@@ -1013,7 +1011,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
         bool SelectedIndexChangedFlag = false;
         /// <summary>
-        /// Initializes the player option drop-down controls.
+        /// 初始化玩家选项下拉控件。
         /// </summary>
         protected void InitPlayerOptionDropdowns()
         {
@@ -1284,10 +1282,10 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             AssetLoader.AssetExists(name) ? AssetLoader.LoadTexture(name) : null;
 
         /// <summary>
-        /// Loads random side selectors from GameOptions.ini
+        /// 从GameOptions.ini加载随机阵营选择器
         /// </summary>
-        /// <param name="selectorNames">TODO comment</param>
-        /// <param name="selectorSides">TODO comment</param>
+        /// <param name="selectorNames">选择器名称列表</param>
+        /// <param name="selectorSides">选择器阵营列表</param>
         private void GetRandomSelectors(List<string> selectorNames, List<int[]> selectorSides)
         {
             List<string> keys = GameOptionsIni.GetSectionKeys("RandomSelectors");
@@ -1319,13 +1317,13 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         protected abstract void BtnLeaveGame_LeftClick(object sender, EventArgs e);
 
         /// <summary>
-        /// Updates Discord Rich Presence with actual information.
+        /// 使用实际信息更新Discord Rich Presence。
         /// </summary>
-        /// <param name="resetTimer">Whether to restart the "Elapsed" timer or not</param>
+        /// <param name="resetTimer">是否重新启动"已用时间"计时器</param>
         protected abstract void UpdateDiscordPresence(bool resetTimer = false);
 
         /// <summary>
-        /// Resets Discord Rich Presence to default state.
+        /// 将Discord Rich Presence重置为默认状态。
         /// </summary>
         protected void ResetDiscordPresence() => discordHandler.UpdatePresence();
 
@@ -1352,8 +1350,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         private int GetSpectatorSideIndex() => SideCount + RandomSelectorCount;
 
         /// <summary>
-        /// Applies disallowed side indexes to the side option drop-downs
-        /// and player options.
+        /// 将不允许的阵营索引应用到阵营选项下拉框和玩家选项中。
         /// </summary>
         protected void CheckDisallowedSides()
         {
@@ -1363,7 +1360,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             if (allowedSideCount == 1)
             {
-                // Disallow Random
+                // 禁止随机
 
                 for (int i = 0; i < disallowedSideArray.Length; i++)
                 {
@@ -1390,7 +1387,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             var concatPlayerList = Players.Concat(AIPlayers);
 
-            // Disable custom random groups if all or all except one of included sides are unavailable.
+            // 如果所有或除一个包含的阵营被禁用，则禁用自定义随机组。
             int c = 0;
             var playerInfos = concatPlayerList.ToList();
             foreach (int[] randomSides in RandomSelectors)
@@ -1417,8 +1414,8 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 c++;
             }
 
-            // Go over the side array and either disable or enable the side
-            // dropdown options depending on whether the side is available
+            // 遍历阵营数组，根据阵营是否可用
+            // 来禁用或启用阵营下拉选项
             for (int i = 0; i < disallowedSideArray.Length; i++)
             {
                 bool disabled = disallowedSideArray[i];
@@ -1428,8 +1425,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                     foreach (XNADropDown dd in ddPlayerSides)
                         dd.Items[i + RandomSelectorCount].Selectable = false;
 
-                    // Change the sides of players that use the disabled
-                    // side to the default side
+                    // 将使用禁用阵营的玩家的阵营更改为默认阵营
                     foreach (PlayerInfo pInfo in playerInfos)
                     {
                         if (pInfo.SideId == i + RandomSelectorCount)
@@ -1443,7 +1439,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 }
             }
 
-            // If only 1 side is allowed, change all players' sides to that
+            // 如果只允许1个阵营，将所有玩家的阵营更改为该阵营
             if (allowedSideCount == 1)
             {
                 foreach (PlayerInfo pInfo in playerInfos)
@@ -1455,7 +1451,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             if (Map != null && Map.CoopInfo != null)
             {
-                // Disallow spectator
+                // 禁止观战
 
                 foreach (PlayerInfo pInfo in playerInfos)
                 {
@@ -1494,9 +1490,9 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Gets a list of side indexes that are disallowed.
+        /// 获取不允许的阵营索引列表。
         /// </summary>
-        /// <returns>A list of disallowed side indexes.</returns>
+        /// <returns>不允许的阵营索引列表。</returns>
         protected bool[] GetDisallowedSides()
         {
             string[] sides = null;
@@ -1576,7 +1572,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             if (Map != null && Map.CoopInfo != null)
             {
-                // Co-Op map disallowed side logic
+                // 合作地图禁用阵营逻辑
 
                 foreach (int disallowedSideIndex in Map.CoopInfo.DisallowedPlayerSides)
                     returnValue[disallowedSideIndex] = true;
@@ -1595,10 +1591,9 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Randomizes options of both human and AI players
-        /// and returns the options as an array of PlayerHouseInfos.
+        /// 随机化人类和AI玩家的选项，并以PlayerHouseInfo数组的形式返回选项。
         /// </summary>
-        /// <returns>An array of PlayerHouseInfos.</returns>
+        /// <returns>PlayerHouseInfo数组。</returns>
         protected virtual PlayerHouseInfo[] Randomize(List<TeamStartMapping> teamStartMappings)
         {
             int totalPlayerCount = Players.Count + AIPlayers.Count;
@@ -1607,11 +1602,11 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             for (int i = 0; i < totalPlayerCount; i++)
                 houseInfos[i] = new PlayerHouseInfo();
 
-            // Gather list of spectators
+            // 收集观战者列表
             for (int i = 0; i < Players.Count; i++)
                 houseInfos[i].IsSpectator = Players[i].SideId == GetSpectatorSideIndex();
 
-            // Gather list of available colors
+            // 收集可用颜色列表
 
             List<int> freeColors = new List<int>();
 
@@ -1625,12 +1620,12 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             }
 
             foreach (PlayerInfo player in Players)
-                freeColors.Remove(player.ColorId - 1); // The first color is Random
+                freeColors.Remove(player.ColorId - 1); // 第一个颜色是随机
 
             foreach (PlayerInfo aiPlayer in AIPlayers)
                 freeColors.Remove(aiPlayer.ColorId - 1);
 
-            // Gather list of available starting locations
+            // 收集可用起始位置列表
 
             List<int> freeStartingLocations = new List<int>();
             List<int> takenStartingLocations = new List<int>();
@@ -1644,9 +1639,9 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 {
                     freeStartingLocations.Remove(Players[i].StartingLocation - 1);
                     //takenStartingLocations.Add(Players[i].StartingLocation - 1);
-                    // ^ Gives everyone with a selected location a completely random
-                    // location in-game, because PlayerHouseInfo.RandomizeStart already
-                    // fills the list itself
+                    // ^ 这会让每个选择了位置的玩家在游戏中获得一个完全随机的
+                    // 位置，因为PlayerHouseInfo.RandomizeStart已经
+                    // 自己填充了列表
                 }
             }
 
@@ -1656,7 +1651,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             foreach (var teamStartMapping in teamStartMappings.Where(mapping => mapping.IsBlock))
                 freeStartingLocations.Remove(teamStartMapping.StartingWaypoint);
 
-            // Randomize options
+            // 随机化选项
 
             Random random = new Random(RandomSeed);
 
@@ -1680,7 +1675,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Writes spawn.ini. Returns the player house info returned from the randomizer.
+        /// 写入spawn.ini。返回随机化器返回的玩家房屋信息。
         /// </summary>
         private PlayerHouseInfo[] WriteSpawnIni()
         {
@@ -1742,7 +1737,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             foreach (GameLobbyDropDown dd in DropDowns)
                 dd.ApplySpawnIniCode(spawnIni);
 
-            // Apply forced options from GameOptions.ini
+            // 从GameOptions.ini应用强制选项
 
             List<string> forcedKeys = GameOptionsIni.GetSectionKeys("ForcedSpawnIniOptions");
 
@@ -1755,11 +1750,11 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 }
             }
 
-            GameMode.ApplySpawnIniCode(spawnIni); // Forced options from the game mode
+            GameMode.ApplySpawnIniCode(spawnIni); // 来自游戏模式的强制选项
             Map.ApplySpawnIniCode(spawnIni, Players.Count + AIPlayers.Count,
-                AIPlayers.Count, GameMode.CoopDifficultyLevel); // Forced options from the map
+                AIPlayers.Count, GameMode.CoopDifficultyLevel); // 来自地图的强制选项
 
-            // Player options
+            // 玩家选项
 
             int otherId = 1;
 
@@ -1783,7 +1778,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 otherId++;
             }
 
-            // The spawner assigns players to SpawnX houses based on their in-game color index
+            // 生成器根据玩家的游戏内颜色索引将玩家分配到SpawnX房屋
             List<int> multiCmbIndexes = new List<int>();
             var sortedColorList = MPColors.OrderBy(mpc => mpc.GameColorIndex).ToList();
 
@@ -1817,15 +1812,14 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                     spawnIni.SetBooleanValue("IsSpectator", "Multi" + (multiId + 1), true);
             }
 
-            // Write alliances, the code is pretty big so let's take it to another class
+            // 写入同盟，代码量较大所以放到另一个类中
             AllianceHolder.WriteInfoToSpawnIni(Players, AIPlayers, multiCmbIndexes, houseInfos.ToList(), teamStartMappings, spawnIni);
 
             for (int pId = 0; pId < Players.Count; pId++)
             {
                 int startingWaypoint = houseInfos[multiCmbIndexes[pId]].StartingWaypoint;
 
-                // -1 means no starting location at all - let the game itself pick the starting location
-                // using its own logic
+                // -1表示完全没有起始位置 - 让游戏本身使用其自己的逻辑选择起始位置
                 if (startingWaypoint > -1)
                 {
                     int multiIndex = pId + 1;
@@ -1852,10 +1846,10 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Returns the number of teams with human players in them.
-        /// Does not count spectators and human players that don't have a team set.
+        /// 返回包含人类玩家的队伍数量。
+        /// 不计算观战者和未设置队伍的人类玩家。
         /// </summary>
-        /// <returns>The number of human player teams in the game.</returns>
+        /// <returns>游戏中的人类玩家队伍数量。</returns>
         private int GetPvPTeamCount()
         {
             int[] teamPlayerCounts = new int[4];
@@ -1878,10 +1872,10 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Checks whether the specified player has selected Spectator as their side.
+        /// 检查指定玩家是否选择了观战者作为其阵营。
         /// </summary>
-        /// <param name="pInfo">The player.</param>
-        /// <returns>True if the player is a spectator, otherwise false.</returns>
+        /// <param name="pInfo">玩家。</param>
+        /// <returns>如果玩家是观战者则为true，否则为false。</returns>
         protected bool IsPlayerSpectator(PlayerInfo pInfo)
         {
             if (pInfo.SideId == GetSpectatorSideIndex())
@@ -1893,14 +1887,13 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         protected virtual string GetIPAddressForPlayer(PlayerInfo player) => "0.0.0.0";
 
         /// <summary>
-        /// Override this in a derived class to write game lobby specific code to
-        /// spawn.ini. For example, CnCNet game lobbies should write tunnel info
-        /// in this method.
+        /// 在派生类中重写此方法以向spawn.ini写入游戏大厅特定的代码。
+        /// 例如，CnCNet游戏大厅应在此方法中写入隧道信息。
         /// </summary>
-        /// <param name="iniFile">The spawn INI file.</param>
+        /// <param name="iniFile">spawn INI文件。</param>
         protected virtual void WriteSpawnIniAdditions(IniFile iniFile)
         {
-            // Do nothing by default
+            // 默认不做任何操作
         }
 
         private void InitializeMatchStatistics(PlayerHouseInfo[] houseInfos)
@@ -1941,7 +1934,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Writes spawnmap.ini.
+        /// 写入spawnmap.ini。
         /// </summary>
         private void WriteMap(PlayerHouseInfo[] houseInfos)
         {
@@ -1973,7 +1966,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             foreach (GameLobbyDropDown dropDown in DropDowns)
                 dropDown.ApplyMapCode(mapIni, GameMode);
 
-            mapIni.MoveSectionToFirst("MultiplayerDialogSettings"); // Required by YR
+            mapIni.MoveSectionToFirst("MultiplayerDialogSettings"); // YR要求
 
             string mapIniFileName = Path.GetFileName(mapIni.FileName);
             mapIni.SetStringValue("Basic", "OriginalFilename", mapIniFileName);
@@ -1985,11 +1978,11 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Some mods require that .map files also have supplemental files copied over with the spawnmap.ini.
-        /// 
-        /// This function scans the directory containing the map file and looks for other files with the
-        /// same base filename as the map file that are allowed by the client configuration.
-        /// Those files are then copied to the game base path with the base filename of "spawnmap.EXT".
+        /// 某些模组要求.map文件在复制spawnmap.ini时也同时复制补充文件。
+        ///
+        /// 此函数扫描包含地图文件的目录，查找与地图文件具有相同基本文件名
+        /// 且被客户端配置允许的其他文件。这些文件随后以"spawnmap.EXT"的
+        /// 基本文件名复制到游戏基础路径。
         /// </summary>
         /// <param name="mapIni"></param>
         private void CopySupplementalMapFiles(IniFile mapIni)
@@ -2006,27 +1999,27 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             {
                 try
                 {
-                    // Copy each supplemental file
+                    // 复制每个补充文件
                     string supplementalFileName = $"spawnmap{Path.GetExtension(file)}";
                     File.Copy(file, SafePath.CombineFilePath(ProgramConstants.GamePath, supplementalFileName), true);
                     supplementalFileNames.Add(supplementalFileName);
                 }
                 catch (Exception e)
                 {
-                    string errorMessage = "Unable to copy supplemental map file" + $" {file}";
+                    string errorMessage = "无法复制补充地图文件" + $" {file}";
                     Logger.Log(errorMessage);
                     Logger.Log(e.Message);
-                    XNAMessageBox.Show(WindowManager, "Error", errorMessage);
+                    XNAMessageBox.Show(WindowManager, "错误", errorMessage);
 
                 }
             }
 
-            // Write the supplemental map files to the INI (eventual spawnmap.ini)
+            // 将补充地图文件写入INI（最终的spawnmap.ini）
             mapIni.SetStringValue("Basic", "SupplementalFiles", string.Join(',', supplementalFileNames));
         }
 
         /// <summary>
-        /// Delete all supplemental map files from last spawn
+        /// 删除上次生成时的所有补充地图文件
         /// </summary>
         private void DeleteSupplementalMapFiles()
         {
@@ -2042,17 +2035,17 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 }
                 catch (Exception e)
                 {
-                    string errorMessage = "Unable to delete supplemental map file" + $" {supplementalMapFilename}";
+                    string errorMessage = "无法删除补充地图文件" + $" {supplementalMapFilename}";
                     Logger.Log(errorMessage);
                     Logger.Log(e.Message);
-                    XNAMessageBox.Show(WindowManager, "Error", errorMessage);
+                    XNAMessageBox.Show(WindowManager, "错误", errorMessage);
                 }
             }
         }
 
         private static IEnumerable<string> GetSupplementalMapFiles(string basePath, string baseFileName)
         {
-            // Get the supplemental file names for allowable extensions
+            // 获取允许扩展名的补充文件名
             var supplementalMapFileNames = ClientConfiguration.Instance.SupplementalMapFileExtensions
                 .Select(ext => $"{baseFileName}.{ext}".ToUpperInvariant())
                 .ToList();
@@ -2060,7 +2053,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             if (!supplementalMapFileNames.Any())
                 return new List<string>();
 
-            // Get full file paths for all possible supplemental files
+            // 获取所有可能补充文件的完整路径
             return Directory.GetFiles(basePath, $"{baseFileName}.*")
                 .Where(f => supplementalMapFileNames.Contains(Path.GetFileName(f).ToUpperInvariant()));
         }
@@ -2072,14 +2065,13 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 if (Map.EnforceMaxPlayers)
                     return;
 
-                // All random starting locations given by the game
+                // 游戏给出的所有随机起始位置
                 IniSection waypointSection = mapIni.GetSection("Waypoints");
                 if (waypointSection == null)
                     return;
 
-                // TODO implement IniSection.RemoveKey in Rampastring.Tools, then
-                // remove implementation that depends on internal implementation
-                // of IniSection
+                // TODO 在Rampastring.Tools中实现IniSection.RemoveKey，然后
+                // 移除依赖IniSection内部实现的代码
                 for (int i = 0; i <= 7; i++)
                 {
                     int index = waypointSection.Keys.FindIndex(k => !string.IsNullOrEmpty(k.Key) && k.Key == i.ToString());
@@ -2088,21 +2080,19 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 }
             }
 
-            // Multiple players cannot properly share the same starting location
-            // without breaking the SpawnX house logic that pre-placed objects depend on
+            // 多个玩家不能正确共享同一个起始位置
+            // 否则会破坏预放置对象所依赖的SpawnX房屋逻辑
 
-            // To work around this, we add new starting locations that just point
-            // to the same cell coordinates as existing stacked starting locations
-            // and make additional players in the same start loc start from the new
-            // starting locations instead.
+            // 为了解决这个问题，我们添加新的起始位置，指向与现有堆叠起始位置
+            // 相同的单元格坐标，并让同一起始位置的额外玩家从新的起始位置开始。
 
-            // As an additional restriction, players can only start from waypoints 0 to 7.
-            // That means that if the map already has too many starting waypoints,
-            // we need to move existing (but un-occupied) starting waypoints to point
-            // to the stacked locations so we can spawn the players there.
+            // 作为一个额外的限制，玩家只能从航点0到7开始。
+            // 这意味着如果地图已经有太多起始航点，
+            // 我们需要移动现有（但未占用）的起始航点指向堆叠位置，
+            // 以便我们可以在那里生成玩家。
 
 
-            // Check for stacked starting locations (locations with more than 1 player on it)
+            // 检查堆叠的起始位置（有超过1个玩家的位置）
             bool[] startingLocationUsed = new bool[MAX_PLAYER_COUNT];
             bool stackedStartingLocations = false;
             foreach (PlayerHouseInfo houseInfo in houseInfos)
@@ -2111,9 +2101,8 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 {
                     startingLocationUsed[houseInfo.RealStartingWaypoint] = true;
 
-                    // If assigned starting waypoint is unknown while the real
-                    // starting location is known, it means that
-                    // the location is shared with another player
+                    // 如果分配的起始航点未知而实际起始位置已知，
+                    // 则表示该位置与另一个玩家共享
                     if (houseInfo.StartingWaypoint == -1)
                     {
                         stackedStartingLocations = true;
@@ -2121,25 +2110,22 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 }
             }
 
-            // If any starting location is stacked, re-arrange all starting locations
-            // so that unused starting locations are removed and made to point at used
-            // starting locations
+            // 如果有任何起始位置是堆叠的，重新排列所有起始位置
+            // 使得未使用的起始位置被移除并指向已使用的起始位置
             if (!stackedStartingLocations)
                 return;
 
-            // We also need to modify spawn.ini because WriteSpawnIni
-            // doesn't handle stacked positions.
-            // We could move this code there, but then we'd have to process
-            // the stacked locations in two places (here and in WriteSpawnIni)
-            // because we'd need to modify the map anyway.
-            // Not sure whether having it like this or in WriteSpawnIni
-            // is better, but this implementation is quicker to write for now.
+            // 我们还需要修改spawn.ini，因为WriteSpawnIni
+            // 不处理堆叠位置。
+            // 我们可以将此代码移到那里，但那样我们就必须在两个地方
+            // （这里和WriteSpawnIni）处理堆叠位置，
+            // 因为无论如何我们都需要修改地图。
+            // 不确定放在这里还是WriteSpawnIni中更好，
+            // 但这种实现方式写起来更快。
             IniFile spawnIni = new IniFile(SafePath.CombineFilePath(ProgramConstants.GamePath, ProgramConstants.SPAWNER_SETTINGS));
 
-            // For each player, check if they're sharing the starting location
-            // with someone else
-            // If they are, find an unused waypoint and assign their
-            // starting location to match that
+            // 对于每个玩家，检查他们是否与其他玩家共享起始位置
+            // 如果是，找到一个未使用的航点并将他们的起始位置分配到那里
             for (int pId = 0; pId < houseInfos.Length; pId++)
             {
                 PlayerHouseInfo houseInfo = houseInfos[pId];
@@ -2147,7 +2133,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 if (houseInfo.RealStartingWaypoint > -1 &&
                     houseInfo.StartingWaypoint == -1)
                 {
-                    // Find first unused starting location index
+                    // 找到第一个未使用的起始位置索引
                     int unusedLocation = -1;
                     for (int i = 0; i < startingLocationUsed.Length; i++)
                     {
@@ -2170,8 +2156,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Writes spawn.ini, writes the map file, initializes statistics and
-        /// starts the game process.
+        /// 写入spawn.ini，写入地图文件，初始化统计信息并启动游戏进程。
         /// </summary>
         protected virtual void StartGame()
         {
@@ -2247,8 +2232,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// "Copies" player information from the UI to internal memory,
-        /// applying users' player options changes.
+        /// 将玩家信息从UI"复制"到内部内存，应用用户的玩家选项更改。
         /// </summary>
         protected virtual void CopyPlayerDataFromUI(object sender, EventArgs e)
         {
@@ -2327,9 +2311,9 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Sets the ready status of all non-host human players to false.
+        /// 将所有非主机人类玩家的准备状态设为false。
         /// </summary>
-        /// <param name="resetAutoReady">If set, players with autoready enabled are reset as well.</param>
+        /// <param name="resetAutoReady">如果设置，则同时重置启用了自动准备的玩家。</param>
         protected void ClearReadyStatuses(bool resetAutoReady = false)
         {
             for (int i = 1; i < Players.Count; i++)
@@ -2362,7 +2346,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Applies player information changes done in memory to the UI.
+        /// 将内存中的玩家信息更改应用到UI。
         /// </summary>
         protected virtual void CopyPlayerDataToUI()
         {
@@ -2371,7 +2355,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             bool allowOptionsChange = AllowPlayerOptionsChange();
             var playerExtraOptions = GetPlayerExtraOptions();
 
-            // Human players
+            // 人类玩家
             for (int pId = 0; pId < Players.Count; pId++)
             {
                 PlayerInfo pInfo = Players[pId];
@@ -2407,7 +2391,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 }
             }
 
-            // AI players
+            // AI玩家
             for (int aiId = 0; aiId < AIPlayers.Count; aiId++)
             {
                 PlayerInfo aiInfo = AIPlayers[aiId];
@@ -2444,7 +2428,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 }
             }
 
-            // Unused player slots
+            // 未使用的玩家槽位
             for (int ddIndex = Players.Count + AIPlayers.Count; ddIndex < MAX_PLAYER_COUNT; ddIndex++)
             {
                 XNADropDown ddPlayerName = ddPlayerNames[ddIndex];
@@ -2478,33 +2462,32 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Updates the enabled status of starting location selectors
-        /// in the map preview box.
+        /// 更新地图预览框中起始位置选择器的启用状态。
         /// </summary>
         protected abstract void UpdateMapPreviewBoxEnabledStatus();
 
         /// <summary>
-        /// Override this in a derived class to kick players.
+        /// 在派生类中重写此方法以踢出玩家。
         /// </summary>
-        /// <param name="playerIndex">The index of the player that should be kicked.</param>
+        /// <param name="playerIndex">应被踢出的玩家索引。</param>
         protected virtual void KickPlayer(int playerIndex)
         {
-            // Do nothing by default
+            // 默认不做任何操作
         }
 
         /// <summary>
-        /// Override this in a derived class to ban players.
+        /// 在派生类中重写此方法以封禁玩家。
         /// </summary>
-        /// <param name="playerIndex">The index of the player that should be banned.</param>
+        /// <param name="playerIndex">应被禁言/封禁的玩家索引。</param>
         protected virtual void BanPlayer(int playerIndex)
         {
-            // Do nothing by default
+            // 默认不做任何操作
         }
 
         /// <summary>
-        /// Changes the current map and game mode.
+        /// 更改当前地图和游戏模式。
         /// </summary>
-        /// <param name="gameModeMap">The new game mode map.</param>
+        /// <param name="gameModeMap">新的游戏模式地图。</param>
         protected virtual void ChangeMap(GameModeMap gameModeMap)
         {
             GameModeMap = gameModeMap;
@@ -2528,22 +2511,20 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             disableGameOptionUpdateBroadcast = true;
 
-            // Clear forced options
+            // 清除强制选项
             foreach (var ddGameOption in DropDowns)
                 ddGameOption.AllowDropDown = true;
 
             foreach (var checkBox in CheckBoxes)
                 checkBox.AllowChecking = true;
 
-            // We could either pass the CheckBoxes and DropDowns of this class
-            // to the Map and GameMode instances and let them apply their forced
-            // options, or we could do it in this class with helper functions.
-            // The second approach is probably clearer.
+            // 我们可以将此类的CheckBoxes和DropDowns传递给Map和GameMode实例，
+            // 让它们应用其强制选项，或者我们可以在此类中使用辅助函数来完成。
+            // 第二种方法可能更清晰。
 
-            // We use these temp lists to determine which options WERE NOT forced
-            // by the map. We then return these to user-defined settings.
-            // This prevents forced options from one map getting carried
-            // to other maps.
+            // 我们使用这些临时列表来确定哪些选项未被地图强制。
+            // 然后我们将这些选项恢复为用户定义的设置。
+            // 这样可以防止一个地图的强制选项被带到其他地图。
 
             var checkBoxListClone = new List<GameLobbyCheckBox>(CheckBoxes);
             var dropDownListClone = new List<GameLobbyDropDown>(DropDowns);
@@ -2560,19 +2541,19 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             foreach (var dd in dropDownListClone)
                 dd.SelectedIndex = dd.HostSelectedIndex;
 
-            // Enable all sides by default
+            // 默认启用所有阵营
             foreach (var ddSide in ddPlayerSides)
             {
                 ddSide.Items.ForEach(item => item.Selectable = true);
             }
 
-            // Enable all colors by default
+            // 默认启用所有颜色
             foreach (var ddColor in ddPlayerColors)
             {
                 ddColor.Items.ForEach(item => item.Selectable = true);
             }
 
-            // Apply starting locations
+            // 应用起始位置
             foreach (var ddStart in ddPlayerStarts)
             {
                 ddStart.Items.Clear();
@@ -2584,7 +2565,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             }
 
 
-            // Check if AI players allowed
+            // 检查是否允许AI玩家
             bool AIAllowed = !(Map.MultiplayerOnly || GameMode.MultiplayerOnly) ||
                              !(Map.HumanPlayersOnly || GameMode.HumanPlayersOnly);
             foreach (var ddName in ddPlayerNames)
@@ -2614,7 +2595,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             if (Map.CoopInfo != null)
             {
-                // Co-Op map disallowed color logic
+                // 合作地图禁用颜色逻辑
                 foreach (int disallowedColorIndex in Map.CoopInfo.DisallowedPlayerColors)
                 {
                     if (disallowedColorIndex >= MPColors.Count)
@@ -2630,7 +2611,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                     }
                 }
 
-                // Force teams
+                // 强制队伍
                 foreach (PlayerInfo pInfo in concatPlayerList)
                     pInfo.TeamId = 1;
             }
@@ -2717,7 +2698,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             if (IsPlayerSpectator(localPlayer))
                 return RANK_NONE;
 
-            // These variables are used by both the skirmish and multiplayer code paths
+            // 这些变量被遭遇战和多人游戏代码路径共同使用
             int[] teamMemberCounts = new int[5];
             int lowestEnemyAILevel = 2;
             int highestAllyAILevel = 0;
@@ -2743,7 +2724,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 if (Players.Count == 1)
                     return RANK_NONE;
 
-                // PvP stars for 2-player and 3-player maps
+                // 2人和3人地图的PvP星级
                 if (Map.MaxPlayers <= 3)
                 {
                     List<PlayerInfo> filteredPlayers = Players.Where(p => !IsPlayerSpectator(p)).ToList();
@@ -2761,8 +2742,8 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                     return RANK_HARD;
                 }
 
-                // Coop stars for maps with 4 or more players
-                // See the code in StatisticsManager.GetRankForCoopMatch for the conditions
+                // 4人及以上地图的合作星级
+                // 条件参见StatisticsManager.GetRankForCoopMatch中的代码
 
                 if (Players.Find(p => IsPlayerSpectator(p)) != null)
                     return RANK_NONE;
@@ -2783,12 +2764,11 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
                 if (lowestEnemyAILevel < highestAllyAILevel)
                 {
-                    // Check that the player's AI allies aren't stronger
+                    // 检查玩家的AI盟友是否更强
                     return RANK_NONE;
                 }
 
-                // Check that all teams have at least as many players
-                // as the human players' team
+                // 检查所有队伍是否至少有与人类玩家队伍相同数量的玩家
                 int allyCount = teamMemberCounts[localPlayer.TeamId];
 
                 for (int i = 1; i < 5; i++)
@@ -2807,7 +2787,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             }
 
             // *********
-            // Skirmish!
+            // 遭遇战！
             // *********
 
             if (AIPlayers.Count != Map.MaxPlayers - 1)
@@ -2817,14 +2797,13 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             if (lowestEnemyAILevel < highestAllyAILevel)
             {
-                // Check that the player's AI allies aren't stronger
+                // 检查玩家的AI盟友是否更强
                 return RANK_NONE;
             }
 
             if (localPlayer.TeamId > 0)
             {
-                // Check that all teams have at least as many players
-                // as the local player's team
+                // 检查所有队伍是否至少有与本地玩家队伍相同数量的玩家
                 int allyCount = teamMemberCounts[localPlayer.TeamId];
 
                 for (int i = 1; i < 5; i++)
@@ -2839,7 +2818,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                     }
                 }
 
-                // Check that there is a team other than the players' team that is at least as large
+                // 检查是否存在除玩家队伍外至少一样大的队伍
                 bool pass = false;
                 for (int i = 1; i < 5; i++)
                 {

@@ -85,7 +85,7 @@ namespace DTAClient.DXGUI.Generic
 
         private bool visibleSpriteCursor;
 
-        // Updater removed
+        // 更新器已移除
         private Task mapLoadTask;
         private readonly CnCNetManager cncnetManager;
         private readonly IServiceProvider serviceProvider;
@@ -159,8 +159,12 @@ namespace DTAClient.DXGUI.Generic
             if (!TryStartConfiguredVideoBackground())
                 LoadFallbackWallpaper();
 
-            // Updater removed: no updater initialization
+            // 更新器已移除: no updater initialization
             mapLoadTask = mapLoader.LoadMapsAsync();
+
+            // 在载入视频播放期间并行解码主菜单 GIF 背景，
+            // 避免 MainMenu.Initialize() 时在主线程同步解码 100+ 帧 GIF 造成画面卡死。
+            StartMainMenuBackgroundPreloader();
 
             if (Cursor.Visible)
             {
@@ -169,7 +173,24 @@ namespace DTAClient.DXGUI.Generic
             }
         }
 
-        // Updater removed: version checks disabled
+        private void StartMainMenuBackgroundPreloader()
+        {
+            try
+            {
+                string gifPath = MainMenuBackgroundSelector.GetGifBackgroundAbsolutePath();
+                if (string.IsNullOrEmpty(gifPath))
+                    return;
+
+                MainMenuBackgroundPreloader.EnsureStarted(gifPath);
+                Logger.Log("LoadingScreen: 已启动主菜单 GIF 背景预解码: " + gifPath);
+            }
+            catch (Exception ex)
+            {
+                Logger.Log("LoadingScreen: 启动主菜单 GIF 背景预解码失败: " + ex.Message);
+            }
+        }
+
+        // 更新器已移除: version checks disabled
 
         public override void ParseAttributeFromINI(IniFile iniFile, string key, string value)
         {
@@ -766,8 +787,8 @@ namespace DTAClient.DXGUI.Generic
 
         private static void EnsureOpaqueVideoFrameAlpha(byte[] frame)
         {
-            // MonoGame WindowsDX uploads SurfaceFormat.Color byte[] as RGBA (DXGI R8G8B8A8).
-            // The loading video has no useful transparency; keep it fully opaque for SpriteBatch blending.
+            // MonoGame WindowsDX 将 SurfaceFormat.Color byte[] 作为 RGBA（DXGI R8G8B8A8）上传。
+            // 载入视频没有有用的透明度；保持完全不透明以便 SpriteBatch 混合。
             for (int i = 3; i < frame.Length; i += 4)
                 frame[i] = 255;
         }
@@ -886,19 +907,10 @@ namespace DTAClient.DXGUI.Generic
 
         private void LoadFallbackWallpaper()
         {
-            string[] wallpaper = Directory.GetFiles("Resources/" + ClientConfiguration.Instance.GetThemePath(UserINISettings.Instance.ClientTheme) + "Wallpaper");
-
-            if (UserINISettings.Instance.Random_wallpaper)
-            {
-                Random ran = new Random();
-                int i = ran.Next(0, wallpaper.Length);
-
-                BackgroundTexture = AssetLoader.LoadTexture(wallpaper[i]);
-            }
-            else
-            {
-                BackgroundTexture = AssetLoader.LoadTexture(wallpaper[0]);
-            }
+            //string[] wallpaper = Directory.GetFiles("Resources/" + ClientConfiguration.Instance.GetThemePath(UserINISettings.Instance.ClientTheme) + "Wallpaper");
+            //BackgroundTexture = AssetLoader.LoadTexture(wallpaper[0]);
+            if (!string.IsNullOrEmpty(configuredBackgroundPath))
+                BackgroundTexture = AssetLoader.LoadTexture(configuredBackgroundPath);
         }
     }
 }

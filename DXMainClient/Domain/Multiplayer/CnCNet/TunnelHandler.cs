@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using DTAClient.Online;
 using Microsoft.Xna.Framework;
 using Rampastring.Tools;
@@ -16,16 +16,14 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
     public class TunnelHandler : GameComponent
     {
         /// <summary>
-        /// Determines the time between pinging the current tunnel (if it's set).
+        /// 确定当前隧道（如果已设置）的ping间隔时间。
         /// </summary>
         private const double CURRENT_TUNNEL_PING_INTERVAL = 20.0;
 
         /// <summary>
-        /// A reciprocal to the value which determines how frequent the full tunnel
-        /// refresh would be done instead of just pinging the current tunnel (1/N of 
-        /// current tunnel ping refreshes would be substituted by a full list refresh).
-        /// Multiply by <see cref="CURRENT_TUNNEL_PING_INTERVAL"/> to get the interval 
-        /// between full list refreshes.
+        /// 决定完整隧道列表刷新频率（而非仅ping当前隧道）的值的倒数
+        /// （1/N的当前隧道ping刷新将被完整列表刷新替代）。
+        /// 乘以<see cref="CURRENT_TUNNEL_PING_INTERVAL"/>可获得完整列表刷新的间隔时间。
         /// </summary>
         private const uint CYCLES_PER_TUNNEL_LIST_REFRESH = 6;
 
@@ -111,14 +109,14 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
                 var updatedTunnel = Tunnels.Find(t => t.Address == CurrentTunnel.Address && t.Port == CurrentTunnel.Port);
                 if (updatedTunnel != null)
                 {
-                    // don't re-ping if the tunnel still exists in list, just update the tunnel instance and
-                    // fire the event handler (the tunnel was already pinged when traversing the tunnel list)
+                    // 如果隧道仍在列表中则不重新ping，只更新隧道实例并
+                    // 触发事件处理器（遍历隧道列表时已ping过该隧道）
                     CurrentTunnel = updatedTunnel;
                     DoCurrentTunnelPinged();
                 }
                 else
                 {
-                    // tunnel is not in the list anymore so it's not updated with a list instance and pinged
+                    // 隧道已不在列表中，因此未用列表实例更新和ping
                     PingCurrentTunnelAsync();
                 }
             }
@@ -150,9 +148,9 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
         }
 
         /// <summary>
-        /// Downloads and parses the list of CnCNet tunnels.
+        /// 下载并解析CnCNet隧道列表。
         /// </summary>
-        /// <returns>A list of tunnel servers.</returns>
+        /// <returns>隧道服务器列表。</returns>
         private List<CnCNetTunnel> RefreshTunnels()
         {
             FileInfo tunnelCacheFile = SafePath.GetFile(ProgramConstants.ClientUserFilesPath, "tunnel_cache");
@@ -196,7 +194,7 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
 
             string[] serverList = convertedData.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
 
-            // skip first header item ("address;country;countrycode;name;password;clients;maxclients;official;latitude;longitude;version;distance")
+            // 跳过第一个标题行（"address;country;countrycode;name;password;clients;maxclients;official;latitude;longitude;version;distance"）
             foreach (string serverInfo in serverList.Skip(1))
             {
                 try

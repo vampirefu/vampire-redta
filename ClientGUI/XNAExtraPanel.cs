@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Rampastring.XNAUI.XNAControls;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
@@ -6,8 +6,7 @@ using Rampastring.XNAUI;
 namespace ClientGUI
 {
     /// <summary>
-    /// An "extra panel" for modders that automatically
-    /// changes its size to match the texture size.
+    /// 为Modder提供的"额外面板"，自动调整大小以匹配纹理尺寸。
     /// </summary>
     public class XNAExtraPanel : XNAPanel
     {

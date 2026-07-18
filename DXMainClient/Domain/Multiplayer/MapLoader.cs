@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -23,37 +23,36 @@ namespace DTAClient.Domain.Multiplayer
         private readonly JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions { IncludeFields = true };
 
         /// <summary>
-        /// List of game modes.
+        /// 游戏模式列表。
         /// </summary>
         public List<GameMode> GameModes { get; set; } = new List<GameMode>();
 
         public GameModeMapCollection GameModeMaps;
 
         /// <summary>
-        /// An event that is fired when the maps have been loaded.
+        /// 地图加载完成时触发的事件。
         /// </summary>
         public event EventHandler MapLoadingComplete;
 
         /// <summary>
-        /// A list of game mode aliases.
-        /// Every game mode entry that exists in this dictionary will get 
-        /// replaced by the game mode entries of the value string array
-        /// when map is added to game mode map lists.
+        /// 游戏模式别名列表。
+        /// 当地图被添加到游戏模式地图列表时，此字典中存在的每个游戏模式条目
+        /// 将被值字符串数组中的游戏模式条目替换。
         /// </summary>
         private Dictionary<string, string[]> GameModeAliases = new Dictionary<string, string[]>();
 
         /// <summary>
-        /// List of gamemodes allowed to be used on custom maps in order for them to display in map list.
+        /// 允许在自定义地图上使用的游戏模式列表，以便它们显示在地图列表中。
         /// </summary>
         private string[] AllowedGameModes = ClientConfiguration.Instance.AllowedCustomGameModes.Split(',');
 
         /// <summary>
-        /// Loads multiplayer map info asynchonously.
+        /// 异步加载多人游戏地图信息。
         /// </summary>
         public Task LoadMapsAsync() => Task.Run(LoadMaps);
 
         /// <summary>
-        /// Load maps based on INI info as well as those in the custom maps directory.
+        /// 基于INI信息以及自定义地图目录中的地图加载地图。
         /// </summary>
         public void LoadMaps()
         {
@@ -179,15 +178,12 @@ namespace DTAClient.Domain.Multiplayer
 
                 var tasks = new List<Task>();
                 //新增逻辑：便利Custom的路径下.map会编译子文件夹
-#if DEBUG
-                var customMaps = customMapsDirectory.EnumerateFiles($"*{MAP_FILE_EXTENSION}", customMapsDirectory.FullName.Contains(CUSTOM_MAPS_DIRECTORY) ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly).ToList();
-#endif
                 foreach (IEnumerable<FileInfo> mapFiles in new List<IEnumerable<FileInfo>> { customMapsDirectory.EnumerateFiles($"*{MAP_FILE_EXTENSION}", customMapsDirectory.FullName.Contains(CUSTOM_MAPS_DIRECTORY) ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly), customMapsDirectory.EnumerateFiles($"*{"yrm"}"), customMapsDirectory.EnumerateFiles($"*{"mpr"}") })
-
+                {
                     foreach (FileInfo mapFile in mapFiles)
                     {
 
-                        // this must be Task.Factory.StartNew for XNA/.Net 4.0 compatibility
+                        // 必须使用Task.Factory.StartNew以兼容XNA/.Net 4.0
                         tasks.Add(Task.Factory.StartNew(() =>
                         {
                             string baseFilePath = mapFile.FullName.Substring(ProgramConstants.GamePath.Length);
@@ -214,16 +210,17 @@ namespace DTAClient.Domain.Multiplayer
 
                         }));
                     }
+                }
 
                 Task.WaitAll(tasks.ToArray());
 
-                // remove cached maps that no longer exist locally
+                // 移除本地已不存在的缓存地图
                 foreach (var missingSHA in customMapCache.Keys.Where(cachedSHA => !localMapSHAs.Contains(cachedSHA)))
                 {
                     customMapCache.TryRemove(missingSHA, out _);
                 }
 
-                // save cache
+                // 保存缓存
                 CacheCustomMaps(customMapCache);
 
                 foreach (Map map in customMapCache.Values)
@@ -234,9 +231,9 @@ namespace DTAClient.Domain.Multiplayer
         }
 
         /// <summary>
-        /// Save cache of custom maps.
+        /// 保存自定义地图缓存。
         /// </summary>
-        /// <param name="customMaps">Custom maps to cache</param>
+        /// <param name="customMaps">要缓存的自定义地图</param>
         private void CacheCustomMaps(ConcurrentDictionary<string, Map> customMaps)
         {
             var customMapCache = new CustomMapCache
@@ -250,7 +247,7 @@ namespace DTAClient.Domain.Multiplayer
         }
 
         /// <summary>
-        /// Load previously cached custom maps
+        /// 加载之前缓存的自定义地图
         /// </summary>
         /// <returns></returns>
         private ConcurrentDictionary<string, Map> LoadCustomMapCache()
@@ -276,11 +273,11 @@ namespace DTAClient.Domain.Multiplayer
         }
 
         /// <summary>
-        /// Attempts to load a custom map.
+        /// 尝试加载自定义地图。
         /// </summary>
-        /// <param name="mapPath">The path to the map file relative to the game directory.</param>
-        /// <param name="resultMessage">When method returns, contains a message reporting whether or not loading the map failed and how.</param>
-        /// <returns>The map if loading it was succesful, otherwise false.</returns>
+        /// <param name="mapPath">相对于游戏目录的地图文件路径。</param>
+        /// <param name="resultMessage">方法返回时，包含报告地图加载是否失败及原因的消息。</param>
+        /// <returns>如果加载成功则返回地图，否则返回null。</returns>
         public Map LoadCustomMap(string mapPath, out string resultMessage)
         {
             string customMapFilePath = SafePath.CombineFilePath(ProgramConstants.GamePath, FormattableString.Invariant($"{mapPath}{MAP_FILE_EXTENSION}"));
@@ -308,7 +305,7 @@ namespace DTAClient.Domain.Multiplayer
                     if (gm.Maps.Find(m => m.SHA1 == map.SHA1) != null)
                     {
                         Logger.Log("LoadCustomMap: Custom map " + customMapFile.FullName + " is already loaded!");
-                        resultMessage = $"Map {customMapFile.FullName} is already loaded.";
+                        resultMessage = $"地图 {customMapFile.FullName} 已加载。";
 
                         return null;
                     }
@@ -326,7 +323,7 @@ namespace DTAClient.Domain.Multiplayer
             }
 
             Logger.Log("LoadCustomMap: Loading map " + customMapFile.FullName + " failed!");
-            resultMessage = $"Loading map {customMapFile.FullName} failed!";
+            resultMessage = $"加载地图 {customMapFile.FullName} 失败！";
 
             return null;
         }
@@ -344,10 +341,10 @@ namespace DTAClient.Domain.Multiplayer
         }
 
         /// <summary>
-        /// Adds map to all eligible game modes.
+        /// 将地图添加到所有符合条件的游戏模式中。
         /// </summary>
-        /// <param name="map">Map to add.</param>
-        /// <param name="enableLogging">If set to true, a message for each game mode the map is added to is output to the log file.</param>
+        /// <param name="map">要添加的地图。</param>
+        /// <param name="enableLogging">如果设置为true，会将地图添加到的每个游戏模式的消息输出到日志文件。</param>
         private void AddMapToGameModes(Map map, bool enableLogging)
         {
             foreach (string gameMode in map.GameModes)

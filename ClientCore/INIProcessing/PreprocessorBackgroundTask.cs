@@ -1,4 +1,4 @@
-﻿using Rampastring.Tools;
+using Rampastring.Tools;
 using System.IO;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -6,8 +6,8 @@ using System.Collections.Generic;
 namespace ClientCore.INIProcessing
 {
     /// <summary>
-    /// Background task for pre-processing INI files.
-    /// Singleton.
+    /// 用于预处理 INI 文件的后台任务。
+    /// 单例模式。
     /// </summary>
     public class PreprocessorBackgroundTask
     {

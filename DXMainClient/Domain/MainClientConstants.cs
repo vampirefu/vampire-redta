@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using System.Reflection;
 
 namespace DTAClient.Domain
@@ -21,7 +21,7 @@ namespace DTAClient.Domain
 
         public static OSVersion OSId = OSVersion.UNKNOWN;
 
-        public static string GAME_VERSION = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "Undefined";
+        public static string GAME_VERSION = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "未定义";
 
         public static void Initialize()
         {

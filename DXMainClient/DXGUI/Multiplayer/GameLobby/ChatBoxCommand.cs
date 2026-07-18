@@ -1,10 +1,9 @@
-﻿using System;
+using System;
 
 namespace DTAClient.DXGUI.Multiplayer.GameLobby
 {
     /// <summary>
-    /// A command that can be executed by typing a message starting with / on
-    /// a multiplayer game lobby's chat box.
+    /// 一种命令，可以通过在多人游戏大厅的聊天框中输入以/开头的消息来执行。
     /// </summary>
     public class ChatBoxCommand
     {

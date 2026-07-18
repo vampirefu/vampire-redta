@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.Xna.Framework;
 using Rampastring.XNAUI.XNAControls;
 using Rampastring.XNAUI;
@@ -7,17 +7,17 @@ using Microsoft.Xna.Framework.Input;
 namespace ClientGUI
 {
     /// <summary>
-    /// A generic message box with OK or Yes/No or OK/Cancel buttons.
+    /// 带有"确定"或"是/否"或"确定/取消"按钮的通用消息框。
     /// </summary>
     public class XNAMessageBox : XNAWindow
     {
         /// <summary>
-        /// Creates a new message box.
+        /// 创建新的消息框。
         /// </summary>
-        /// <param name="windowManager">The window manager.</param>
-        /// <param name="caption">The caption of the message box.</param>
-        /// <param name="description">The actual message of the message box.</param>
-        /// <param name="messageBoxButtons">Defines which buttons are available in the dialog.</param>
+        /// <param name="windowManager">窗口管理器。</param>
+        /// <param name="caption">消息框的标题。</param>
+        /// <param name="description">消息框的实际消息。</param>
+        /// <param name="messageBoxButtons">定义对话框中可用的按钮。</param>
         public XNAMessageBox(WindowManager windowManager,
             string caption, string description, XNAMessageBoxButtons messageBoxButtons)
             : base(windowManager)
@@ -28,22 +28,22 @@ namespace ClientGUI
         }
 
         /// <summary>
-        /// The method that is called when the user clicks OK on the message box.
+        /// 当用户点击消息框上的"确定"按钮时调用的方法。
         /// </summary>
         public Action<XNAMessageBox> OKClickedAction { get; set; }
 
         /// <summary>
-        /// The method that is called when the user clicks Yes on the message box.
+        /// 当用户点击消息框上的"是"按钮时调用的方法。
         /// </summary>
         public Action<XNAMessageBox> YesClickedAction { get; set; }
 
         /// <summary>
-        /// The method that is called when the user clicks No on the message box.
+        /// 当用户点击消息框上的"否"按钮时调用的方法。
         /// </summary>
         public Action<XNAMessageBox> NoClickedAction { get; set; }
 
         /// <summary>
-        /// The method that is called when the user clicks Cancel on the message box.
+        /// 当用户点击消息框上的"取消"按钮时调用的方法。
         /// </summary>
         public Action<XNAMessageBox> CancelClickedAction { get; set; }
 
@@ -104,7 +104,7 @@ namespace ClientGUI
             btnOK.HoverTexture = AssetLoader.LoadTexture("75pxbtn_c.png");
             btnOK.HoverSoundEffect = new EnhancedSoundEffect("button.wav");
             btnOK.Name = "btnOK";
-            btnOK.Text = "OK";
+            btnOK.Text = "确定";
             btnOK.LeftClick += BtnOK_LeftClick;
             btnOK.HotKey = Keys.Enter;
 
@@ -159,7 +159,7 @@ namespace ClientGUI
             btnOK.HoverTexture = AssetLoader.LoadTexture("75pxbtn_c.png");
             btnOK.HoverSoundEffect = new EnhancedSoundEffect("button.wav");
             btnOK.Name = "btnOK";
-            btnOK.Text = "OK";
+            btnOK.Text = "确定";
             btnOK.LeftClick += BtnYes_LeftClick;
             btnOK.HotKey = Keys.Enter;
 
@@ -222,14 +222,14 @@ namespace ClientGUI
             DarkeningPanel.AddAndInitializeWithControl(WindowManager, this);
         }
 
-        #region Static Show methods
+        #region 静态Show方法
 
         /// <summary>
-        /// Creates and displays a new message box with the specified caption and description.
+        /// 创建并显示具有指定标题和描述的新消息框。
         /// </summary>
-        /// <param name="game">The game.</param>
-        /// <param name="caption">The caption/header of the message box.</param>
-        /// <param name="description">The description of the message box.</param>
+        /// <param name="game">游戏。</param>
+        /// <param name="caption">消息框的标题/头部。</param>
+        /// <param name="description">消息框的描述。</param>
         public static void Show(WindowManager windowManager, string caption, string description)
         {
             var panel = new DarkeningPanel(windowManager);
@@ -255,12 +255,12 @@ namespace ClientGUI
         }
 
         /// <summary>
-        /// Shows a message box with "Yes" and "No" being the user input options.
+        /// 显示消息框，用户输入选项为"是"和"否"。
         /// </summary>
-        /// <param name="windowManager">The WindowManager.</param>
-        /// <param name="caption">The caption of the message box.</param>
-        /// <param name="description">The description in the message box.</param>
-        /// <returns>The XNAMessageBox instance that is created.</returns>
+        /// <param name="windowManager">WindowManager。</param>
+        /// <param name="caption">消息框的标题。</param>
+        /// <param name="description">消息框中的描述。</param>
+        /// <returns>创建的XNAMessageBox实例。</returns>
         public static XNAMessageBox ShowYesNoDialog(WindowManager windowManager, string caption, string description)
         {
             var panel = new DarkeningPanel(windowManager);

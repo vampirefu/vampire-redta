@@ -1,7 +1,7 @@
-﻿namespace DTAClient.DXGUI
+namespace DTAClient.DXGUI
 {
     /// <summary>
-    /// An interface for all switchable windows.
+    /// 所有可切换窗口的接口。
     /// </summary>
     public interface ISwitchable
     {

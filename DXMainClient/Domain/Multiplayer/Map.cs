@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using Microsoft.Xna.Framework.Graphics;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
@@ -33,7 +33,7 @@ namespace DTAClient.Domain.Multiplayer
     }
 
     /// <summary>
-    /// A multiplayer map.
+    /// 多人游戏地图。
     /// </summary>
     public class Map
     {
@@ -47,59 +47,57 @@ namespace DTAClient.Domain.Multiplayer
         }
 
         /// <summary>
-        /// The name of the map.
+        /// 地图名称。
         /// </summary>
         [JsonInclude]
         public string Name { get; private set; }
 
         /// <summary>
-        /// The maximum amount of players supported by the map.
+        /// 地图支持的最大玩家数量。
         /// </summary>
         [JsonInclude]
         public int MaxPlayers { get; private set; }
 
         /// <summary>
-        /// The minimum amount of players supported by the map.
+        /// 地图支持的最小玩家数量。
         /// </summary>
         [JsonInclude]
         public int MinPlayers { get; private set; }
 
         /// <summary>
-        /// Whether to use MaxPlayers for limiting the player count of the map.
-        /// If false (which is the default), MaxPlayers is only used for randomizing
-        /// players to starting waypoints.
+        /// 是否使用MaxPlayers来限制地图的玩家数量。
+        /// 如果为false（默认值），MaxPlayers仅用于将玩家随机分配到起始路径点。
         /// </summary>
         [JsonInclude]
         public bool EnforceMaxPlayers { get; private set; }
 
         /// <summary>
-        /// Controls if the map is meant for a co-operation game mode
-        /// (enables briefing logic and forcing options, among others).
+        /// 控制此地图是否用于合作游戏模式
+        /// （启用简报逻辑和强制选项等功能）。
         /// </summary>
         [JsonInclude]
         public bool IsCoop { get; private set; }
 
         /// <summary>
-        /// If set, this map won't be automatically transferred over CnCNet when
-        /// a player doesn't have it.
+        /// 如果设置，当玩家没有此地图时，不会通过CnCNet自动传输。
         /// </summary>
         [JsonIgnore]
         public bool Official { get; private set; }
 
         /// <summary>
-        /// Contains co-op information.
+        /// 包含合作模式信息。
         /// </summary>
         [JsonInclude]
         public CoopMapInfo CoopInfo { get; private set; }
 
         /// <summary>
-        /// The briefing of the map.
+        /// 地图简报。
         /// </summary>
         [JsonInclude]
         public string Briefing { get; private set; }
 
         /// <summary>
-        /// The author of the map.
+        /// 地图作者。
         /// </summary>
         [JsonInclude]
         public string Author { get; private set; }
@@ -111,75 +109,74 @@ namespace DTAClient.Domain.Multiplayer
         public string PlayDescription { get; private set; }
 
         /// <summary>
-        /// The calculated SHA1 of the map.
+        /// 地图计算的SHA1值。
         /// </summary>
         [JsonIgnore]
         public string SHA1 { get; private set; }
 
         /// <summary>
-        /// The path to the map file.
+        /// 地图文件路径。
         /// </summary>
         [JsonInclude]
         public string BaseFilePath { get; private set; }
 
         /// <summary>
-        /// Returns the complete path to the map file.
-        /// Includes the game directory in the path.
+        /// 返回地图文件的完整路径。
+        /// 包含游戏目录在路径中。
         /// </summary>
         [JsonInclude]
         public string CompleteFilePath => SafePath.CombineFilePath(ProgramConstants.GamePath, FormattableString.Invariant($"{BaseFilePath}"));
 
         /// <summary>
-        /// The file name of the preview image.
+        /// 预览图片的文件名。
         /// </summary>
         [JsonInclude]
         public string PreviewPath { get; private set; }
 
         /// <summary>
-        /// If set, this map cannot be played on Skirmish.
+        /// 如果设置，此地图不能在遭遇战中使用。
         /// </summary>
         [JsonInclude]
         public bool MultiplayerOnly { get; private set; }
 
         /// <summary>
-        /// If set, this map cannot be played with AI players.
+        /// 如果设置，此地图不能与AI玩家一起游玩。
         /// </summary>
         [JsonInclude]
         public bool HumanPlayersOnly { get; private set; }
 
         /// <summary>
-        /// If set, players are forced to random starting locations on this map.
+        /// 如果设置，在此地图中玩家将被强制随机起始位置。
         /// </summary>
         [JsonInclude]
         public bool ForceRandomStartLocations { get; private set; }
 
         /// <summary>
-        /// If set, players are forced to different teams on this map.
+        /// 如果设置，在此地图中玩家将被强制分配到不同队伍。
         /// </summary>
         [JsonInclude]
         public bool ForceNoTeams { get; private set; }
 
         /// <summary>
-        /// The name of an extra INI file in INI\Map Code\ that should be
-        /// embedded into this map's INI code when a game is started.
+        /// INI\Map Code\中额外INI文件的名称，在游戏开始时应嵌入到此地图的INI代码中。
         /// </summary>
         [JsonInclude]
         public string ExtraININame { get; private set; }
 
         /// <summary>
-        /// The game modes that the map is listed for.
+        /// 此地图所属的游戏模式。
         /// </summary>
         [JsonInclude]
         public string[] GameModes;
 
         /// <summary>
-        /// The forced UnitCount for the map. -1 means none.
+        /// 地图强制的UnitCount。-1表示无。
         /// </summary>
         [JsonInclude]
         public int UnitCount = -1;
 
         /// <summary>
-        /// The forced starting credits for the map. -1 means none.
+        /// 地图强制的起始资金。-1表示无。
         /// </summary>
         [JsonInclude]
         public int Credits = -1;
@@ -221,7 +218,7 @@ namespace DTAClient.Domain.Multiplayer
         public List<string> waypoints = new List<string>();
 
         /// <summary>
-        /// The pixel coordinates of the map's player starting locations.
+        /// 地图玩家起始位置的像素坐标。
         /// </summary>
         [JsonInclude]
         public List<Point> startingLocations;
@@ -241,7 +238,7 @@ namespace DTAClient.Domain.Multiplayer
         }
 
         /// <summary>
-        /// If false, the preview shouldn't be extracted for this (custom) map.
+        /// 如果为false，不应为此（自定义）地图提取预览。
         /// </summary>
         [JsonInclude]
         public bool ExtractCustomPreview { get; set; } = true;
@@ -261,10 +258,10 @@ namespace DTAClient.Domain.Multiplayer
         private List<KeyValuePair<string, string>> ForcedSpawnIniOptions = new List<KeyValuePair<string, string>>(0);
 
         /// <summary>
-        /// This is used to load a map from the MPMaps.ini (default name) file.
+        /// 用于从MPMaps.ini（默认名称）文件加载地图。
         /// </summary>
-        /// <param name="iniFile">The configuration file for the multiplayer maps.</param>
-        /// <returns>True if loading the map succeeded, otherwise false.</returns>
+        /// <param name="iniFile">多人游戏地图的配置文件。</param>
+        /// <returns>如果加载地图成功则返回true，否则返回false。</returns>
         public bool SetInfoFromMpMapsINI(IniFile iniFile)
         {
             try
@@ -276,8 +273,8 @@ namespace DTAClient.Domain.Multiplayer
 
                 var section = iniFile.GetSection(BaseFilePath.Remove(BaseFilePath.Length - 4));
 
-                Name = section.GetStringValue("Description", "Unnamed map");
-                Author = section.GetStringValue("Author", "Unknown author");
+                Name = section.GetStringValue("Description", "未命名地图");
+                Author = section.GetStringValue("Author", "未知作者");
                 //新增玩法描述读取
                 PlayDescription = section.GetStringValue("PlayDescription", "");
 
@@ -321,10 +318,10 @@ namespace DTAClient.Domain.Multiplayer
                 int i = 0;
                 while (true)
                 {
-                    // Format example:
+                    // 格式示例：
                     // ExtraTexture0=oilderrick.png,200,150,1,false
-                    // Third value is optional map cell level, defaults to 0 if unspecified.
-                    // Fourth value is optional boolean value that determines if the texture can be toggled on / off.
+                    // 第三个值是可选的地图单元格层级，未指定时默认为0。
+                    // 第四个值是可选的布尔值，决定纹理是否可以切换开/关。
                     string value = section.GetStringValue("ExtraTexture" + i, null);
 
                     if (string.IsNullOrWhiteSpace(value))
@@ -397,13 +394,10 @@ namespace DTAClient.Domain.Multiplayer
                 }
 
                 GetTeamStartMappingPresets(section);
-#if !GL
-
                 if (UserINISettings.Instance.PreloadMapPreviews)
                     PreviewTexture = LoadPreviewTexture();
-#endif
 
-                // Parse forced options
+                // 解析强制选项
 
                 string forcedOptionsSections = iniFile.GetStringValue(BaseFilePath, "ForcedOptions", string.Empty);
 
@@ -442,11 +436,11 @@ namespace DTAClient.Domain.Multiplayer
                 {
                     var teamStartMappingPreset = section.GetStringValue($"TeamStartMapping{i}", string.Empty);
                     if (string.IsNullOrEmpty(teamStartMappingPreset))
-                        return; // mapping not found
+                        return; // 未找到映射
 
                     var teamStartMappingPresetName = section.GetStringValue($"TeamStartMapping{i}Name", string.Empty);
                     if (string.IsNullOrEmpty(teamStartMappingPresetName))
-                        continue; // mapping found, but no name specified
+                        continue; // 找到映射，但未指定名称
 
                     TeamStartMappingPresets.Add(new TeamStartMappingPreset()
                     {
@@ -489,10 +483,10 @@ namespace DTAClient.Domain.Multiplayer
         }
 
         /// <summary>
-        /// Due to caching, this may not have been loaded on application start.
-        /// This function provides the ability to load when needed.
+        /// 由于缓存机制，此文件可能未在应用程序启动时加载。
+        /// 此函数提供在需要时加载的能力。
         /// </summary>
-        /// <returns>Returns the loaded INI file of a custom map.</returns>
+        /// <returns>返回已加载的自定义地图INI文件。</returns>
         private IniFile GetCustomMapIniFile()
         {
             if (customMapIni != null)
@@ -514,8 +508,8 @@ namespace DTAClient.Domain.Multiplayer
         }
 
         /// <summary>
-        /// Loads map information from a TS/RA2 map INI file.
-        /// Returns true if successful, otherwise false.
+        /// 从TS/RA2地图INI文件加载地图信息。
+        /// 成功则返回true，否则返回false。
         /// </summary>
         public bool SetInfoFromCustomMap()
         {
@@ -704,7 +698,7 @@ namespace DTAClient.Domain.Multiplayer
         }
 
         /// <summary>
-        /// Loads and returns the map preview texture.
+        /// 加载并返回地图预览纹理。
         /// </summary>
         public Texture2D LoadPreviewTexture()
         {
@@ -713,7 +707,7 @@ namespace DTAClient.Domain.Multiplayer
 
             if (!Official)
             {
-                // Extract preview from the map itself
+                // 从地图本身提取预览
                 using Image preview = MapPreviewExtractor.ExtractMapPreview(GetCustomMapIniFile());
 
                 if (preview != null)
@@ -779,7 +773,7 @@ namespace DTAClient.Domain.Multiplayer
 
                     int allyIndex = 0;
 
-                    // Write alliances
+                    // 写入同盟关系
                     for (int pIndex = 0; pIndex < totalPlayerCount + allyHouses.Count; pIndex++)
                     {
                         int allyMultiIndex = pIndex;
@@ -801,7 +795,7 @@ namespace DTAClient.Domain.Multiplayer
 
                     int allyIndex = 0;
 
-                    // Write alliances
+                    // 写入同盟关系
                     for (int enemyIndex = 0; enemyIndex < enemyHouses.Count; enemyIndex++)
                     {
                         int allyMultiIndex = totalPlayerCount + allyHouses.Count + enemyIndex;
@@ -853,7 +847,7 @@ namespace DTAClient.Domain.Multiplayer
             if (MainClientConstants.USE_ISOMETRIC_CELLS)
             {
                 if (actualSize == null || actualSize.Length < 4)
-                    return "Not available";
+                    return "不可用";
 
                 return actualSize[2] + "x" + actualSize[3];
             }
@@ -870,7 +864,7 @@ namespace DTAClient.Domain.Multiplayer
             if (waypointCoordsInt < 0)
                 return new Point(0, 0);
 
-            // https://modenc.renegadeprojects.com/Waypoints
+            // https://modenc.renegadeprojects.com/Waypoints （路径点参考）
             int waypointX = waypointCoordsInt % MainClientConstants.TDRA_WAYPOINT_COEFFICIENT;
             int waypointY = waypointCoordsInt / MainClientConstants.TDRA_WAYPOINT_COEFFICIENT;
 
@@ -892,9 +886,9 @@ namespace DTAClient.Domain.Multiplayer
         }
 
         /// <summary>
-        /// Converts a waypoint's coordinate string into pixel coordinates on the preview image.
+        /// 将路径点的坐标字符串转换为预览图像上的像素坐标。
         /// </summary>
-        /// <returns>The waypoint's location on the map preview as a point.</returns>
+        /// <returns>路径点在地图预览上的位置点。</returns>
         private static Point GetIsometricWaypointCoords(string waypoint, string[] actualSizeValues, string[] localSizeValues,
             Point previewSizePoint)
         {
@@ -924,7 +918,7 @@ namespace DTAClient.Domain.Multiplayer
             pixelPosX = pixelPosX - (Convert.ToInt32(localSizeValues[0], CultureInfo.InvariantCulture) * MainClientConstants.MAP_CELL_SIZE_X);
             pixelPosY = pixelPosY - (Convert.ToInt32(localSizeValues[1], CultureInfo.InvariantCulture) * MainClientConstants.MAP_CELL_SIZE_Y);
 
-            // Calculate map size
+            // 计算地图大小
             int mapSizeX = Convert.ToInt32(localSizeValues[2], CultureInfo.InvariantCulture) * MainClientConstants.MAP_CELL_SIZE_X;
             int mapSizeY = Convert.ToInt32(localSizeValues[3], CultureInfo.InvariantCulture) * MainClientConstants.MAP_CELL_SIZE_Y;
 

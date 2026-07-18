@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using System;
 using System.IO;
 using System.Net;
@@ -7,13 +7,13 @@ using System.Threading;
 namespace DTAClient.Domain.Multiplayer.CnCNet
 {
     /// <summary>
-    /// A class for updating of the CnCNet game/player count.
+    /// 用于更新CnCNet游戏/玩家计数的类。
     /// </summary>
     public static class CnCNetPlayerCountTask
     {
         public static int PlayerCount { get; private set; }
 
-        private static int REFRESH_INTERVAL = 60000; // 1 minute
+        private static int REFRESH_INTERVAL = 60000; // 1分钟
 
         internal static event EventHandler<PlayerCountEventArgs> CnCNetGameCountUpdated;
 
@@ -36,7 +36,7 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
             {
                 if (waitHandle.WaitOne(REFRESH_INTERVAL))
                 {
-                    // Cancellation signaled
+                    // 收到取消信号
                     return;
                 }
                 else

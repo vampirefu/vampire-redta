@@ -1,24 +1,21 @@
-﻿namespace DTAConfig.Settings
+namespace DTAConfig.Settings
 {
     interface IFileSetting : IUserSetting
     {
         /// <summary>
-        /// Determines if the setting availability is checked on runtime.
+        /// 确定是否在运行时检查设置的可用性。
         /// </summary>
         bool CheckAvailability { get; }
 
         /// <summary>
-        /// Determines if the client would adjust the setting value automatically
-        /// if the current value becomes unavailable.
+        /// 确定当当前值变得不可用时，客户端是否自动调整设置值。
         /// </summary>
         bool ResetUnavailableValue { get; }
 
         /// <summary>
-        /// Refreshes the setting to account for possible
-        /// changes that could affect it's functionality.
+        /// 刷新设置以应对可能影响其功能的变更。
         /// </summary>
-        /// <returns>A bool that determines whether the 
-        /// setting's value was changed.</returns>
+        /// <returns>一个布尔值，指示设置的值是否已变更。</returns>
         bool RefreshSetting();
     }
 }

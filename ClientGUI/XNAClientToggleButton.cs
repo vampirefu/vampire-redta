@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.Xna.Framework.Graphics;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
@@ -6,8 +6,8 @@ using Rampastring.XNAUI.XNAControls;
 namespace ClientGUI
 {
     /// <summary>
-    /// This is a combination of a checkbox and a standard button. You must specify
-    /// the Checked and Unchecked Textures to render for each button state.
+    /// 这是复选框和标准按钮的组合。必须指定Checked和Unchecked纹理
+    /// 以渲染每种按钮状态。
     /// </summary>
     public class XNAClientToggleButton : XNAButton
     {

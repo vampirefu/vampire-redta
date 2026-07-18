@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Rampastring.XNAUI;
@@ -19,7 +19,7 @@ using DTAClient.DXGUI.Helpers;
 namespace DTAClient.DXGUI.Multiplayer.GameLobby
 {
     /// <summary>
-    /// A generic base class for multiplayer game lobbies (CnCNet and LAN).
+    /// 多人游戏大厅（CnCNet和局域网）的通用基类。
     /// </summary>
     public abstract class MultiplayerGameLobby : GameLobbyBase, ISwitchable
     {
@@ -93,9 +93,8 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         protected int FrameSendRate { get; set; } = 1;
 
         /// <summary>
-        /// Controls the MaxAhead parameter. The default value of 0 means that 
-        /// the value is not written to spawn.ini, which allows the spawner the
-        /// calculate and assign the MaxAhead value.
+        /// 控制MaxAhead参数。默认值0表示不将该值写入spawn.ini，
+        /// 允许生成器计算并分配MaxAhead值。
         /// </summary>
         protected int MaxAhead { get; set; }
 
@@ -110,9 +109,9 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         private bool lastMapChangeWasInvalid = false;
 
         /// <summary>
-        /// Allows derived classes to add their own chat box commands.
+        /// 允许派生类添加自己的聊天框命令。
         /// </summary>
-        /// <param name="command">The command to add.</param>
+        /// <param name="command">要添加的命令。</param>
         protected void AddChatBoxCommand(ChatBoxCommand command) => chatBoxCommands.Add(command);
 
         public override void Initialize()
@@ -186,8 +185,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Performs initialization that is necessary after derived 
-        /// classes have performed their own initialization.
+        /// 在派生类完成自身初始化之后执行必要的初始化。
         /// </summary>
         protected void PostInitialize()
         {
@@ -430,10 +428,9 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Enables or disables completely random starting locations and informs
-        /// the user accordingly.
+        /// 启用或禁用完全随机起始位置，并相应地通知用户。
         /// </summary>
-        /// <param name="newValue">The new value of completely random starting locations.</param>
+        /// <param name="newValue">完全随机起始位置的新值。</param>
         protected void SetRandomStartingLocations(bool newValue)
         {
             if (newValue != RemoveStartingLocations)
@@ -447,9 +444,9 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Handles the dice rolling command.
+        /// 处理掷骰子命令。
         /// </summary>
-        /// <param name="dieType">The parameters given for the command by the user.</param>
+        /// <param name="dieType">用户为命令提供的参数。</param>
         private void RollDiceCommand(string dieType)
         {
             int dieSides = 6;
@@ -491,9 +488,9 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Handles custom map load command.
+        /// 处理自定义地图加载命令。
         /// </summary>
-        /// <param name="mapName">Name of the map given as a parameter, without file extension.</param>
+        /// <param name="mapName">作为参数给出的地图名称，不含文件扩展名。</param>
         private void LoadCustomMap(string mapName)
         {
             // Logger.Log("111111");
@@ -510,21 +507,20 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Override in derived classes to broadcast the results of rolling dice to other players.
+        /// 在派生类中重写以向其他玩家广播掷骰子的结果。
         /// </summary>
-        /// <param name="dieSides">The number of sides in the dice.</param>
-        /// <param name="results">The results of the dice roll.</param>
+        /// <param name="dieSides">骰子的面数。</param>
+        /// <param name="results">掷骰子的结果。</param>
         protected abstract void BroadcastDiceRoll(int dieSides, int[] results);
 
         /// <summary>
-        /// Parses and lists the results of rolling dice.
+        /// 解析并列出掷骰子的结果。
         /// </summary>
-        /// <param name="senderName">The player that rolled the dice.</param>
-        /// <param name="result">The results of rolling dice, with each die separated by a comma
-        /// and the number of sides in the die included as the first number.</param>
+        /// <param name="senderName">掷骰子的玩家。</param>
+        /// <param name="result">掷骰子的结果，每个骰子用逗号分隔，骰子面数作为第一个数字。</param>
         /// <example>
-        /// HandleDiceRollResult("Rampastring", "6,3,5,1") would mean that
-        /// Rampastring rolled three six-sided dice and got 3, 5 and 1.
+        /// HandleDiceRollResult("Rampastring", "6,3,5,1") 表示
+        /// Rampastring掷了三个六面骰子，得到了3、5和1。
         /// </example>
         protected void HandleDiceRollResult(string senderName, string result)
         {
@@ -552,11 +548,11 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Prints the result of rolling dice.
+        /// 打印掷骰子的结果。
         /// </summary>
-        /// <param name="senderName">The player who rolled dice.</param>
-        /// <param name="dieSides">The number of sides in the die.</param>
-        /// <param name="results">The results of the roll.</param>
+        /// <param name="senderName">掷骰子的玩家。</param>
+        /// <param name="dieSides">骰子的面数。</param>
+        /// <param name="results">掷骰子的结果。</param>
         protected void PrintDiceRollResult(string senderName, int dieSides, int[] results)
         {
             AddNotice(String.Format("{0}掷{1}d{2}结果{3}",
@@ -567,9 +563,9 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         protected abstract void SendChatMessage(string message);
 
         /// <summary>
-        /// Changes the game lobby's UI depending on whether the local player is the host.
+        /// 根据本地玩家是否为主机来更改游戏大厅的UI。
         /// </summary>
-        /// <param name="isHost">Determines whether the local player is the host of the game.</param>
+        /// <param name="isHost">确定本地玩家是否为游戏主机。</param>
         protected void Refresh(bool isHost)
         {
             IsHost = isHost;
@@ -664,7 +660,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             btnPickRandomMap.Disable();
             btnAginLoadMaps.Disable();
             btnMapSortAlphabetically.Disable();
-            //���������ؼ�
+            // 禁用人数控件
             lblscreen.Disable();
             ddPeople.Disable();
 
@@ -698,7 +694,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             ReadINIForControl(lblMapSize);
             ReadINIForControl(btnMapSortAlphabetically);
 
-            //��ʾ�����ؼ�
+            // 显示人数控件
             lblscreen.Enable();
             ddPeople.Enable();
         }
@@ -721,10 +717,9 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// Handles the user's click on the "Launch Game" / "I'm Ready" button.
-        /// If the local player is the game host, checks if the game can be launched and then
-        /// launches the game if it's allowed. If the local player isn't the game host,
-        /// sends a ready request.
+        /// 处理用户点击"启动游戏"/"我准备好了"按钮。
+        /// 如果本地玩家是游戏主机，检查游戏是否可以启动，如果允许则启动游戏。
+        /// 如果本地玩家不是游戏主机，则发送准备请求。
         /// </summary>
         protected override void BtnLaunchGame_LeftClick(object sender, EventArgs e)
         {
@@ -974,7 +969,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                     ddPlayerNames[pId].AllowDropDown = true;
             }
 
-            // Player statuses
+            // 玩家状态
             for (int pId = 0; pId < Players.Count; pId++)
             {
                 /* if (pId != 0 && !Players[pId].Verified) // If player is not verified (not counting the host)
@@ -982,13 +977,13 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                     StatusIndicators[pId].SwitchTexture("error");
                 }
                 else */
-                if (Players[pId].IsInGame) // If player is ingame
+                if (Players[pId].IsInGame) // 如果玩家在游戏中
                 {
                     StatusIndicators[pId].SwitchTexture(PlayerSlotState.InGame);
                 }
-                else if (pId == 0) // If player is host
+                else if (pId == 0) // 如果玩家是主机
                 {
-                    StatusIndicators[pId].SwitchTexture(Locked ? PlayerSlotState.Ready : PlayerSlotState.NotReady); // Display room lock
+                    StatusIndicators[pId].SwitchTexture(Locked ? PlayerSlotState.Ready : PlayerSlotState.NotReady); // 显示房间锁定状态
                 }
                 else
                 {
@@ -1010,7 +1005,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 UpdatePlayerPingIndicator(Players[pId]);
             }
 
-            // AI statuses
+            // AI状态
             for (int aiId = 0; aiId < AIPlayers.Count; aiId++)
             {
                 StatusIndicators[aiId + Players.Count].SwitchTexture(
@@ -1020,7 +1015,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                     StatusIndicators[aiId + Players.Count].ToolTip.Text += Environment.NewLine + "AI players can't be spectators.";
             }
 
-            // Empty slot statuses
+            // 空槽位状态
             for (int i = AIPlayers.Count + Players.Count; i < MAX_PLAYER_COUNT; i++)
             {
                 StatusIndicators[i].SwitchTexture(PlayerSlotState.Empty);
@@ -1071,7 +1066,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
         protected abstract void RequestReadyStatus();
 
-        // this public as it is used by the main lobby to notify the user of invitation failure
+        // 此方法为public，因为主大厅使用它来通知用户邀请失败
         public void AddWarning(string message)
         {
             AddNotice(message, Color.Yellow);
@@ -1099,19 +1094,19 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         /// <summary>
-        /// �����л���ͼʱ���ؼ�������������
+        /// 初始化切换地图时控件可见性的逻辑方法
         /// </summary>
         public void IniControlVisibleWhenChangeMap()
         {
             if (!IsHost)
             {
-                //�����߼����ж��Ƿ���ʾ��ͼ�淨
+                // 根据逻辑判断是否显示地图玩法
                 if (string.IsNullOrEmpty(GameModeMap.Map?.PlayDescription))
                     lblPlayDescription.Visible = false;
                 else
                     lblPlayDescription.Visible = true;
 
-                //�����߼����жϵ�ǰ��ͼ�Ƿ�Ϊ���ص�ͼ��ȷ��chkDefenceAiTrigger�Ƿ���ʾ
+                // 根据逻辑判断当前地图是否为防守地图并确定chkDefenceAiTrigger是否显示
                 bool isShow = DefenceAiHelper.IsShowCKH(GameModeMap.Map.BaseFilePath);
                 var chkDefenceAiTrigger = CheckBoxes.FirstOrDefault(p => p.Name == "chkDefenceAiTrigger");
                 chkDefenceAiTrigger.Visible = isShow;

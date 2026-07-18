@@ -1,9 +1,9 @@
-﻿using System;
+﻿﻿using System;
 
 namespace DTAClient.Online
 {
     /// <summary>
-    /// An user on an IRC channel.
+    /// IRC 频道上的用户。
     /// </summary>
     public class ChannelUser
     {

@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using ClientGUI;
 using DTAClient.Domain;
 using DTAClient.Domain.Multiplayer.CnCNet;
@@ -8,6 +8,7 @@ using DTAClient.DXGUI.Multiplayer.GameLobby;
 using DTAClient.Online;
 using DTAConfig;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Rampastring.Tools;
@@ -28,16 +29,16 @@ using System.Xml.Linq;
 namespace DTAClient.DXGUI.Generic
 {
     /// <summary>
-    /// The main menu of the client.
+    /// 客户端的主菜单。
     /// </summary>
     class MainMenu : XNAWindow, ISwitchable
     {
         private const float MEDIA_PLAYER_VOLUME_FADE_STEP = 0.01f;
         private const float MEDIA_PLAYER_VOLUME_EXIT_FADE_STEP = 0.025f;
-        private const double UPDATE_RE_CHECK_THRESHOLD = 30.0;
+
 
         /// <summary>
-        /// Creates a new instance of the main menu.
+        /// 创建主菜单的新实例。
         /// </summary>
         public MainMenu(
             WindowManager windowManager,
@@ -116,7 +117,6 @@ namespace DTAClient.DXGUI.Generic
 
         private bool customComponentDialogQueued = false;
 
-        private DateTime lastUpdateCheckTime;
 
         private Song themeSong;
 
@@ -124,11 +124,22 @@ namespace DTAClient.DXGUI.Generic
 
         private bool isMusicFading = false;
 
+        private Texture2D[] animatedBackgroundFrames;
+        private TimeSpan[] animatedBackgroundFrameDurations;
+        private int animatedBackgroundFrameIndex;
+        private TimeSpan animatedBackgroundFrameElapsed;
+
+        /// <summary>
+        /// 后台 GIF 预解码尚未完成时为 true。
+        /// 此时背景用 PNG 兜底，Update() 每帧检查预加载器，完成后切换到 GIF 动画。
+        /// </summary>
+        private bool pendingAnimatedBackgroundSwap;
+
         private readonly bool isMediaPlayerAvailable;
 
         private CancellationTokenSource cncnetPlayerCountCancellationSource;
 
-        // Main Menu Buttons
+        // 主菜单按钮
         private XNAClientButton btnNewCampaign;
         private XNAClientButton btnLoadGame;
         private XNAClientButton btnSkirmish;
@@ -141,7 +152,7 @@ namespace DTAClient.DXGUI.Generic
         private XNAClientButton btnExtras;
 
         /// <summary>
-        /// Initializes the main menu's controls.
+        /// 初始化主菜单的控件。
         /// </summary>
         public override void Initialize()
         {
@@ -149,7 +160,7 @@ namespace DTAClient.DXGUI.Generic
             GameProcessLogic.GameProcessExited += SharedUILogic_GameProcessExited;
 
             Name = nameof(MainMenu);
-            BackgroundTexture = AssetLoader.LoadTexture("MainMenu/mainmenubg.png");
+            InitializeBackgroundTexture();
             ClientRectangle = new Rectangle(0, 0, BackgroundTexture.Width, BackgroundTexture.Height);
 
             WindowManager.CenterControlOnScreen(this);
@@ -224,7 +235,7 @@ namespace DTAClient.DXGUI.Generic
             btnCredits.HoverTexture = AssetLoader.LoadTexture("MainMenu/credits_c.png");
             btnCredits.HoverSoundEffect = new EnhancedSoundEffect("MainMenu/button.wav");
             btnCredits.LeftClick += BtnCredits_LeftClick;
-            btnCredits.Text = "View Credits";
+            btnCredits.Text = "查看鸣谢";
 
             btnExtras = new XNAClientButton(WindowManager);
             btnExtras.Name = nameof(btnExtras);
@@ -243,7 +254,7 @@ namespace DTAClient.DXGUI.Generic
 
             XNALabel lblCnCNetStatus = new XNALabel(WindowManager);
             lblCnCNetStatus.Name = nameof(lblCnCNetStatus);
-            lblCnCNetStatus.Text = "DTAplayersonCnCNet:";
+            lblCnCNetStatus.Text = "DTA玩家在CnCNet:";
             lblCnCNetStatus.ClientRectangle = new Rectangle(12, 9, 0, 0);
 
             lblCnCNetPlayerCount = new XNALabel(WindowManager);
@@ -258,7 +269,7 @@ namespace DTAClient.DXGUI.Generic
             lblSoftState = new XNALabel(WindowManager);
             lblSoftState.Name = nameof(lblSoftState);
 
-            // Update UI removed
+            // 更新 UI 已移除
 
             AddChild(btnNewCampaign);
             AddChild(btnLoadGame);
@@ -277,7 +288,7 @@ namespace DTAClient.DXGUI.Generic
 
             if (!ClientConfiguration.Instance.ModMode)
             {
-                // Updater removed: only show version label without update features
+                // 更新器已移除：仅显示版本标签，无更新功能
                 AddChild(lblVersion);
             }
 
@@ -295,7 +306,7 @@ namespace DTAClient.DXGUI.Generic
             }
 
 
-            base.Initialize(); // Read control attributes from INI
+            base.Initialize(); // 从 INI 读取控件属性
             lblSoftState.Text = "本平台及Mod均不收费";
             lblSoftState.ClientRectangle = new Rectangle(1000, 740, lblSoftState.Width, lblSoftState.Height);
 
@@ -331,7 +342,7 @@ namespace DTAClient.DXGUI.Generic
 
             UserINISettings.Instance.SettingsSaved += SettingsSaved;
 
-            // Updater removed: restart handling disabled
+            // 更新器已移除：重启处理已禁用
 
             SetButtonHotkeys(true);
 
@@ -375,12 +386,12 @@ namespace DTAClient.DXGUI.Generic
         {
             if (!optionsWindow.Enabled)
             {
-                // Updater removed: no custom component dialog
+                // 更新器已移除：无自定义组件对话框
             }
         }
 
         /// <summary>
-        /// Refreshes settings. Called when the game process is starting.
+        /// 刷新设置。在游戏进程启动时调用。
         /// </summary>
         private void SharedUILogic_GameProcessStarting()
         {
@@ -393,17 +404,16 @@ namespace DTAClient.DXGUI.Generic
             catch (Exception ex)
             {
                 Logger.Log("Refreshing settings failed! Exception message: " + ex.Message);
-                // We don't want to show the dialog when starting a game
+                // 我们不想在启动游戏时显示对话框
                 //XNAMessageBox.Show(WindowManager, "Saving settings failed",
                 //    "Saving settings failed! Error message: " + ex.Message);
             }
         }
 
-        // Updater restart handling removed
+        // 更新器重启处理已移除
 
         /// <summary>
-        /// Applies configuration changes (music playback and volume)
-        /// when settings are saved.
+        /// 保存设置时应用配置更改（音乐播放和音量）。
         /// </summary>
         private void SettingsSaved(object sender, EventArgs e)
         {
@@ -435,10 +445,103 @@ namespace DTAClient.DXGUI.Generic
 
         }
 
+        private void InitializeBackgroundTexture()
+        {
+            string backgroundPath = MainMenuBackgroundSelector.Select(BackgroundFileExists);
+
+            if (Path.GetExtension(backgroundPath).Equals(".gif", StringComparison.OrdinalIgnoreCase) &&
+                TryLoadAnimatedBackground(backgroundPath))
+            {
+                BackgroundTexture = animatedBackgroundFrames[0];
+                return;
+            }
+
+            BackgroundTexture = AssetLoader.LoadTexture(MainMenuBackgroundSelector.PngBackgroundPath);
+        }
+
+        private bool TryLoadAnimatedBackground(string assetPath)
+        {
+            FileInfo backgroundFile = GetBackgroundFile(assetPath);
+
+            if (!backgroundFile.Exists)
+                return false;
+
+            // 确保 LoadingScreen 阶段启动的后台预解码任务已经启动。
+            // 如果已经启动过同一路径，EnsureStarted 是幂等的。
+            MainMenuBackgroundPreloader.EnsureStarted(backgroundFile.FullName);
+
+            // 如果后台解码已完成，立即把 RGBA 字节数组上传成 Texture2D（仅 ~0.3 秒 GPU 上传）。
+            if (TryApplyPreloadedBackground())
+                return true;
+
+            // 后台仍在解码：先用 PNG 兜底，Update() 每帧轮询，解码完成后无缝切换到 GIF。
+            pendingAnimatedBackgroundSwap = true;
+            Logger.Log("MainMenu: GIF 后台解码尚未完成，先用 PNG 兜底，解码完成后切换。");
+            return false;
+        }
+
         /// <summary>
-        /// Checks files which are required for the mod to function
-        /// but not distributed with the mod (usually base game files
-        /// for YR mods which can't be standalone).
+        /// 尝试把预加载器已完成的结果上传成 Texture2D 数组。
+        /// 成功返回 true；如果预加载器未启动、未完成或失败，返回 false。
+        /// </summary>
+        private bool TryApplyPreloadedBackground()
+        {
+            if (!MainMenuBackgroundPreloader.TryGetResult(out PreloadedBackground preloaded))
+                return false;
+
+            if (preloaded == null)
+            {
+                // 预解码失败或已结束无结果，调用方走兜底
+                return false;
+            }
+
+            try
+            {
+                GraphicsDevice device = WindowManager.Game.GraphicsDevice
+                    ?? throw new InvalidOperationException("GraphicsDevice 不可用");
+
+                var frames = new Texture2D[preloaded.Frames.Length];
+                var durations = new TimeSpan[preloaded.Frames.Length];
+
+                for (int i = 0; i < preloaded.Frames.Length; i++)
+                {
+                    frames[i] = new Texture2D(device, preloaded.Width, preloaded.Height, false, SurfaceFormat.Color);
+                    frames[i].SetData(preloaded.Frames[i].RgbaPixels);
+                    durations[i] = preloaded.Frames[i].Duration;
+                }
+
+                animatedBackgroundFrames = frames;
+                animatedBackgroundFrameDurations = durations;
+                animatedBackgroundFrameIndex = 0;
+                animatedBackgroundFrameElapsed = TimeSpan.Zero;
+
+                Logger.Log($"MainMenu: 已应用预解码 GIF 背景，{frames.Length} 帧。");
+                return frames.Length > 0;
+            }
+            catch (Exception ex)
+            {
+                Logger.Log("MainMenu: 应用预解码 GIF 背景失败! " + ex.Message);
+                animatedBackgroundFrames = null;
+                animatedBackgroundFrameDurations = null;
+                return false;
+            }
+        }
+
+        private static FileInfo GetBackgroundFile(string assetPath)
+        {
+            FileInfo themeFile = SafePath.GetFile(ProgramConstants.GetResourcePath(), assetPath);
+
+            if (themeFile.Exists)
+                return themeFile;
+
+            return SafePath.GetFile(ProgramConstants.GetBaseResourcePath(), assetPath);
+        }
+
+        private static bool BackgroundFileExists(string assetPath) => GetBackgroundFile(assetPath).Exists;
+
+        /// <summary>
+        /// 检查 Mod 运行所需但未随 Mod 分发的文件
+        /// （通常是尤里的复仇 Mod 无法独立运行的基础游戏文件）。
         /// </summary>
         private void CheckRequiredFiles()
         {
@@ -447,13 +550,9 @@ namespace DTAClient.DXGUI.Generic
 
             if (absentFiles.Count > 0)
                 XNAMessageBox.Show(WindowManager, "文件缺失",
-#if ARES
                     ("您缺少运行此Mod所需的尤里的复仇文件!" + Environment.NewLine +
                     "尤里的复仇Mod不是独立的," + Environment.NewLine +
                     "您需要将以下尤里的复仇(v. 1.001)文件放置在Mod文件夹中才能运行:") +
-#else
-                    "以下必需的文件缺失:" +
-#endif
                     Environment.NewLine + Environment.NewLine +
                     String.Join(Environment.NewLine, absentFiles) +
                     Environment.NewLine + Environment.NewLine +
@@ -467,27 +566,17 @@ namespace DTAClient.DXGUI.Generic
 
             if (presentFiles.Count > 0)
                 XNAMessageBox.Show(WindowManager, "检测到冲突文件",
-#if TS
-                    ("您已将Mod安装在泰伯利亚之日的副本上!" + Environment.NewLine +
-                    "此Mod是独立的,因此您必须" + Environment.NewLine +
-                    "将其安装在一个空文件夹中。否则Mod将无法" + Environment.NewLine +
-                    "正常运行。" +
-                    Environment.NewLine + Environment.NewLine +
-                    "请将Mod重新安装到一个空文件夹中以进行游戏。")
-#else
                     "以下冲突文件:" +
                     Environment.NewLine + Environment.NewLine +
                     String.Join(Environment.NewLine, presentFiles) +
                     Environment.NewLine + Environment.NewLine +
                     "这些文件会导致Mod选择器失效。@@如要修改数据请修改rules_custom.ini与art_custom.ini."
-#endif
                     );
         }
 
         /// <summary>
-        /// Checks whether the client is running for the first time.
-        /// If it is, displays a dialog asking the user if they'd like
-        /// to configure settings.
+        /// 检查客户端是否首次运行。
+        /// 如果是，则显示对话框询问用户是否要配置设置。
         /// </summary>
         private void CheckIfFirstRun()
         {
@@ -510,7 +599,7 @@ namespace DTAClient.DXGUI.Generic
         private void FirstRunMessageBox_NoClicked(XNAMessageBox messageBox)
         {
             if (customComponentDialogQueued)
-                customComponentDialogQueued = false; // Updater removed
+                customComponentDialogQueued = false; // 更新器已移除
         }
 
         private void FirstRunMessageBox_YesClicked(XNAMessageBox messageBox) => optionsWindow.Open();
@@ -541,18 +630,18 @@ namespace DTAClient.DXGUI.Generic
             lock (locker)
             {
                 if (e.PlayerCount == -1)
-                    lblCnCNetPlayerCount.Text = "N/A";
+                    lblCnCNetPlayerCount.Text = "不可用";
                 else
                     lblCnCNetPlayerCount.Text = e.PlayerCount.ToString();
             }
         }
 
         /// <summary>
-        /// Attemps to "clean" the client session in a nice way if the user closes the game.
+        /// 尝试在用户关闭游戏时"优雅地"清理客户端会话。
         /// </summary>
         private void Clean()
         {
-            // Updater removed: no update event unsubscription
+            // 更新器已移除：无更新事件取消订阅
             if (cncnetPlayerCountCancellationSource != null) cncnetPlayerCountCancellationSource.Cancel();
             topBar.Clean();
             if (UpdateInProgress)
@@ -563,9 +652,9 @@ namespace DTAClient.DXGUI.Generic
         }
 
         /// <summary>
-        /// Starts playing music, initiates an update check if automatic updates
-        /// are enabled and checks whether the client is run for the first time.
-        /// Called after all internal client UI logic has been initialized.
+        /// 开始播放音乐，如果启用了自动更新则发起更新检查，
+        /// 并检查客户端是否首次运行。
+        /// 在所有内部客户端 UI 逻辑初始化完成后调用。
         /// </summary>
         public void PostInit()
         {
@@ -599,7 +688,7 @@ namespace DTAClient.DXGUI.Generic
 
             PlayMusic();
 
-            // Updater removed: update checks disabled
+            // 更新器已移除：更新检查已禁用
             CheckMap();
             CheckRequiredFiles();
             CheckForbiddenFiles();
@@ -608,7 +697,6 @@ namespace DTAClient.DXGUI.Generic
 
         private void SwitchMainMenuMusicFormat()
         {
-#if GL || DX
             FileInfo wmaMainMenuMusicFile = SafePath.GetFile(ProgramConstants.GamePath, ProgramConstants.BASE_RESOURCE_PATH,
                 FormattableString.Invariant($"{ClientConfiguration.Instance.MainMenuMusicName}.wma"));
 
@@ -621,19 +709,10 @@ namespace DTAClient.DXGUI.Generic
             if (!wmaBackupMainMenuMusicFile.Exists)
                 wmaMainMenuMusicFile.CopyTo(wmaBackupMainMenuMusicFile.FullName);
 
-#endif
-#if DX
             wmaBackupMainMenuMusicFile.CopyTo(wmaMainMenuMusicFile.FullName, true);
-#elif GL
-            FileInfo oggMainMenuMusicFile = SafePath.GetFile(ProgramConstants.GamePath, ProgramConstants.BASE_RESOURCE_PATH,
-                FormattableString.Invariant($"{ClientConfiguration.Instance.MainMenuMusicName}.ogg"));
-
-            if (oggMainMenuMusicFile.Exists)
-                oggMainMenuMusicFile.CopyTo(wmaMainMenuMusicFile.FullName, true);
-#endif
         }
 
-        // Updater functionality removed
+        // 更新器功能已移除
 
         private void BtnOptions_LeftClick(object sender, EventArgs e)
             => optionsWindow.Open();
@@ -685,9 +764,7 @@ namespace DTAClient.DXGUI.Generic
 
         private void BtnExit_LeftClick(object sender, EventArgs e)
         {
-#if WINFORMS
             WindowManager.HideWindow();
-#endif
             FadeMusicExit();
         }
 
@@ -699,10 +776,10 @@ namespace DTAClient.DXGUI.Generic
             innerPanel.GameLoadingWindow.ListSaves();
             innerPanel.Hide();
 
-            // If music is disabled on menus, check if the main menu is the top-most
-            // window of the top bar and only play music if it is
-            // LAN has the top bar disabled, so to detect the LAN game lobby
-            // we'll check whether the top bar is enabled
+            // 如果菜单音乐被禁用，检查主菜单是否为顶部栏的
+            // 最上层窗口，只有是时才播放音乐
+            // LAN 模式下顶部栏被禁用，所以检测 LAN 游戏大厅
+            // 我们通过检查顶部栏是否启用来判断
             if (!UserINISettings.Instance.StopMusicOnMenu ||
                 (topBar.Enabled && topBar.LastSwitchType == SwitchType.PRIMARY &&
                 topBar.GetTopMostPrimarySwitchable() == this))
@@ -710,7 +787,7 @@ namespace DTAClient.DXGUI.Generic
         }
 
         /// <summary>
-        /// Switches to the main menu and performs a check for updates.
+        /// 切换到主菜单并执行更新检查。
         /// </summary>
         private void CncnetLobby_UpdateCheck(object sender, EventArgs e)
         {
@@ -723,7 +800,43 @@ namespace DTAClient.DXGUI.Generic
             if (isMusicFading)
                 FadeMusic(gameTime);
 
+            UpdateAnimatedBackground(gameTime);
+
             base.Update(gameTime);
+        }
+
+        private void UpdateAnimatedBackground(GameTime gameTime)
+        {
+            // 后台 GIF 解码还没完成时，每帧轮询预加载器；完成后把 RGBA 字节上传成 Texture2D 并切换背景。
+            if (pendingAnimatedBackgroundSwap)
+            {
+                if (TryApplyPreloadedBackground())
+                {
+                    pendingAnimatedBackgroundSwap = false;
+                    BackgroundTexture = animatedBackgroundFrames[0];
+                }
+                else
+                {
+                    // 仍在解码，继续用 PNG 兜底
+                    return;
+                }
+            }
+
+            if (animatedBackgroundFrames == null || animatedBackgroundFrames.Length < 2)
+                return;
+
+            animatedBackgroundFrameElapsed += gameTime.ElapsedGameTime;
+
+            while (animatedBackgroundFrameElapsed >= animatedBackgroundFrameDurations[animatedBackgroundFrameIndex])
+            {
+                animatedBackgroundFrameElapsed -= animatedBackgroundFrameDurations[animatedBackgroundFrameIndex];
+                animatedBackgroundFrameIndex++;
+
+                if (animatedBackgroundFrameIndex >= animatedBackgroundFrames.Length)
+                    animatedBackgroundFrameIndex = 0;
+
+                BackgroundTexture = animatedBackgroundFrames[animatedBackgroundFrameIndex];
+            }
         }
 
         public override void Draw(GameTime gameTime)
@@ -735,12 +848,12 @@ namespace DTAClient.DXGUI.Generic
         }
 
         /// <summary>
-        /// Attempts to start playing the menu music.
+        /// 尝试开始播放菜单音乐。
         /// </summary>
         private void PlayMusic()
         {
             if (!isMediaPlayerAvailable)
-                return; // SharpDX fails at music playback on Vista
+                return; // SharpDX 在 Vista 上无法播放音乐
 
             if (themeSong != null && UserINISettings.Instance.PlayMainMenuMusic)
             {
@@ -761,25 +874,24 @@ namespace DTAClient.DXGUI.Generic
 
         private void LblVersion_LeftClick(object sender, EventArgs e)
         {
-            // Updater removed: no action on version click
+            // 更新器已移除：点击版本号无操作
         }
 
         private void CheckForUpdates()
         {
-            // Updater removed: update checks disabled
+            // 更新器已移除：更新检查已禁用
         }
 
         /// <summary>
-        /// Lowers the volume of the menu music, or stops playing it if the
-        /// volume is unaudibly low.
+        /// 降低菜单音乐的音量，如果音量低到听不见则停止播放。
         /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        /// <param name="gameTime">提供时间值的快照。</param>
         private void FadeMusic(GameTime gameTime)
         {
             if (!isMediaPlayerAvailable || !isMusicFading || themeSong == null)
                 return;
 
-            // Fade during 1 second
+            // 在 1 秒内淡出
             float step = SoundPlayer.Volume * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             if (MediaPlayer.Volume > step)
@@ -792,7 +904,7 @@ namespace DTAClient.DXGUI.Generic
         }
 
         /// <summary>
-        /// Exits the client. Quickly fades the music if it's playing.
+        /// 退出客户端。如果正在播放音乐则快速淡出。
         /// </summary>
         private void FadeMusicExit()
         {
@@ -820,10 +932,8 @@ namespace DTAClient.DXGUI.Generic
         {
             Logger.Log("Exiting.");
             WindowManager.CloseGame();
-#if !XNA
             Thread.Sleep(1000);
             Environment.Exit(0);
-#endif
         }
 
         public void SwitchOn()
@@ -831,13 +941,7 @@ namespace DTAClient.DXGUI.Generic
             if (UserINISettings.Instance.StopMusicOnMenu)
                 PlayMusic();
 
-            if (!ClientConfiguration.Instance.ModMode)
-            {
-                // Re-check for updates
-
-                if ((DateTime.Now - lastUpdateCheckTime) > TimeSpan.FromSeconds(UPDATE_RE_CHECK_THRESHOLD))
-                    CheckForUpdates();
-            }
+            // 更新检查已移除
         }
 
         public void SwitchOff()
@@ -863,10 +967,10 @@ namespace DTAClient.DXGUI.Generic
         }
 
         /// <summary>
-        /// Checks if media player is available currently.
-        /// It is not available on Windows Vista or other systems without the appropriate media player components.
+        /// 检查媒体播放器当前是否可用。
+        /// 在 Windows Vista 或其他没有适当媒体播放器组件的系统上不可用。
         /// </summary>
-        /// <returns>True if media player is available, false otherwise.</returns>
+        /// <returns>如果媒体播放器可用则为 true，否则为 false。</returns>
         private bool IsMediaPlayerAvailable()
         {
             try

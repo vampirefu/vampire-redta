@@ -1,4 +1,4 @@
-﻿/*********************************************************************
+/*********************************************************************
 * Dawn of the Tiberium Age MonoGame/XNA CnCNet Client
 * Expression Parser
 * Copyright (C) Rampastring 2022
@@ -28,7 +28,7 @@ using System.Collections.Generic;
 namespace ClientGUI
 {
     /// <summary>
-    /// Parses arithmetic expressions.
+    /// 解析算术表达式。
     /// </summary>
     class Parser
     {

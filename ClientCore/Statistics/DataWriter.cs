@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text;
 
@@ -29,8 +29,7 @@ namespace ClientCore.Statistics
             byte[] writeBuffer = encoding.GetBytes(value);
             if (writeBuffer.Length != reservedSpace)
             {
-                // If the name's byte presentation is not equal to reservedSpace,
-                // let's resize the array
+                // 如果名称的字节表示不等于预留空间，则调整数组大小
                 byte[] temp = writeBuffer;
                 writeBuffer = new byte[reservedSpace];
                 for (int j = 0; j < temp.Length && j < writeBuffer.Length; j++)

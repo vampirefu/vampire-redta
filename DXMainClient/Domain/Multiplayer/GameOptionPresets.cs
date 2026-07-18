@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using Rampastring.Tools;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Linq;
 namespace DTAClient.Domain.Multiplayer
 {
     /// <summary>
-    /// A single game option preset.
+    /// 单个游戏选项预设。
     /// </summary>
     public class GameOptionPreset
     {
@@ -16,17 +16,17 @@ namespace DTAClient.Domain.Multiplayer
             ProfileName = profileName;
 
             if (ProfileName.Contains('[') || ProfileName.Contains(']'))
-                throw new ArgumentException("Game option preset name cannot contain the [] characters.");
+                throw new ArgumentException("游戏选项预设名称不能包含[]字符。");
         }
 
         /// <summary>
-        /// Checks if a specific name is valid for the name of a game option preset.
-        /// Returns null if the name is valid, an error message otherwise.
+        /// 检查特定名称是否为有效的游戏选项预设名称。
+        /// 如果名称有效则返回null，否则返回错误消息。
         /// </summary>
         public static string IsNameValid(string name)
         {
             if (name.Contains('[') || name.Contains(']'))
-                return "Game option preset name cannot contain the [] characters.";
+                return "游戏选项预设名称不能包含[]字符。";
 
             return null;
         }
@@ -70,9 +70,9 @@ namespace DTAClient.Domain.Multiplayer
 
         public void Read(IniSection section)
         {
-            // Syntax example:
-            // CheckBoxValues=chkCrates:1,chkShortGame:1,chkFastResourceGrowth:0,.... (0 = unchecked, 1 = checked)
-            // DropDownValues=ddTechLevel:7,ddStartingCredits:5,... (the number is the selected option index)
+            // 语法示例：
+            // CheckBoxValues=chkCrates:1,chkShortGame:1,chkFastResourceGrowth:0,....（0=未选中，1=选中）
+            // DropDownValues=ddTechLevel:7,ddStartingCredits:5,...（数字是所选选项的索引）
 
             AddValues(section, "CheckBoxValues", checkBoxValues, s => s == "1");
             AddValues(section, "DropDownValues", dropDownValues, s => Conversions.IntFromString(s, 0));
@@ -88,7 +88,7 @@ namespace DTAClient.Domain.Multiplayer
     }
 
     /// <summary>
-    /// Handles game option presets.
+    /// 处理游戏选项预设。
     /// </summary>
     public class GameOptionPresets
     {

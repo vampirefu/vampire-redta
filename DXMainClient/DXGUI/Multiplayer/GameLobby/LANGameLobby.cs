@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using DTAClient.Domain;
 using DTAClient.Domain.LAN;
 using DTAClient.Domain.Multiplayer;
@@ -575,9 +575,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         protected override void GetReadyNotification()
         {
             base.GetReadyNotification();
-#if WINFORMS
             WindowManager.FlashWindow();
-#endif
 
             if (IsHost)
                 BroadcastMessage(GET_READY_COMMAND);
@@ -585,19 +583,19 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
         protected override void ClearPingIndicators()
         {
-            // TODO Implement pings for LAN lobbies
+            // TODO 为局域网大厅实现延迟显示
         }
 
         protected override void UpdatePlayerPingIndicator(PlayerInfo pInfo)
         {
-            // TODO Implement pings for LAN lobbies
+            // TODO 为局域网大厅实现延迟显示
         }
 
         /// <summary>
-        /// Broadcasts a command to all players in the game as the game host.
+        /// 作为游戏主机向游戏中的所有玩家广播命令。
         /// </summary>
-        /// <param name="message">The command to send.</param>
-        /// <param name="otherPlayersOnly">If true, only send this to other players. Otherwise, even the sender will receive their message.</param>
+        /// <param name="message">要发送的命令。</param>
+        /// <param name="otherPlayersOnly">如果为true，仅发送给其他玩家。否则，发送者也会收到自己的消息。</param>
         private void BroadcastMessage(string message, bool otherPlayersOnly = false)
         {
             if (!IsHost)
@@ -743,13 +741,13 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             sb.Append(localGame);
             sb.Append(Map.Name);
             sb.Append(GameMode.UIName);
-            sb.Append(0); // LoadedGameID
+            sb.Append(0); // LoadedGameID（已加载游戏ID）
             var sbPlayers = new StringBuilder();
             Players.ForEach(p => sbPlayers.Append(p.Name + ","));
             sbPlayers.Remove(sbPlayers.Length - 1, 1);
             sb.Append(sbPlayers.ToString());
             sb.Append(Convert.ToInt32(Locked));
-            sb.Append(0); // IsLoadedGame
+            sb.Append(0); // IsLoadedGame（是否为已加载的游戏）
 
             GameBroadcast?.Invoke(this, new GameBroadcastEventArgs(sb.ToString()));
         }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Rampastring.Tools;
@@ -13,7 +13,7 @@ namespace ClientCore.Statistics.GameParsers
         }
 
         private string fileName = "DTA.log";
-        private string economyString = "Economy"; // RA2/YR do not have economy stat, but a number of built objects.
+        private string economyString = "Economy"; // RA2/YR 没有经济统计，而是建造对象的数量。
         private bool isLoadedGame;
 
         public void ParseStats(string gamepath, string fileName)
@@ -51,7 +51,7 @@ namespace ClientCore.Statistics.GameParsers
                 {
                     if (line.Contains(": Loser"))
                     {
-                        // Player found, game saw completion
+                        // 找到玩家，游戏已正常结束
                         sawCompletion = true;
                         string playerName = line.Substring(0, line.Length - 7);
                         currentPlayer = Statistics.GetEmptyPlayerByName(playerName);
@@ -64,7 +64,7 @@ namespace ClientCore.Statistics.GameParsers
 
                         if (currentPlayer == null && playerName == "Computer" && numPlayersFound <= Statistics.NumberOfHumanPlayers)
                         {
-                            // The player has been taken over by an AI during the match
+                            // 该玩家在比赛期间被 AI 接管
                             Logger.Log("Losing take-over AI found");
                             takeoverAIs.Add(new PlayerStatistics("Computer", false, true, false, 0, 10, 255, 1));
                             currentPlayer = takeoverAIs[takeoverAIs.Count - 1];
@@ -75,7 +75,7 @@ namespace ClientCore.Statistics.GameParsers
                     }
                     else if (line.Contains(": Winner"))
                     {
-                        // Player found, game saw completion
+                        // 找到玩家，游戏已正常结束
                         sawCompletion = true;
                         string playerName = line.Substring(0, line.Length - 8);
                         currentPlayer = Statistics.GetEmptyPlayerByName(playerName);
@@ -88,7 +88,7 @@ namespace ClientCore.Statistics.GameParsers
 
                         if (currentPlayer == null && playerName == "Computer" && numPlayersFound <= Statistics.NumberOfHumanPlayers)
                         {
-                            // The player has been taken over by an AI during the match
+                            // 该玩家在比赛期间被 AI 接管
                             Logger.Log("Winning take-over AI found");
                             takeoverAIs.Add(new PlayerStatistics("Computer", false, true, false, 0, 10, 255, 1));
                             currentPlayer = takeoverAIs[takeoverAIs.Count - 1];
@@ -102,7 +102,7 @@ namespace ClientCore.Statistics.GameParsers
                     }
                     else if (line.Contains("Game loop finished. Average FPS"))
                     {
-                        // Game loop finished. Average FPS = <integer>
+                        // 游戏循环结束。平均 FPS = <整数>
                         string fpsString = line.Substring(34);
                         Statistics.AverageFPS = Int32.Parse(fpsString);
                     }
@@ -122,7 +122,7 @@ namespace ClientCore.Statistics.GameParsers
                         currentPlayer.Economy = Int32.Parse(line.Substring(economyString.Length + 2));
                 }
 
-                // Check empty players for take-over by AIs
+                // 检查空玩家是否被 AI 接管
                 if (takeoverAIs.Count == 1)
                 {
                     PlayerStatistics ai = takeoverAIs[0];
@@ -136,9 +136,9 @@ namespace ClientCore.Statistics.GameParsers
                 }
                 else if (takeoverAIs.Count > 1)
                 {
-                    // If there's multiple take-over AI players, we have no way of figuring out
-                    // which AI represents which player, so let's just add the AIs into the player list
-                    // (then the user viewing the statistics can figure it out themselves)
+                    // 如果有多个接管 AI 玩家，我们无法判断
+                    // 哪个 AI 代表哪个玩家，所以直接将 AI 添加到玩家列表中
+                    // （然后查看统计的用户可以自行判断）
                     for (int i = 0; i < takeoverAIs.Count; i++)
                     {
                         takeoverAIs[i].SawEnd = false;

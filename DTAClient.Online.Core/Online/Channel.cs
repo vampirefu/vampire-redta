@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using DTAClient.Online.EventArguments;
 using System;
 using System.Collections.Generic;
@@ -24,15 +24,12 @@ namespace DTAClient.Online
         public event EventHandler InviteOnlyErrorOnJoin;
 
         /// <summary>
-        /// Raised when the server informs the client that it's is unable to
-        /// join the channel because it's full.
+        /// 当服务器通知客户端无法加入频道因为频道已满时引发。
         /// </summary>
         public event EventHandler ChannelFull;
 
         /// <summary>
-        /// Raised when the server informs the client that it's is unable to
-        /// join the channel because the client has attempted to join too many
-        /// channels too quickly.
+        /// 当服务器通知客户端无法加入频道因为客户端尝试过快加入过多频道时引发。
         /// </summary>
         public event EventHandler<MessageEventArgs> TargetChangeTooFast;
 
@@ -96,11 +93,7 @@ namespace DTAClient.Online
 
         private void Instance_SettingsSaved(object sender, EventArgs e)
         {
-#if YR
-            notifyOnUserListChange = false;
-#else
             notifyOnUserListChange = UserINISettings.Instance.NotifyOnUserListChange;
-#endif
         }
 
         public void AddUser(ChannelUser user)
@@ -119,10 +112,8 @@ namespace DTAClient.Online
                     string.Format("{0}已加入{1}.", user.IRCUser.Name, UIName)));
             }
 
-#if !YR
             if (Persistent && IsChatChannel && user.IRCUser.Name == ProgramConstants.PLAYERNAME)
                 RequestUserInfo();
-#endif
         }
 
         public void OnUserListReceived(List<ChannelUser> userList)
@@ -261,12 +252,11 @@ namespace DTAClient.Online
                 "PRIVMSG " + ChannelName + " :" + colorString + message);
         }
 
-        /// <param name="message"></param>
-        /// <param name="qmType"></param>
-        /// <param name="priority"></param>
+        /// <param name="message">消息内容。</param>
+        /// <param name="qmType">队列消息类型。</param>
+        /// <param name="priority">优先级。</param>
         /// <param name="replace">
-        ///     This can be used to help prevent flooding for multiple options that are changed quickly. It allows for a single message
-        ///     for multiple changes.
+        ///     可用于帮助防止快速更改多个选项导致的洪水问题。它允许用单条消息处理多次更改。
         /// </param>
         public void SendCTCPMessage(string message, QueuedMessageType qmType, int priority, bool replace = false)
         {
@@ -278,20 +268,20 @@ namespace DTAClient.Online
         }
 
         /// <summary>
-        /// Sends a "kick user" message to the channel.
+        /// 向频道发送"踢出用户"消息。
         /// </summary>
-        /// <param name="userName">The name of the user that should be kicked.</param>
-        /// <param name="priority">The priority of the message in the send queue.</param>
+        /// <param name="userName">应被踢出的用户名称。</param>
+        /// <param name="priority">消息在发送队列中的优先级。</param>
         public void SendKickMessage(string userName, int priority)
         {
             connection.QueueMessage(QueuedMessageType.INSTANT_MESSAGE, priority, "KICK " + ChannelName + " " + userName);
         }
 
         /// <summary>
-        /// Sends a "ban host" message to the channel.
+        /// 向频道发送"封禁主机"消息。
         /// </summary>
-        /// <param name="host">The host that should be banned.</param>
-        /// <param name="priority">The priority of the message in the send queue.</param>
+        /// <param name="host">应被封禁的主机。</param>
+        /// <param name="priority">消息在发送队列中的优先级。</param>
         public void SendBanMessage(string host, int priority)
         {
             connection.QueueMessage(QueuedMessageType.INSTANT_MESSAGE, priority,
@@ -300,7 +290,7 @@ namespace DTAClient.Online
 
         public void Join()
         {
-            // Wait a random amount of time before joining to prevent join/part floods
+            // 加入前等待随机时间以防止加入/离开洪水
             if (Persistent)
             {
                 int rn = connection.Rng.Next(1, 10000);
@@ -326,7 +316,7 @@ namespace DTAClient.Online
 
         public void Leave()
         {
-            // Wait a random amount of time before joining to prevent join/part floods
+            // 离开前等待随机时间以防止加入/离开洪水
             if (Persistent)
             {
                 int rn = connection.Rng.Next(1, 10000);

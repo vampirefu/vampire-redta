@@ -44,9 +44,9 @@ namespace ClientCore
         }
 
         /// <summary>
-        /// Singleton Pattern. Returns the object of this class.
+        /// 单例模式。返回此类的实例。
         /// </summary>
-        /// <returns>The object of the ClientConfiguration class.</returns>
+        /// <returns>ClientConfiguration 类的实例。</returns>
         public static ClientConfiguration Instance
         {
             get
@@ -239,11 +239,10 @@ namespace ClientCore
         public string[] GetThemeInfoFromIndex(int themeIndex) => clientDefinitionsIni.GetStringValue("Themes", themeIndex.ToString(), ",").Split(',');
 
         /// <summary>
-        /// Returns the directory path for a theme, or null if the specified
-        /// theme name doesn't exist.
+        /// 返回主题的目录路径，如果指定的主题名称不存在则返回 null。
         /// </summary>
-        /// <param name="themeName">The name of the theme.</param>
-        /// <returns>The path to the theme's directory.</returns>
+        /// <param name="themeName">主题名称。</param>
+        /// <returns>主题目录的路径。</returns>
         public string GetThemePath(string themeName)
         {
             var themeSection = clientDefinitionsIni.GetSection("Themes");
@@ -325,36 +324,34 @@ namespace ClientCore
         public bool DisplayPlayerCountInTopBar => clientDefinitionsIni.GetBooleanValue(SETTINGS, "DisplayPlayerCountInTopBar", false);
 
         /// <summary>
-        /// The name of the executable in the main game directory that selects 
-        /// the correct main client executable.
-        /// For example, DTA.exe in case of DTA.
+        /// 主游戏目录中选择正确主客户端可执行文件的可执行文件名称。
+        /// 例如，DTA 的 DTA.exe。
         /// </summary>
         public string LauncherExe => clientDefinitionsIni.GetStringValue(SETTINGS, "LauncherExe", string.Empty);
 
         public bool UseClientRandomStartLocations => clientDefinitionsIni.GetBooleanValue(SETTINGS, "UseClientRandomStartLocations", false);
 
         /// <summary>
-        /// Returns the name of the game executable file that is used on
-        /// Linux and macOS.
+        /// 返回在 Linux 和 macOS 上使用的游戏可执行文件名称。
         /// </summary>
         public string UnixGameExecutableName => clientDefinitionsIni.GetStringValue(SETTINGS, "UnixGameExecutableName", "wine-dta.sh");
 
         /// <summary>
-        /// List of files that are not distributed but required to play.
+        /// 未分发但游玩所需的文件列表。
         /// </summary>
         public string[] RequiredFiles => clientDefinitionsIni.GetStringValue(SETTINGS, "RequiredFiles", String.Empty).Split(',');
 
         /// <summary>
-        /// List of files that can interfere with the mod functioning.
+        /// 可能干扰模组正常运行的文件列表。
         /// </summary>
         public string[] ForbiddenFiles => clientDefinitionsIni.GetStringValue(SETTINGS, "ForbiddenFiles", String.Empty).Split(',');
 
         /// <summary>
-        /// This tells the client which supplemental map files are ok to copy over during "spawnmap.ini" file creation.
-        /// IE, if "BIN" is listed, then the client will look for and copy the file "map_a.bin"
-        /// when writing the spawnmap.ini file for map file "map_a.ini".
-        /// 
-        /// This configuration should be in the form "SupplementalMapFileExtensions=bin,mix"
+        /// 告知客户端在创建 "spawnmap.ini" 文件时可以复制哪些补充地图文件。
+        /// 例如，如果列出了 "BIN"，则客户端在为地图文件 "map_a.ini" 编写 spawnmap.ini 文件时，
+        /// 将查找并复制文件 "map_a.bin"。
+        ///
+        /// 此配置的格式应为 "SupplementalMapFileExtensions=bin,mix"
         /// </summary>
         public IEnumerable<string> SupplementalMapFileExtensions
             => clientDefinitionsIni.GetStringValue(SETTINGS, "SupplementalMapFileExtensions", null)?
@@ -377,8 +374,7 @@ namespace ClientCore
     }
 
     /// <summary>
-    /// An exception that is thrown when a client configuration file contains invalid or
-    /// unexpected settings / data or required settings / data are missing.
+    /// 当客户端配置文件包含无效或意外的设置/数据，或缺少必需的设置/数据时抛出的异常。
     /// </summary>
     public class ClientConfigurationException : Exception
     {

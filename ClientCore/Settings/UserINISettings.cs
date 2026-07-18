@@ -1,11 +1,8 @@
-﻿using ClientCore.Settings;
+using ClientCore.Settings;
 using Rampastring.Tools;
 using System;
 using System.Collections.Generic;
 using ClientCore.Enums;
-
-using System.Linq;
-
 
 namespace ClientCore
 {
@@ -17,7 +14,6 @@ namespace ClientCore
         public const string MULTIPLAYER = "MultiPlayer";
         public const string OPTIONS = "Options";
         public const string AUDIO = "Audio";
-        public const string COMPATIBILITY = "Compatibility";
         public const string GAME_FILTERS = "GameFilters";
         public const string GAMEMOD = "GameMod";
         private const string PHOBOS = "Phobos";
@@ -53,11 +49,7 @@ namespace ClientCore
             SettingsIni = iniFile;
 
             const string WINDOWED_MODE_KEY = "Video.Windowed";
-#if TS
-            BackBufferInVRAM = new BoolSetting(iniFile, VIDEO, "UseGraphicsPatch", true);
-#else
             BackBufferInVRAM = new BoolSetting(iniFile, VIDEO, "VideoBackBuffer", false);
-#endif
 
             IngameScreenWidth = new IntSetting(iniFile, VIDEO, "ScreenWidth", 1024);
             IngameScreenHeight = new IntSetting(iniFile, VIDEO, "ScreenHeight", 768);
@@ -68,7 +60,6 @@ namespace ClientCore
             DetailLevel = new IntSetting(iniFile, OPTIONS, "DetailLevel", 2);
             Game = new StringSetting(iniFile, OPTIONS, "Game", "SkirmishLobby");
 
-            Renderer = new StringSetting(iniFile, COMPATIBILITY, "Renderer", string.Empty);
             WindowedMode = new BoolSetting(iniFile, VIDEO, WINDOWED_MODE_KEY, false);
             BorderlessWindowedMode = new BoolSetting(iniFile, VIDEO, "NoWindowFrame", false);
             BorderlessWindowedClient = new BoolSetting(iniFile, VIDEO, "BorderlessWindowedClient", true);
@@ -111,9 +102,6 @@ namespace ClientCore
 
             PrivacyPolicyAccepted = new BoolSetting(iniFile, OPTIONS, "PrivacyPolicyAccepted", false);
 
-            //随机壁纸
-            Random_wallpaper = new BoolSetting(iniFile, OPTIONS, "Random_wallpaper", false);
-
             IsFirstRun = new BoolSetting(iniFile, OPTIONS, "IsFirstRun", true);
             CustomComponentsDenied = new BoolSetting(iniFile, OPTIONS, "CustomComponentsDenied", false);
             Difficulty = new IntSetting(iniFile, OPTIONS, "Difficulty", 1);
@@ -143,7 +131,7 @@ namespace ClientCore
         public event EventHandler SettingsSaved;
 
         /*********/
-        /* VIDEO */
+        /* 视频 */
         /*********/
 
         public IntSetting IngameScreenWidth { get; private set; }
@@ -154,7 +142,6 @@ namespace ClientCore
 
         public StringSetting Voice { get; private set; }
         public IntSetting DetailLevel { get; private set; }
-        public StringSetting Renderer { get; private set; }
         public BoolSetting WindowedMode { get; private set; }
         public BoolSetting BorderlessWindowedMode { get; private set; }
         public BoolSetting BackBufferInVRAM { get; private set; }
@@ -165,7 +152,7 @@ namespace ClientCore
         public BoolSetting DisplayToggleableExtraTextures { get; private set; }
 
         /*********/
-        /* AUDIO */
+        /* 音频 */
         /*********/
 
         public DoubleSetting ScoreVolume { get; private set; }
@@ -178,7 +165,7 @@ namespace ClientCore
         public BoolSetting MessageSound { get; private set; }
 
         /********/
-        /* GAME */
+        /* 游戏 */
         /********/
         public StringSetting Game { get; private set; }
 
@@ -188,7 +175,7 @@ namespace ClientCore
         public StringSetting Win8CompatMode { get; private set; }
 
         /************************/
-        /* MULTIPLAYER (CnCNet) */
+        /* 多人游戏 (CnCNet) */
         /************************/
 
         public StringSetting PlayerName { get; private set; }
@@ -218,7 +205,7 @@ namespace ClientCore
         public IntSetting MapSortState { get; private set; }
 
         /*********************/
-        /* GAME LIST FILTERS */
+        /* 游戏列表过滤器 */
         /*********************/
 
         public IntSetting SortState { get; private set; }
@@ -234,16 +221,12 @@ namespace ClientCore
         public IntRangeSetting MaxPlayerCount { get; private set; }
 
         /********/
-        /* MISC */
+        /* 其他 */
         /********/
 
         public BoolSetting PrivacyPolicyAccepted { get; private set; }
         public BoolSetting IsFirstRun { get; private set; }
 
-        /// <summary>
-        /// 随机壁纸
-        /// </summary>
-        public BoolSetting Random_wallpaper { get; private set; }
         public BoolSetting CustomComponentsDenied { get; private set; }
 
         public IntSetting Difficulty { get; private set; }
@@ -314,10 +297,10 @@ namespace ClientCore
         }
 
         /// <summary>
-        /// Checks if a specified map name and game mode name belongs to the favorite map list.
+        /// 检查指定的地图名称和游戏模式名称是否属于收藏地图列表。
         /// </summary>
-        /// <param name="nameName">The name of the map.</param>
-        /// <param name="gameModeName">The name of the game mode</param>
+        /// <param name="nameName">地图名称。</param>
+        /// <param name="gameModeName">游戏模式名称。</param>
         public bool IsFavoriteMap(string nameName, string gameModeName) => FavoriteMaps.Value.Contains(FavoriteMapKey(nameName, gameModeName));
 
         private string FavoriteMapKey(string nameName, string gameModeName) => $"{nameName}:{gameModeName}";

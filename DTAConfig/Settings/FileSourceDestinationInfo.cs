@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using Rampastring.Tools;
 using System;
 using System.Collections.Generic;
@@ -15,8 +15,9 @@ namespace DTAConfig.Settings
 
         public string DestinationPath => SafePath.CombineFilePath(ProgramConstants.GamePath, destinationPath);
         /// <summary>
-        /// A path where the files edited by user are saved if
-        /// <see cref="FileOperationOptions"/> is set to <see cref="FileOperationOptions.KeepChanges"/>.
+        /// 如果 <see cref="FileOperationOptions"/> 设置为
+        /// <see cref="FileOperationOptions.KeepChanges"/>，
+        /// 用户编辑的文件保存到的路径。
         /// </summary>
         public string CachedPath => Path.Combine(ProgramConstants.ClientUserFilesPath, "SettingsCache", sourcePath);
 
@@ -30,15 +31,15 @@ namespace DTAConfig.Settings
         }
 
         /// <summary>
-        /// Constructs a new instance of <see cref="FileSourceDestinationInfo"/> from a given string.
+        /// 从给定字符串构造 <see cref="FileSourceDestinationInfo"/> 的新实例。
         /// </summary>
-        /// <param name="value">A string to be parsed.</param>
+        /// <param name="value">要解析的字符串。</param>
         public FileSourceDestinationInfo(string value)
         {
             string[] parts = value.Split(',');
             if (parts.Length < 2)
                 throw new ArgumentException($"{nameof(FileSourceDestinationInfo)}: " +
-                    $"Too few parameters specified in parsed value", nameof(value));
+                    $"解析值中指定的参数过少", nameof(value));
 
             FileOperationOptions options = default(FileOperationOptions);
             if (parts.Length >= 3)
@@ -50,13 +51,12 @@ namespace DTAConfig.Settings
         }
 
         /// <summary>
-        /// A method which parses certain key list values from an INI section
-        /// into a list of <see cref="FileSourceDestinationInfo"/> objects.
+        /// 将INI节中特定键列表值解析为
+        /// <see cref="FileSourceDestinationInfo"/> 对象列表的方法。
         /// </summary>
-        /// <param name="section">An INI section to parse key values from.</param>
-        /// <param name="iniKeyPrefix">A string to append index to when
-        /// parsing the values from key list.</param>
-        /// <returns>A <see cref="List{FileSourceDestinationInfo}"/> of all correctly defined <see cref="FileSourceDestinationInfo"/>s.</returns>
+        /// <param name="section">要从中解析键值的INI节。</param>
+        /// <param name="iniKeyPrefix">从键列表解析值时追加索引的字符串。</param>
+        /// <returns>包含所有正确定义的 <see cref="FileSourceDestinationInfo"/> 的 <see cref="List{FileSourceDestinationInfo}"/>。</returns>
         public static List<FileSourceDestinationInfo> ParseFSDInfoList(IniSection section, string iniKeyPrefix)
         {
             if (section == null)
@@ -77,8 +77,8 @@ namespace DTAConfig.Settings
         }
 
         /// <summary>
-        /// Performs file operations from <see cref="SourcePath"/> to
-        /// <see cref="DestinationPath"/> according to <see cref="FileOperationOptions"/>.
+        /// 根据 <see cref="FileOperationOptions"/> 执行从
+        /// <see cref="SourcePath"/> 到 <see cref="DestinationPath"/> 的文件操作。
         /// </summary>
         public void Apply()
         {
@@ -124,8 +124,8 @@ namespace DTAConfig.Settings
         }
 
         /// <summary>
-        /// Performs file operations to undo changes made by <see cref="Apply"/>
-        /// to <see cref="DestinationPath"/> according to <see cref="FileOperationOptions"/>.
+        /// 根据 <see cref="FileOperationOptions"/> 执行文件操作，
+        /// 撤销 <see cref="Apply"/> 对 <see cref="DestinationPath"/> 所做的更改。
         /// </summary>
         public void Revert()
         {
@@ -157,8 +157,7 @@ namespace DTAConfig.Settings
     }
 
     /// <summary>
-    /// Defines the expected behavior of file operations performed with
-    /// <see cref="FileSourceDestinationInfo"/>.
+    /// 定义使用 <see cref="FileSourceDestinationInfo"/> 执行文件操作的预期行为。
     /// </summary>
     public enum FileOperationOptions
     {

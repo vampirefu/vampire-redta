@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ClientGUI;
@@ -93,7 +93,7 @@ namespace DTAClient.DXGUI.Multiplayer
             const int maxColumnCount = 2;
             const int mappingPanelDefaultX = 4;
             const int mappingPanelDefaultY = 0;
-            if (index > 0 && index % maxColumnCount == 0) // need to start a new column
+            if (index > 0 && index % maxColumnCount == 0) // 需要开始新列
                 return new Rectangle(((index / maxColumnCount) * (teamMappingPanelWidth + mappingPanelDefaultX)) + 3, mappingPanelDefaultY, teamMappingPanelWidth, teamMappingPanelHeight);
 
             var lastControl = index > 0 ? teamStartMappingsPanel.GetTeamStartMappingPanels()[index - 1] : null;

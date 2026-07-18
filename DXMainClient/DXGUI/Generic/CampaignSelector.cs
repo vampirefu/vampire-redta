@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -18,7 +18,7 @@ namespace DTAClient.DXGUI.Generic
         private const int DEFAULT_WIDTH = 650;
         private const int DEFAULT_HEIGHT = 600;
 
-        private static string[] DifficultyNames = new string[] { "Easy", "Medium", "Hard" };
+        private static string[] DifficultyNames = new string[] { "简单", "中等", "困难" };
 
         private static string[] DifficultyIniPaths = new string[]
         {
@@ -218,17 +218,17 @@ namespace DTAClient.DXGUI.Generic
             AddChild(lblHard);
             AddChild(lbGameSpeed);
             AddChild(ddGameSpeed);
-            // Set control attributes from INI file
+            // 从 INI 文件设置控件属性
             base.Initialize();
 
-            // Center on screen
+            // 居中显示
             CenterOnParent();
 
             trbDifficultySelector.Value = UserINISettings.Instance.Difficulty;
 
             XNADropDownItem allitem = new XNADropDownItem();
             allitem.Text = "所有";
-            allitem.Tag = "All";
+            allitem.Tag = "全部";
 
             dddifficulty.AddItem(allitem);
             ddside.AddItem(allitem);
@@ -355,7 +355,7 @@ namespace DTAClient.DXGUI.Generic
 
             if (!ClientConfiguration.Instance.ModMode && AreFilesModified())
             {
-                // Confront the user by showing the cheater screen
+                // 通过显示作弊者界面来警告用户
                 missionToLaunch = mission;
                 cheaterWindow.Enable();
                 return;
@@ -386,13 +386,12 @@ namespace DTAClient.DXGUI.Generic
 
         private bool AreFilesModified()
         {
-            // Updater removed: cannot determine file originality, assume not modified
+            // 更新器已移除：无法判断文件原始性，假定未被修改
             return false;
         }
 
         /// <summary>
-        /// Called when the user wants to proceed to the mission despite having
-        /// being called a cheater.
+        /// 当用户在被指责作弊后仍想继续任务时调用。
         /// </summary>
         private void CheaterWindow_YesClicked(object sender, EventArgs e)
         {
@@ -400,7 +399,7 @@ namespace DTAClient.DXGUI.Generic
         }
 
         /// <summary>
-        /// Starts a singleplayer mission.
+        /// 启动单人任务。
         /// </summary>
         private void LaunchMission(Mission mission)
         {
@@ -428,7 +427,7 @@ namespace DTAClient.DXGUI.Generic
             else
                 spawnStreamWriter.WriteLine("Scenario=" + mission.Scenario);
 
-            // No one wants to play missions on Fastest, so we'll change it to Faster
+            // 没人想在"最快"速度下玩任务，所以我们将它改为"较快"
             if (UserINISettings.Instance.GameSpeed == 0)
                 UserINISettings.Instance.GameSpeed.Value = 1;
 
@@ -438,11 +437,7 @@ namespace DTAClient.DXGUI.Generic
             spawnStreamWriter.WriteLine("CampaignID=" + mission.Index);
             //spawnStreamWriter.WriteLine("GameSpeed=" + UserINISettings.Instance.GameSpeed);
             spawnStreamWriter.WriteLine("GameSpeed=" + ddGameSpeed.SelectedItem?.Text);
-#if YR || ARES
             spawnStreamWriter.WriteLine("Ra2Mode=" + !mission.RequiredAddon);
-#else
-            spawnStreamWriter.WriteLine("Firestorm=" + mission.RequiredAddon);
-#endif
             string customLoadScreen = LoadingScreenController.GetLoadScreenName(mission.Side.ToString());
             spawnStreamWriter.WriteLine("CustomLoadScreen=" + customLoadScreen);
             spawnStreamWriter.WriteLine("IsSinglePlayer=Yes");
@@ -518,10 +513,10 @@ namespace DTAClient.DXGUI.Generic
         }
 
         /// <summary>
-        /// Parses a Battle(E).ini file. Returns true if succesful (file found), otherwise false.
+        /// 解析 Battle(E).ini 文件。成功（找到文件）返回 true，否则返回 false。
         /// </summary>
-        /// <param name="path">The path of the file, relative to the game directory.</param>
-        /// <returns>True if succesful, otherwise false.</returns>
+        /// <param name="path">文件的路径，相对于游戏目录。</param>
+        /// <returns>成功返回 true，否则返回 false。</returns>
         private bool ParseBattleIni(string path)
         {
 
@@ -544,7 +539,7 @@ namespace DTAClient.DXGUI.Generic
             List<string> battleKeys = battleIni.GetSectionKeys("Battles");
 
             if (battleKeys == null)
-                return false; // File exists but [Battles] doesn't
+                return false; // 文件存在但没有 [Battles] 节
 
             for (int i = 0; i < battleKeys.Count; i++)
             {

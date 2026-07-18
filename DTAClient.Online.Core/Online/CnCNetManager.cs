@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using ClientCore.CnCNet5;
 using DTAClient.Online.EventArguments;
 using Microsoft.Xna.Framework;
@@ -12,17 +12,15 @@ using System.Text;
 namespace DTAClient.Online
 {
     /// <summary>
-    /// Acts as an interface between the CnCNet connection class
-    /// and the user-interface's classes.
+    /// 作为 CnCNet 连接类与用户界面类之间的接口。
     /// </summary>
     public class CnCNetManager : IConnectionManager
     {
-        // When implementing IConnectionManager functions, pay special attention
-        // to thread-safety.
-        // The functions in IConnectionManager are usually called from the networking
-        // thread, so if they affect anything in the UI or affect data that the 
-        // UI thread might be reading, use WindowManager.AddCallback to execute a function
-        // on the UI thread instead of modifying the data or raising events directly.
+        // 在实现 IConnectionManager 函数时，请特别注意线程安全。
+        // IConnectionManager 中的函数通常从网络线程调用，因此如果它们
+        // 影响到 UI 中的任何内容或影响到 UI 线程可能正在读取的数据，
+        // 请使用 WindowManager.AddCallback 在 UI 线程上执行函数，
+        // 而不是直接修改数据或引发事件。
 
         public delegate void UserListDelegate(string channelName, string[] userNames);
 
@@ -81,8 +79,7 @@ namespace DTAClient.Online
         private bool connected = false;
 
         /// <summary>
-        /// Gets a value that determines whether the client is 
-        /// currently connected to CnCNet.
+        /// 获取一个值，该值确定客户端当前是否已连接到 CnCNet。
         /// </summary>
         public bool IsConnected
         {
@@ -95,7 +92,7 @@ namespace DTAClient.Online
         }
 
         /// <summary>
-        /// The list of all users that we can see on the IRC network.
+        /// 我们在 IRC 网络上可以看到的所有用户列表。
         /// </summary>
         public List<IRCUser> UserList = new List<IRCUser>();
 
@@ -119,14 +116,13 @@ namespace DTAClient.Online
         }
 
         /// <summary>
-        /// Factory method for creating a new channel.
+        /// 创建新频道的工厂方法。
         /// </summary>
-        /// <param name="uiName">The user-interface name of the channel.</param>
-        /// <param name="channelName">The name of the channel.</param>
-        /// <param name="persistent">Determines whether the channel's information 
-        /// should remain in memory even after a disconnect.</param>
-        /// <param name="password">The password for the channel. Use null for none.</param>
-        /// <returns>A channel.</returns>
+        /// <param name="uiName">频道的用户界面名称。</param>
+        /// <param name="channelName">频道的名称。</param>
+        /// <param name="persistent">确定断开连接后频道信息是否仍保留在内存中。</param>
+        /// <param name="password">频道的密码。无密码则使用 null。</param>
+        /// <returns>一个频道。</returns>
         public Channel CreateChannel(string uiName, string channelName,
             bool persistent, bool isChatChannel, string password)
         {
@@ -179,9 +175,9 @@ namespace DTAClient.Online
 
         public void OnAttemptedServerChanged(string serverName)
         {
-            // AddCallback is necessary for thread-safety; OnAttemptedServerChanged
-            // is called by the networking thread, and AddCallback schedules DoAttemptedServerChanged
-            // to be executed on the main (UI) thread.
+            // AddCallback 对于线程安全是必要的；OnAttemptedServerChanged
+            // 由网络线程调用，AddCallback 将 DoAttemptedServerChanged
+            // 调度到主（UI）线程上执行。
             wm.AddCallback(new Action<string>(DoAttemptedServerChanged), serverName);
         }
 
@@ -273,7 +269,7 @@ namespace DTAClient.Online
                 {
                     switch (modeChar)
                     {
-                        // Add/remove channel operator status on user.
+                        // 添加/移除用户的频道管理员状态。
                         case 'o':
                             if (parameterCount >= modeParameters.Count)
                                 break;
@@ -323,16 +319,16 @@ namespace DTAClient.Online
 
             Color foreColor;
 
-            // Handle ACTION
+            // 处理 ACTION
             if (message.Contains("ACTION"))
             {
                 message = message.Remove(0, 7);
                 message = "====> " + senderName + " " + message;
                 senderName = String.Empty;
 
-                // Replace Funky's game identifiers with real game names
+                // 将 Funky 的游戏标识符替换为真实游戏名称
                 for (int i = 0; i < gameCollection.GameList.Count; i++)
-                    // TODO localize this or not?
+                    // TODO 是否需要本地化？
                     message = message.Replace("new " + gameCollection.GetGameIdentifierFromIndex(i) + " game",
                         "new " + gameCollection.GetFullGameNameFromIndex(i) + " game");
 
@@ -340,7 +336,7 @@ namespace DTAClient.Online
             }
             else
             {
-                // Color parsing
+                // 颜色解析
                 if (message.Contains(Convert.ToString((char)03)))
                 {
                     if (message.Length < 3)
@@ -352,7 +348,7 @@ namespace DTAClient.Online
                         string colorString = message.Substring(1, 2);
                         message = message.Remove(0, 3);
                         int colorIndex = Conversions.IntFromString(colorString, -1);
-                        // Try to parse message color info; if fails, use default color
+                        // 尝试解析消息颜色信息；如果失败，使用默认颜色
                         if (colorIndex < ircChatColors.Length && colorIndex > -1)
                             foreColor = ircChatColors[colorIndex].XnaColor;
                         else
@@ -382,8 +378,8 @@ namespace DTAClient.Online
         {
             Channel channel = FindChannel(channelName);
 
-            // it's possible that we received this CTCP via PRIVMSG, in which case we
-            // expect our username instead of a channel as the first parameter
+            // 可能我们通过 PRIVMSG 收到了此 CTCP，在这种情况下
+            // 我们期望第一个参数是用户名而不是频道名
             if (channel == null)
             {
                 if (channelName == ProgramConstants.PLAYERNAME)
@@ -424,9 +420,9 @@ namespace DTAClient.Online
         }
 
         /// <summary>
-        /// Called when the connection has got cut un-intentionally.
+        /// 当连接意外断开时调用。
         /// </summary>
-        /// <param name="reason"></param>
+        /// <param name="reason">断开原因。</param>
         public void OnConnectionLost(string reason)
         {
             wm.AddCallback(new Action<string>(DoConnectionLost), reason);
@@ -456,7 +452,7 @@ namespace DTAClient.Online
         }
 
         /// <summary>
-        /// Disconnects from CnCNet.
+        /// 断开与 CnCNet 的连接。
         /// </summary>
         public void Disconnect()
         {
@@ -465,7 +461,7 @@ namespace DTAClient.Online
         }
 
         /// <summary>
-        /// Connects to CnCNet.
+        /// 连接到 CnCNet。
         /// </summary>
         public void Connect()
         {
@@ -475,7 +471,7 @@ namespace DTAClient.Online
         }
 
         /// <summary>
-        /// Called when the connection has been aborted intentionally.
+        /// 当连接被有意中止时调用。
         /// </summary>
         public void OnDisconnected()
         {
@@ -534,7 +530,7 @@ namespace DTAClient.Online
 
         public void OnNoticeMessageParsed(string notice, string userName)
         {
-            // TODO Parse as private message
+            // TODO 解析为私聊消息
         }
 
         public void OnPrivateMessageReceived(string sender, string message)
@@ -588,8 +584,8 @@ namespace DTAClient.Online
 
             IRCUser ircUser = null;
 
-            // Check if we already know this user from another channel
-            // Avoid LINQ here for performance reasons
+            // 检查我们是否已从其他频道认识此用户
+            // 出于性能原因，此处避免使用 LINQ
             foreach (var user in UserList)
             {
                 if (user.Name == name)
@@ -599,7 +595,7 @@ namespace DTAClient.Online
                 }
             }
 
-            // If we don't know the user, create a new one
+            // 如果我们不认识该用户，创建一个新用户
             if (ircUser == null)
             {
                 string identifier = userAddress.Split('@')[0];
@@ -697,12 +693,12 @@ namespace DTAClient.Online
         }
 
         /// <summary>
-        /// Looks up an user in the global user list and removes a channel from the user.
-        /// If the user is left with 0 channels (meaning we have no common channel with the user),
-        /// the user is removed from the global user list.
+        /// 在全局用户列表中查找用户并从用户中移除一个频道。
+        /// 如果用户剩下 0 个频道（意味着我们与该用户没有共同频道），
+        /// 则从全局用户列表中移除该用户。
         /// </summary>
-        /// <param name="userName">The name of the user.</param>
-        /// <param name="channelName">The name of the channel.</param>
+        /// <param name="userName">用户的名称。</param>
+        /// <param name="channelName">频道的名称。</param>
         public void RemoveChannelFromUser(string userName, string channelName)
         {
             var userIndex = UserList.FindIndex(user => user.Name.ToLower() == userName.ToLower());
@@ -747,11 +743,11 @@ namespace DTAClient.Online
                 else if (userName.StartsWith("+"))
                     name = userName.Substring(1);
 
-                // Check if we already know the IRC user from another channel
+                // 检查我们是否已从其他频道认识此 IRC 用户
                 IRCUser ircUser = UserList.Find(u => u.Name == name);
 
-                // If the user isn't familiar to us already,
-                // create a new user instance and add it to the global user list
+                // 如果我们还不认识该用户，
+                // 创建新的用户实例并将其添加到全局用户列表
                 if (ircUser == null)
                 {
                     ircUser = new IRCUser(name);
@@ -796,10 +792,10 @@ namespace DTAClient.Online
 
 
         /// <summary>
-        /// Finds a channel with the specified internal name, case-insensitively.
+        /// 按指定内部名称查找频道，不区分大小写。
         /// </summary>
-        /// <param name="channelName">The internal name of the channel.</param>
-        /// <returns>A channel if one matching the name is found, otherwise null.</returns>
+        /// <param name="channelName">频道的内部名称。</param>
+        /// <returns>如果找到匹配名称的频道则返回该频道，否则返回 null。</returns>
         public Channel FindChannel(string channelName)
         {
             channelName = channelName.ToLower();
@@ -869,9 +865,8 @@ namespace DTAClient.Online
         }
 
         /// <summary>
-        /// Handles situations when the requested name is already in use by another
-        /// IRC user. Adds additional underscores to the name or replaces existing
-        /// characters with underscores.
+        /// 处理请求的名称已被其他 IRC 用户使用的情况。
+        /// 在名称后添加下划线或将现有字符替换为下划线。
         /// </summary>
         private void DoNameAlreadyInUse()
         {
@@ -928,7 +923,7 @@ namespace DTAClient.Online
                 Logger.Log("DoUserNicknameChange: Failed to find user with nickname " + oldNickname);
                 return;
             }
-            string realOldNickname = user.Name; // To make sure that case matches
+            string realOldNickname = user.Name; // 确保大小写匹配
             user.Name = newNickname;
 
             channels.ForEach(ch => ch.OnUserNameChanged(realOldNickname, newNickname));

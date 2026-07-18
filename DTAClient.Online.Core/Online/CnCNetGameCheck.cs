@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using System.Diagnostics;
 using System.Threading;
 
@@ -21,7 +21,7 @@ namespace DTAClient.Online
             {
                 if (waitHandle.WaitOne(REFRESH_INTERVAL))
                 {
-                    // Cancellation signaled
+                    // 收到取消信号
                     return;
                 }
                 else

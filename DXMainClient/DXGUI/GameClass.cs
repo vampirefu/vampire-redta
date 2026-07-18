@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using ClientCore.CnCNet5;
 using ClientGUI;
 using DTAClient.Domain;
@@ -21,21 +21,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Rampastring.XNAUI.XNAControls;
 using MainMenu = DTAClient.DXGUI.Generic.MainMenu;
-#if DX || (GL && WINFORMS)
 using System.Diagnostics;
 using System.IO;
-#endif
-#if WINFORMS
 using System.Windows.Forms;
-using System.IO;
 using System.Text.RegularExpressions;
-#endif
 
 namespace DTAClient.DXGUI
 {
     /// <summary>
-    /// The main class for the game. Sets up asset search paths
-    /// and initializes components.
+    /// 游戏的主类。设置资源搜索路径并初始化组件。
     /// </summary>
     public class GameClass : Game
     {
@@ -43,9 +37,7 @@ namespace DTAClient.DXGUI
         {
             graphics = new GraphicsDeviceManager(this);
             graphics.SynchronizeWithVerticalRetrace = false;
-#if !XNA
             graphics.HardwareModeSwitch = false;
-#endif
             content = new ContentManager(Services);
         }
 
@@ -67,13 +59,8 @@ namespace DTAClient.DXGUI
             AssetLoader.AssetSearchPaths.Add(ProgramConstants.GetBaseResourcePath());
             AssetLoader.AssetSearchPaths.Add(ProgramConstants.GamePath);
 
-#if DX || (GL && WINFORMS)
-            // Try to create and load a texture to check for MonoGame compatibility
-#if DX
+            // 尝试创建并加载纹理以检查 MonoGame 兼容性
             const string startupFailureFile = ".dxfail";
-#elif GL && WINFORMS
-            const string startupFailureFile = ".oglfail";
-#endif
 
             try
             {
@@ -94,16 +81,16 @@ namespace DTAClient.DXGUI
                     if (!clientDirectory.Exists)
                         clientDirectory.Create();
 
-                    // Create startup failure file that the launcher can check for this error
-                    // and handle it by redirecting the user to another version instead
+                    // 创建启动失败文件，启动器可以检查此错误
+                    // 并通过引导用户使用另一个版本来处理
 
                     File.WriteAllBytes(SafePath.CombineFilePath(clientDirectory.FullName, startupFailureFile), new byte[] { 1 });
 
                     string launcherExe = ClientConfiguration.Instance.LauncherExe;
                     if (string.IsNullOrEmpty(launcherExe))
                     {
-                        // LauncherExe is unspecified, just throw the exception forward
-                        // because we can't handle it
+                        // LauncherExe 未指定，直接将异常抛出
+                        // 因为我们无法处理
 
                         Logger.Log("No LauncherExe= specified in ClientDefinitions.ini! " +
                             "Forwarding exception to regular exception handler.");
@@ -120,7 +107,6 @@ namespace DTAClient.DXGUI
                 }
             }
 
-#endif
             InitializeUISettings();
 
             WindowManager wm = new WindowManager(this, graphics);
@@ -139,11 +125,9 @@ namespace DTAClient.DXGUI
             };
 
             SetGraphicsMode(wm);
-#if WINFORMS
 
             wm.SetIcon(SafePath.CombineFilePath(ProgramConstants.GetBaseResourcePath(), "clienticon.ico"));
             wm.SetControlBox(true);
-#endif
 
             wm.Cursor.Textures = new Texture2D[]
             {
@@ -151,7 +135,6 @@ namespace DTAClient.DXGUI
                 AssetLoader.LoadTexture("waitCursor.png")
             };
 
-#if WINFORMS
             FileInfo primaryNativeCursorPath = SafePath.GetFile(ProgramConstants.GetResourcePath(), "cursor.cur");
             FileInfo alternativeNativeCursorPath = SafePath.GetFile(ProgramConstants.GetBaseResourcePath(), "cursor.cur");
 
@@ -160,7 +143,6 @@ namespace DTAClient.DXGUI
             else if (alternativeNativeCursorPath.Exists)
                 wm.Cursor.LoadNativeCursor(alternativeNativeCursorPath.FullName);
 
-#endif
             Components.Add(wm);
 
             string playerName = UserINISettings.Instance.PlayerName.Value.Trim();
@@ -197,11 +179,11 @@ namespace DTAClient.DXGUI
 
         private IServiceProvider BuildServiceProvider(WindowManager windowManager)
         {
-            // Create host - this allows for things like DependencyInjection
+            // 创建主机 - 这允许使用依赖注入等功能
             IHost host = Host.CreateDefaultBuilder()
                 .ConfigureServices((_, services) =>
                     {
-                        // services (or service-like)
+                        // 服务（或类似服务的组件）
                         services
                             .AddSingleton<ServiceProvider>()
                             .AddSingleton(windowManager)
@@ -214,7 +196,7 @@ namespace DTAClient.DXGUI
                             .AddSingleton<PrivateMessageHandler>()
                             .AddSingleton<MapLoader>();
 
-                        // singleton xna controls - same instance on each request
+                        // 单例 XNA 控件 - 每次请求返回相同实例
                         services
                             .AddSingletonXnaControl<LoadingScreen>()
                             .AddSingletonXnaControl<TopBar>()
@@ -232,7 +214,7 @@ namespace DTAClient.DXGUI
                             .AddSingletonXnaControl<GameLaunchButton>()
                             .AddSingletonXnaControl<PlayerExtraOptionsPanel>();
 
-                        // transient xna controls - new instance on each request
+                        // 瞬态 XNA 控件 - 每次请求创建新实例
                         services
                             .AddTransientXnaControl<XNAControl>()
                             .AddTransientXnaControl<XNAButton>()
@@ -298,10 +280,10 @@ namespace DTAClient.DXGUI
 
 
         /// <summary>
-        /// Sets the client's graphics mode.
-        /// TODO move to some helper class?
+        /// 设置客户端的图形模式。
+        /// TODO 移到某个辅助类？
         /// </summary>
-        /// <param name="wm">The window manager</param>
+        /// <param name="wm">窗口管理器</param>
         public static void SetGraphicsMode(WindowManager wm)
         {
             var clientConfiguration = ClientConfiguration.Instance;
@@ -346,7 +328,7 @@ namespace DTAClient.DXGUI
 
             if (ratio > 1.0)
             {
-                // Check whether we could sharp-scale our client window
+                // 检查是否可以对客户端窗口进行整数缩放
                 for (int i = 2; i < 10; i++)
                 {
                     int sharpScaleRenderResX = windowWidth / i;
@@ -374,7 +356,6 @@ namespace DTAClient.DXGUI
             }
 
             wm.SetBorderlessMode(borderlessWindowedClient);
-#if !XNA
 
             if (borderlessWindowedClient)
             {
@@ -382,7 +363,6 @@ namespace DTAClient.DXGUI
                 graphics.ApplyChanges();
             }
 
-#endif
             wm.CenterOnScreen();
             wm.SetRenderResolution(renderResolutionX, renderResolutionY);
         }
@@ -392,7 +372,7 @@ namespace DTAClient.DXGUI
     }
 
     /// <summary>
-    /// An exception that is thrown when initializing display / graphics mode fails.
+    /// 初始化显示/图形模式失败时抛出的异常。
     /// </summary>
     class GraphicsModeInitializationException : Exception
     {

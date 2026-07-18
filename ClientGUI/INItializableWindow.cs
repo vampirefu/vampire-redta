@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using Microsoft.Xna.Framework;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
@@ -23,8 +23,7 @@ namespace ClientGUI
         private bool _initialized = false;
 
         /// <summary>
-        /// If not null, the client will read an INI file with this name
-        /// instead of the window's name.
+        /// 如果不为null，客户端将读取此名称的INI文件，而非窗口名称。
         /// </summary>
         protected string IniNameOverride { get; set; }
 
@@ -53,35 +52,35 @@ namespace ClientGUI
         }
 
         /// <summary>
-        /// Attempts to locate the ini config file for the current control.
-        /// Only return a config path if it exists.
+        /// 尝试定位当前控件的INI配置文件。
+        /// 仅在配置路径存在时返回。
         /// </summary>
-        /// <returns>The ini config file path</returns>
+        /// <returns>INI配置文件路径</returns>
         protected string GetConfigPath()
         {
             string iniFileName = string.IsNullOrWhiteSpace(IniNameOverride) ? Name : IniNameOverride;
 
-            // get theme specific path
+            // 获取主题特定路径
             FileInfo configIniPath = SafePath.GetFile(ProgramConstants.GetResourcePath(), FormattableString.Invariant($"{iniFileName}.ini"));
             if (configIniPath.Exists)
                 return configIniPath.FullName;
 
-            // get base path
+            // 获取基础路径
             configIniPath = SafePath.GetFile(ProgramConstants.GetBaseResourcePath(), FormattableString.Invariant($"{iniFileName}.ini"));
             if (configIniPath.Exists)
                 return configIniPath.FullName;
 
             if (iniFileName == Name)
-                return null; // IniNameOverride must be null, no need to continue
+                return null; // IniNameOverride 必须为null，无需继续
 
             iniFileName = Name;
 
-            // get theme specific path
+            // 获取主题特定路径
             configIniPath = SafePath.GetFile(ProgramConstants.GetResourcePath(), FormattableString.Invariant($"{iniFileName}.ini"));
             if (configIniPath.Exists)
                 return configIniPath.FullName;
 
-            // get base path
+            // 获取基础路径
             configIniPath = SafePath.GetFile(ProgramConstants.GetBaseResourcePath(), FormattableString.Invariant($"{iniFileName}.ini"));
             return configIniPath.Exists ? configIniPath.FullName : null;
         }
@@ -205,7 +204,7 @@ namespace ClientGUI
                 }
                 else if (kvp.Key == "$TextAnchor" && control is XNALabel)
                 {
-                    // TODO refactor these to be more object-oriented
+                    // TODO 重构这些使其更加面向对象
                     ((XNALabel)control).TextAnchor = (LabelTextAnchorInfo)Enum.Parse(typeof(LabelTextAnchorInfo), kvp.Value);
                 }
              
@@ -234,8 +233,8 @@ namespace ClientGUI
         }
 
         /// <summary>
-        /// Reads a second set of attributes for a control's child controls.
-        /// Enables linking controls to controls that are defined after them.
+        /// 读取控件子控件的第二组属性。
+        /// 允许将控件链接到在其之后定义的控件。
         /// </summary>
         private void ReadLateAttributesForControl(XNAControl control)
         {
@@ -246,8 +245,8 @@ namespace ClientGUI
             var children = Children.ToList();
             foreach (var child in children)
             {
-                // This logic should also be enabled for other types in the future,
-                // but it requires changes in XNAUI
+                // 此逻辑未来也应该对其他类型启用，
+                // 但需要XNAUI中的更改
                 if (!(child is XNATextBox))
                     continue;
 

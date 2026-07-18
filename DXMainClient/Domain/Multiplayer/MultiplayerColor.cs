@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using Microsoft.Xna.Framework;
 using Rampastring.Tools;
 using System;
@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace DTAClient.Domain.Multiplayer
 {
     /// <summary>
-    /// A color for the multiplayer game lobby.
+    /// 多人游戏大厅的颜色。
     /// </summary>
     public class MultiplayerColor
     {
@@ -18,11 +18,11 @@ namespace DTAClient.Domain.Multiplayer
         private static List<MultiplayerColor> colorList;
 
         /// <summary>
-        /// Creates a new multiplayer color from data in a string array.
+        /// 从字符串数组中的数据创建新的多人游戏颜色。
         /// </summary>
-        /// <param name="name">The name of the color.</param>
-        /// <param name="data">The input data. Needs to be in the format R,G,B,(game color index).</param>
-        /// <returns>A new multiplayer color created from the given string array.</returns>
+        /// <param name="name">颜色名称。</param>
+        /// <param name="data">输入数据。需要为R,G,B,(游戏颜色索引)格式。</param>
+        /// <returns>从给定字符串数组创建的新多人游戏颜色。</returns>
         public static MultiplayerColor CreateFromStringArray(string name, string[] data)
         {
             return new MultiplayerColor()
@@ -36,7 +36,7 @@ namespace DTAClient.Domain.Multiplayer
         }
 
         /// <summary>
-        /// Returns the available multiplayer colors.
+        /// 返回可用的多人游戏颜色。
         /// </summary>
         public static List<MultiplayerColor> LoadColors()
         {
@@ -64,7 +64,7 @@ namespace DTAClient.Domain.Multiplayer
                 }
                 catch
                 {
-                    throw new ClientConfigurationException("Invalid MPColor specified in GameOptions.ini: " + key);
+                    throw new ClientConfigurationException("GameOptions.ini中指定了无效的MPColor: " + key);
                 }
             }
 

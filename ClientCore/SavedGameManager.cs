@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Rampastring.Tools;
@@ -6,7 +6,7 @@ using Rampastring.Tools;
 namespace ClientCore
 {
     /// <summary>
-    /// A class for handling saved multiplayer games.
+    /// 处理多人游戏存档的类。
     /// </summary>
     public static class SavedGameManager
     {
@@ -66,7 +66,7 @@ namespace ClientCore
         }
 
         /// <summary>
-        /// Initializes saved MP games for a match.
+        /// 为一场比赛初始化多人游戏存档。
         /// </summary>
         public static bool InitSavedGames()
         {

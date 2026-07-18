@@ -1,32 +1,29 @@
-﻿namespace DTAClient.DXGUI.Multiplayer.GameLobby
+namespace DTAClient.DXGUI.Multiplayer.GameLobby
 {
     /// <summary>
-    /// An enum for controlling how the game lobbies'
-    /// drop-down controls' data should be written into the spawn INI.
+    /// 用于控制游戏大厅下拉控件数据如何写入spawn INI的枚举。
     /// </summary>
     public enum DropDownDataWriteMode
     {
         /// <summary>
-        /// The 0-based selected index of the drop-down control will
-        /// be written into the INI.
+        /// 下拉控件的基于0的选中索引将被写入INI。
         /// </summary>
         INDEX,
 
         /// <summary>
-        /// If index 0 is selected, "false" will be written.
-        /// Otherwise the client will write "true".
+        /// 如果选中索引0，将写入"false"。
+        /// 否则客户端将写入"true"。
         /// </summary>
         BOOLEAN,
 
         /// <summary>
-        /// The dropdown value displayed in the UI will
-        /// be written into the INI.
+        /// 下拉框在UI中显示的值将被写入INI。
         /// </summary>
         STRING,
 
         /// <summary>
-        /// The dropdown value is filename of a mapcode INI file, which will be applied to the map. 
-        /// Nothing is written to spawn INI.
+        /// 下拉框的值是地图代码INI文件的文件名，将被应用到地图。
+        /// 不会向spawn INI写入任何内容。
         /// </summary>
         MAPCODE
     }

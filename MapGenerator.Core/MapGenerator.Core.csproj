@@ -1,11 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <Import Project="$(MSBuildThisFileDirectory)..\MSBuild\Shared.props" />
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Engine>WindowsDX</Engine>
-    <Game>YR</Game>
+    <Game>Ares</Game>
   </PropertyGroup>
 
   <ItemGroup>

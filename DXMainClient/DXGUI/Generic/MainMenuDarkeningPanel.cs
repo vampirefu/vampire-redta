@@ -1,4 +1,4 @@
-﻿using ClientGUI;
+using ClientGUI;
 using DTAClient.Domain;
 using Microsoft.Xna.Framework;
 using Rampastring.XNAUI;
@@ -8,8 +8,8 @@ using System;
 namespace DTAClient.DXGUI.Generic
 {
     /// <summary>
-    /// TODO Replace this class with DarkeningPanels.
-    /// Handles transitions between the main menu and its sub-menus.
+    /// TODO 用 DarkeningPanels 替换此类。
+    /// 处理主菜单与其子菜单之间的过渡。
     /// </summary>
     public class MainMenuDarkeningPanel : XNAPanel
     {
@@ -25,7 +25,7 @@ namespace DTAClient.DXGUI.Generic
         public CampaignSelector CampaignSelector;
         public GameLoadingWindow GameLoadingWindow;
         public StatisticsWindow StatisticsWindow;
-        // Updater-related windows removed
+        // 更新器相关的窗口已移除
         public ExtrasWindow ExtrasWindow;
 
         public override void Initialize()
@@ -47,7 +47,7 @@ namespace DTAClient.DXGUI.Generic
             StatisticsWindow = new StatisticsWindow(WindowManager);
             AddChild(StatisticsWindow);
 
-            // Updater-related child windows removed
+            // 更新器相关的子窗口已移除
 
             ExtrasWindow = new ExtrasWindow(WindowManager);
             AddChild(ExtrasWindow);

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 using ClientCore;
@@ -37,7 +37,7 @@ namespace DTAClient.Domain.Multiplayer
         public bool IsBlock => Team == NO_TEAM;
 
         /// <summary>
-        /// Write these out in a delimited list.
+        /// 将这些以分隔列表形式写出。
         /// </summary>
         /// <param name="teamStartMappings"></param>
         /// <returns></returns>
@@ -45,8 +45,8 @@ namespace DTAClient.Domain.Multiplayer
             => string.Join(LIST_SEPARATOR.ToString(), teamStartMappings.Select(mapping => mapping.Team));
 
         /// <summary>
-        /// This parses a list of <see cref="TeamStartMapping"/> classes that were written out as a list
-        /// for either message purposes or a map INI.
+        /// 解析以列表形式写出的<see cref="TeamStartMapping"/>类列表，
+        /// 用于消息传递或地图INI。
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>

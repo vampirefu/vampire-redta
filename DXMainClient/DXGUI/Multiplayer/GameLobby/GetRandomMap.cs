@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using ClientGUI;
 using DTAClient.Domain.Multiplayer;
 using Microsoft.Xna.Framework;
@@ -64,9 +64,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             base.Initialize();
             Name = "GetRandomMap";
             CenterOnParent();
-#if WINFORMS
             System.Windows.Forms.Control.CheckForIllegalCrossThreadCalls = false;
-#endif
             ClientRectangle = new Rectangle(200, 100, 800, 500);
 
             lblTitle = new XNALabel(WindowManager);
@@ -248,12 +246,12 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             {
                 RandomMapGenerator generator = new RandomMapGenerator(toolPath, ProgramConstants.GamePath);
                 generator.SetOutputPath(ProgramConstants.GamePath);
-                generator.ProgressChanged += (s, e) => { /* optional progress handling */ };
+                generator.ProgressChanged += (s, e) => { /* 可选的进度处理 */ };
                 generator.GenerateRandomMap(options);
             }
             catch (Exception)
             {
-                // ignore - StartText will check for preview existence
+                // 忽略 - StartText会检查预览是否存在
             }
             finally
             {

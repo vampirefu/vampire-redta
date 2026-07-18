@@ -1,4 +1,4 @@
-﻿using ClientGUI;
+using ClientGUI;
 using DTAClient.Domain.Multiplayer.CnCNet;
 using Microsoft.Xna.Framework;
 using Rampastring.XNAUI;
@@ -44,7 +44,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             btnOK.Name = "btnOK";
             btnOK.ClientRectangle = new Rectangle(lblDescription.X,
                 ClientRectangle.Bottom - 35, UIDesignConstants.BUTTON_WIDTH_92, UIDesignConstants.BUTTON_HEIGHT);
-            btnOK.Text = "OK";
+            btnOK.Text = "确定";
             btnOK.LeftClick += BtnOK_LeftClick;
 
             var btnCancel = new XNAClientButton(WindowManager);
@@ -119,12 +119,12 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
         }
 
         /// <summary>
-        /// The password input by the user.
+        /// 用户输入的密码。
         /// </summary>
         public string Password { get; private set; }
 
         /// <summary>
-        /// The game that the user is attempting to join.
+        /// 用户尝试加入的游戏。
         /// </summary>
         public HostedCnCNetGame HostedGame { get; private set; }
     }

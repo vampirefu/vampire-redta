@@ -1,12 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <Import Project="$(MSBuildThisFileDirectory)..\MSBuild\Shared.props" />
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <Engine>WindowsDX</Engine>
-    <Game>YR</Game>
+    <Game>Ares</Game>
   </PropertyGroup>
 
   <ItemGroup>

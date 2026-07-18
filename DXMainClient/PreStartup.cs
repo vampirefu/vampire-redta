@@ -1,7 +1,5 @@
 using System;
-#if WINFORMS
 using System.Windows.Forms;
-#endif
 using System.Diagnostics;
 using System.IO;
 using DTAClient.Domain;
@@ -18,7 +16,7 @@ using System.Runtime.Versioning;
 namespace DTAClient
 {
     /// <summary>
-    /// Contains client startup parameters.
+    /// 包含客户端启动参数。
     /// </summary>
     struct StartupParams
     {
@@ -38,19 +36,16 @@ namespace DTAClient
     static class PreStartup
     {
         /// <summary>
-        /// Initializes various basic systems like the client's logger, 
-        /// constants, and the general exception handler.
-        /// Reads the user's settings from an INI file, 
-        /// checks for necessary permissions and starts the client if
-        /// everything goes as it should.
+        /// 初始化各种基本系统，如客户端日志器、
+        /// 常量和通用异常处理器。
+        /// 从INI文件读取用户设置，
+        /// 检查必要权限，如果一切正常则启动客户端。
         /// </summary>
-        /// <param name="parameters">The client's startup parameters.</param>
+        /// <param name="parameters">客户端的启动参数。</param>
         public static void Initialize(StartupParams parameters)
         {
-#if WINFORMS
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
             Application.ThreadException += (sender, args) => HandleException(sender, args.Exception);
-#endif
             AppDomain.CurrentDomain.UnhandledException += (sender, args) =>HandleException(sender, (Exception)args.ExceptionObject);
 
             DirectoryInfo gameDirectory = SafePath.GetDirectory(ProgramConstants.GamePath);
@@ -77,7 +72,7 @@ namespace DTAClient
             Logger.Log("***Logfile for " + MainClientConstants.GAME_NAME_LONG + " client***");
             Logger.Log("Client version: " + Assembly.GetAssembly(typeof(PreStartup)).GetName().Version);
 
-            // Log information about given startup params
+            // 记录给定的启动参数信息
             if (parameters.NoAudio)
             {
                 Logger.Log("Startup parameter: No audio");
@@ -95,7 +90,7 @@ namespace DTAClient
 
             UserINISettings.Initialize(ClientConfiguration.Instance.SettingsIniName);
 
-            // Delete obsolete files from old target project versions
+            // 删除旧目标项目版本的过时文件
 
             gameDirectory.EnumerateFiles("mainclient.log").SingleOrDefault()?.Delete();
             gameDirectory.EnumerateFiles("aunchupdt.dat").SingleOrDefault()?.Delete();
@@ -108,17 +103,15 @@ namespace DTAClient
             {
                 LogException(ex);
 
-                string error = "Deleting wsock32.dll failed! Please close any " +
-                    "applications that could be using the file, and then start the client again."
+                string error = "删除wsock32.dll失败！请关闭所有" +
+                    "可能使用该文件的应用程序，然后重新启动客户端。"
                     + Environment.NewLine + Environment.NewLine +
-                    "Message: " + ex.Message;
+                    "消息: " + ex.Message;
 
                 ProgramConstants.DisplayErrorAction(null, error, true);
             }
 
-#if WINFORMS
             ApplicationConfiguration.Initialize();
-#endif
 
             new Startup().Execute();
         }
@@ -196,18 +189,18 @@ namespace DTAClient
         }
 
         /// <summary>
-        /// Checks whether the client has specific file system rights to a directory.
-        /// See ssds's answer at https://stackoverflow.com/questions/1410127/c-sharp-test-if-user-has-write-access-to-a-folder
+        /// 检查客户端是否对目录拥有特定的文件系统权限。
+        /// 参见 https://stackoverflow.com/questions/1410127/c-sharp-test-if-user-has-write-access-to-a-folder 上 ssds 的回答
         /// </summary>
-        /// <param name="path">The path to the directory.</param>
-        /// <param name="accessRights">The file system rights.</param>
+        /// <param name="path">目录路径。</param>
+        /// <param name="accessRights">文件系统权限。</param>
         [SupportedOSPlatform("windows")]
         private static bool UserHasDirectoryAccessRights(string path, FileSystemRights accessRights)
         {
             var currentUser = WindowsIdentity.GetCurrent();
             var principal = new WindowsPrincipal(currentUser);
 
-            // If the user is not running the client with administrator privileges in Program Files, they need to be prompted to do so.
+            // 如果用户没有以管理员权限在 Program Files 中运行客户端，则需要提示用户提升权限。
             if (!principal.IsInRole(WindowsBuiltInRole.Administrator))
             {
                 string progfiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);

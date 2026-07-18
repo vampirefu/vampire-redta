@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using ClientCore;
 using ClientCore.Extensions;
@@ -105,7 +105,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
         private void Invite()
         {
-            // note it's assumed that if the channel name is specified, the game name must be also
+            // 注意：假设如果指定了频道名称，则游戏名称也必须已指定
             if (string.IsNullOrEmpty(contextMenuData.inviteChannelName) || ProgramConstants.IsInGame)
             {
                 return;

@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using DTAClient.Domain;
 using DTAClient.Domain.LAN;
 using DTAClient.Domain.Multiplayer;
@@ -547,7 +547,7 @@ namespace DTAClient.DXGUI.Multiplayer
                 Players.Add(pInfo);
             }
 
-            if (Players.Count > 0) // Set IP of host
+            if (Players.Count > 0) // 设置主持的IP
                 Players[0].IPAddress = ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString();
 
             CopyPlayerDataToUI();
@@ -563,9 +563,9 @@ namespace DTAClient.DXGUI.Multiplayer
         #endregion
 
         /// <summary>
-        /// Broadcasts a command to all players in the game as the game host.
+        /// 作为游戏主持向游戏中所有玩家广播命令。
         /// </summary>
-        /// <param name="message">The command to send.</param>
+        /// <param name="message">要发送的命令。</param>
         private void BroadcastMessage(string message)
         {
             if (!IsHost)
@@ -660,13 +660,13 @@ namespace DTAClient.DXGUI.Multiplayer
             sb.Append(localGame);
             sb.Append(lblMapNameValue.Text);
             sb.Append(lblGameModeValue.Text);
-            sb.Append(0); // LoadedGameID
+            sb.Append(0); // 已加载游戏ID
             var sbPlayers = new StringBuilder();
             SGPlayers.ForEach(p => sbPlayers.Append(p.Name + ","));
             sbPlayers.Remove(sbPlayers.Length - 1, 1);
             sb.Append(sbPlayers.ToString());
             sb.Append(Convert.ToInt32(started || Players.Count == SGPlayers.Count));
-            sb.Append(1); // IsLoadedGame
+            sb.Append(1); // 是否为已加载游戏
 
             GameBroadcast?.Invoke(this, new GameBroadcastEventArgs(sb.ToString()));
         }
@@ -686,7 +686,7 @@ namespace DTAClient.DXGUI.Multiplayer
             PlayerInfo player = Players.Find(p => p.Name == ProgramConstants.PLAYERNAME);
             if (player == null)
                 return;
-            string currentState = ProgramConstants.IsInGame ? "In Game" : "In Lobby"; // not UI strings
+            string currentState = ProgramConstants.IsInGame ? "In Game" : "In Lobby"; // 非UI字符串
 
             discordHandler.UpdatePresence(
                 lblMapNameValue.Text, lblGameModeValue.Text, currentState, "LAN",

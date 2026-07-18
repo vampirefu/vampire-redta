@@ -1,38 +1,38 @@
-﻿using DTAClient.Online;
+using DTAClient.Online;
 
 namespace DTAClient.DXGUI.Multiplayer.CnCNet
 {
     public class GlobalContextMenuData
     {
         /// <summary>
-        /// The ChannelUser to show the menu for.
+        /// 要为其显示菜单的频道用户。
         /// </summary>
         public ChannelUser ChannelUser { get; set; }
-        
+
         /// <summary>
-        /// The ChatMessage to show the menu for.
+        /// 要为其显示菜单的聊天消息。
         /// </summary>
         public ChatMessage ChatMessage { get; set; }
-        
+
         /// <summary>
-        /// The IRCUser to show the menu for.
+        /// 要为其显示菜单的IRC用户。
         /// </summary>
         public IRCUser IrcUser { get; set; }
-        
+
         /// <summary>
-        /// The player to show the menu for. This is used to determine the IRCUser internally.
+        /// 要为其显示菜单的玩家。用于在内部确定IRCUser。
         /// </summary>
         public string PlayerName { get; set; }
-        
+
         /// <summary>
-        /// The invite properties are used for the Invite option in the menu.
+        /// 邀请属性用于菜单中的邀请选项。
         /// </summary>
         public string inviteChannelName { get; set; }
         public string inviteGameName { get; set; }
         public string inviteChannelPassword { get; set; }
-        
+
         /// <summary>
-        /// Prevent the Join option from showing in the menu.
+        /// 阻止在菜单中显示加入选项。
         /// </summary>
         public bool PreventJoinGame { get; set; }
     }

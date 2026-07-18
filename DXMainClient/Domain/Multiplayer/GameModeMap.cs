@@ -1,7 +1,7 @@
-﻿namespace DTAClient.Domain.Multiplayer
+namespace DTAClient.Domain.Multiplayer
 {
     /// <summary>
-    /// An instance of a Map in a given GameMode
+    /// 给定游戏模式下的地图实例
     /// </summary>
     public class GameModeMap
     {

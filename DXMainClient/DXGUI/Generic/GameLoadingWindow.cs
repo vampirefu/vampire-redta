@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using ClientGUI;
 using DTAClient.Domain;
 using Microsoft.Xna.Framework;
@@ -13,7 +13,7 @@ using System.Linq;
 namespace DTAClient.DXGUI.Generic
 {
     /// <summary>
-    /// A window for loading saved singleplayer games.
+    /// 用于加载已保存的单人游戏的窗口。
     /// </summary>
     public class GameLoadingWindow : XNAWindow
     {
@@ -145,13 +145,7 @@ namespace DTAClient.DXGUI.Generic
         {
             SavedGame sg = savedGames[lbSaveGameList.SelectedIndex];
             var msgBox = new XNAMessageBox(WindowManager, "删除确认",
-                string.Format("The following saved game will be deleted permanently:" + Environment.NewLine +
-                    Environment.NewLine +
-                    "Filename: {0}" + Environment.NewLine +
-                    "Saved game name: {1}" + Environment.NewLine +
-                    "Date and time: {2}" + Environment.NewLine +
-                    Environment.NewLine +
-                    "以下已储存的游戏将被永久删除:@@文件名:{0}@已储存游戏名称:{1}@日期和时间:{2}@@您确定要继续吗?",
+                string.Format("以下已储存的游戏将被永久删除:@@文件名:{0}@已储存游戏名称:{1}@日期和时间:{2}@@您确定要继续吗?",
                     sg.FileName, Renderer.GetSafeString(sg.GUIName, lbSaveGameList.FontIndex), sg.LastModified.ToString()),
                 XNAMessageBoxButtons.YesNo);
             msgBox.Show();

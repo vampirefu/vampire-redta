@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using ClientCore.Statistics;
 using ClientGUI;
 using DTAClient.Domain;
@@ -14,7 +14,7 @@ using System.IO;
 namespace DTAClient.DXGUI.Multiplayer
 {
     /// <summary>
-    /// An abstract base class for a multiplayer game loading lobby.
+    /// 多人游戏加载大厅的抽象基类。
     /// </summary>
     public abstract class GameLoadingLobbyBase : XNAWindow, ISwitchable
     {
@@ -26,12 +26,12 @@ namespace DTAClient.DXGUI.Multiplayer
         public event EventHandler GameLeft;
 
         /// <summary>
-        /// The list of players in the current saved game.
+        /// 当前存档中的玩家列表。
         /// </summary>
         protected List<SavedGamePlayer> SGPlayers = new List<SavedGamePlayer>();
 
         /// <summary>
-        /// The list of players in the game lobby.
+        /// 游戏大厅中的玩家列表。
         /// </summary>
         protected List<PlayerInfo> Players = new List<PlayerInfo>();
 
@@ -210,13 +210,13 @@ namespace DTAClient.DXGUI.Multiplayer
         }
 
         /// <summary>
-        /// Updates Discord Rich Presence with actual information.
+        /// 使用实际信息更新Discord Rich Presence。
         /// </summary>
-        /// <param name="resetTimer">Whether to restart the "Elapsed" timer or not</param>
+        /// <param name="resetTimer">是否重启"已用时"计时器</param>
         protected abstract void UpdateDiscordPresence(bool resetTimer = false);
 
         /// <summary>
-        /// Resets Discord Rich Presence to default state.
+        /// 将Discord Rich Presence重置为默认状态。
         /// </summary>
         protected void ResetDiscordPresence() => discordHandler.UpdatePresence();
 
@@ -272,10 +272,8 @@ namespace DTAClient.DXGUI.Multiplayer
 
             if (!IsHost && !Players.Find(p => p.Name == ProgramConstants.PLAYERNAME).Ready)
                 sndGetReadySound.Play();
-#if WINFORMS
 
             WindowManager.FlashWindow();
-#endif
         }
 
         protected virtual void NotAllPresentNotification() =>
@@ -372,7 +370,7 @@ namespace DTAClient.DXGUI.Multiplayer
 
         protected virtual void WriteSpawnIniAdditions(IniFile spawnIni)
         {
-            // Do nothing by default
+            // 默认不做任何操作
         }
 
         protected void AddNotice(string notice) => AddNotice(notice, Color.White);
@@ -380,9 +378,8 @@ namespace DTAClient.DXGUI.Multiplayer
         protected abstract void AddNotice(string message, Color color);
 
         /// <summary>
-        /// Refreshes the UI  based on the latest saved game
-        /// and information in the saved spawn.ini file, as well
-        /// as information on whether the local player is the host of the game.
+        /// 根据最新的存档和已保存的spawn.ini文件中的信息，
+        /// 以及本地玩家是否为游戏主持的信息来刷新UI。
         /// </summary>
         public void Refresh(bool isHost)
         {
@@ -440,7 +437,7 @@ namespace DTAClient.DXGUI.Multiplayer
             }
 
             List<string> timestamps = SavedGameManager.GetSaveGameTimestamps();
-            timestamps.Reverse(); // Most recent saved game first
+            timestamps.Reverse(); // 最近的存档排在最前面
 
             timestamps.ForEach(ts => ddSavedGame.AddItem(ts));
 
@@ -501,8 +498,7 @@ namespace DTAClient.DXGUI.Multiplayer
         }
 
         /// <summary>
-        /// Override in a derived class to broadcast player ready statuses and the selected
-        /// saved game to players.
+        /// 在派生类中重写，以向玩家广播玩家准备状态和所选的存档。
         /// </summary>
         protected abstract void BroadcastOptions();
 

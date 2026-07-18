@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Rampastring.XNAUI;
 using System.Linq;
 using System;
@@ -10,7 +10,7 @@ using SixLabors.ImageSharp;
 namespace ClientCore.CnCNet5
 {
     /// <summary>
-    /// A class for storing the collection of supported CnCNet games.
+    /// 存储支持的 CnCNet 游戏集合的类。
     /// </summary>
     public class GameCollection
     {
@@ -55,7 +55,7 @@ namespace ClientCore.CnCNet5
             using var ssIcon = Image.Load(ssIconStream);
             using var unknownIcon = Image.Load(unknownIconStream);
 
-            // Default supported games.
+            // 默认支持的游戏。
             CnCNetGame[] defaultGames =
             {
                 //new()
@@ -191,14 +191,14 @@ namespace ClientCore.CnCNet5
                 //}
             };
 
-            // CnCNet chat.
+            // CnCNet 聊天。
             CnCNetGame[] otherGames =
             {
                 new()
                 {
                     ChatChannel = "#cncnet",
                     InternalName = "cncnet",
-                    UIName = "General CnCNet Chat",
+                    UIName = "CnCNet综合聊天",
                     AlwaysEnabled = true,
                     Texture = AssetLoader.TextureFromImage(cncnetIcon)
                 }
@@ -284,10 +284,10 @@ namespace ClientCore.CnCNet5
         }
 
         /// <summary>
-        /// Gets the index of a CnCNet supported game based on its internal name.
+        /// 根据内部名称获取 CnCNet 支持游戏的索引。
         /// </summary>
-        /// <param name="gameName">The internal name (suffix) of the game.</param>
-        /// <returns>The index of the specified CnCNet game. -1 if the game is unknown or not supported.</returns>
+        /// <param name="gameName">游戏的内部名称（后缀）。</param>
+        /// <returns>指定 CnCNet 游戏的索引。如果游戏未知或不受支持则返回 -1。</returns>
         public int GetGameIndexFromInternalName(string gameName)
         {
             for (int gId = 0; gId < GameList.Count; gId++)
@@ -302,12 +302,11 @@ namespace ClientCore.CnCNet5
         }
 
         /// <summary>
-        /// Seeks the supported game list for a specific game's internal name and if found,
-        /// returns the game's full name. Otherwise returns the internal name specified in the param.
+        /// 在支持的游戏列表中查找特定游戏的内部名称，如果找到则返回游戏的完整名称。
+        /// 否则返回参数中指定的内部名称。
         /// </summary>
-        /// <param name="gameName">The internal name of the game to seek for.</param>
-        /// <returns>The full name of a supported game based on its internal name.
-        /// Returns the given parameter if the name isn't found in the supported game list.</returns>
+        /// <param name="gameName">要查找的游戏内部名称。</param>
+        /// <returns>基于内部名称的支持游戏的完整名称。如果在支持的游戏列表中未找到该名称则返回给定的参数。</returns>
         public string GetGameNameFromInternalName(string gameName)
         {
             CnCNetGame game = GameList.Find(g => g.InternalName == gameName.ToLowerInvariant());
@@ -319,20 +318,20 @@ namespace ClientCore.CnCNet5
         }
 
         /// <summary>
-        /// Returns the full UI name of a game based on its index in the game list.
+        /// 根据游戏在列表中的索引返回游戏的完整 UI 名称。
         /// </summary>
-        /// <param name="gameIndex">The index of the CnCNet supported game.</param>
-        /// <returns>The UI name of the game.</returns>
+        /// <param name="gameIndex">CnCNet 支持游戏的索引。</param>
+        /// <returns>游戏的 UI 名称。</returns>
         public string GetFullGameNameFromIndex(int gameIndex)
         {
             return GameList[gameIndex].UIName;
         }
 
         /// <summary>
-        /// Returns the internal name of a game based on its index in the game list.
+        /// 根据游戏在列表中的索引返回游戏的内部名称。
         /// </summary>
-        /// <param name="gameIndex">The index of the CnCNet supported game.</param>
-        /// <returns>The internal name (suffix) of the game.</returns>
+        /// <param name="gameIndex">CnCNet 支持游戏的索引。</param>
+        /// <returns>游戏的内部名称（后缀）。</returns>
         public string GetGameIdentifierFromIndex(int gameIndex)
         {
             return GameList[gameIndex].InternalName;
@@ -356,8 +355,7 @@ namespace ClientCore.CnCNet5
     }
 
     /// <summary>
-    /// An exception that is thrown when configuration for a game to add to game collection
-    /// contains invalid or unexpected settings / data or required settings / data are missing.
+    /// 当要添加到游戏集合的游戏配置包含无效或意外的设置/数据，或缺少必需的设置/数据时抛出的异常。
     /// </summary>
     class GameCollectionConfigurationException : Exception
     {

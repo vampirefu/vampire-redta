@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
@@ -14,10 +14,10 @@ namespace ClientGUI
         }
 
         /// <summary>
-        /// Reads extra control information from a specific section of an INI file.
+        /// 从INI文件的特定节读取额外控件信息。
         /// </summary>
-        /// <param name="iniFile">The INI file.</param>
-        /// <param name="sectionName">The section.</param>
+        /// <param name="iniFile">INI文件。</param>
+        /// <param name="sectionName">节名称。</param>
         protected virtual void ParseExtraControls(IniFile iniFile, string sectionName)
         {
             var section = iniFile.GetSection(sectionName);
@@ -51,13 +51,12 @@ namespace ClientGUI
         }
 
         /// <summary>
-        /// Creates a control with a given name, using the specified GUI creator
-        /// and control type name.
+        /// 使用指定的GUI创建器和控件类型名称创建具有给定名称的控件。
         /// </summary>
-        /// <param name="guiCreator">The <see cref="GUICreator"/> to use.</param>
-        /// <param name="controlTypeName">The name of the control's type.</param>
-        /// <param name="controlName">The name of the created control.</param>
-        /// <returns>The created control.</returns>
+        /// <param name="guiCreator">要使用的 <see cref="GUICreator"/>。</param>
+        /// <param name="controlTypeName">控件类型的名称。</param>
+        /// <param name="controlName">创建的控件名称。</param>
+        /// <returns>创建的控件。</returns>
         protected virtual XNAControl CreateControl(GUICreator guiCreator, string controlTypeName, string controlName)
         {
             var control = guiCreator.CreateControl(WindowManager, controlTypeName);

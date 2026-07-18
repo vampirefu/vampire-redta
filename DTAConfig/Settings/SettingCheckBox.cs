@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using ClientCore;
 using ClientGUI;
 using Rampastring.Tools;
@@ -7,7 +7,7 @@ using Rampastring.XNAUI;
 namespace DTAConfig.Settings
 {
     /// <summary>
-    /// A check-box for toggling options in user settings INI file.
+    /// 用于切换用户设置INI文件中选项的复选框。
     /// </summary>
     public class SettingCheckBox : SettingCheckBoxBase
     {
@@ -26,7 +26,7 @@ namespace DTAConfig.Settings
 
         private bool _writeSettingValue;
         /// <summary>
-        /// If set, use separate enabled / disabled values instead of checkbox's checked state when reading & writing setting to the user settings INI.
+        /// 如果设置，在读写用户设置INI时使用单独的启用/禁用值，而非复选框的选中状态。
         /// </summary>
         public bool WriteSettingValue
         {
@@ -39,12 +39,12 @@ namespace DTAConfig.Settings
         }
 
         /// <summary>
-        /// Value to write instead of true when checkbox is enabled.
+        /// 复选框启用时要写入的值（替代true）。
         /// </summary>
         public string EnabledSettingValue { get; set; } = string.Empty;
 
         /// <summary>
-        /// Value to write instead of false when checkbox is disabled.
+        /// 复选框禁用时要写入的值（替代false）。
         /// </summary>
         public string DisabledSettingValue { get; set; } = string.Empty;
 

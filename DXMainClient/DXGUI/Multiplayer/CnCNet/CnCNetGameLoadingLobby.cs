@@ -19,7 +19,7 @@ using System.Text;
 namespace DTAClient.DXGUI.Multiplayer.CnCNet
 {
     /// <summary>
-    /// A game lobby for loading saved CnCNet games.
+    /// 用于加载已保存的CnCNet游戏的游戏大厅。
     /// </summary>
     public class CnCNetGameLoadingLobby : GameLoadingLobbyBase
     {
@@ -142,7 +142,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             WindowManager.AddAndInitializeControl(gameBroadcastTimer);
         }
 
-        private void BtnChangeTunnel_LeftClick(object sender, EventArgs e) => ShowTunnelSelectionWindow("Select tunnel server:");
+        private void BtnChangeTunnel_LeftClick(object sender, EventArgs e) => ShowTunnelSelectionWindow("选择隧道服务器:");
 
         private void GameBroadcastTimer_TimeElapsed(object sender, EventArgs e) => BroadcastGame();
 
@@ -179,7 +179,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
         }
 
         /// <summary>
-        /// Clears event subscriptions and leaves the channel.
+        /// 清除事件订阅并离开频道。
         /// </summary>
         public void Clear()
         {
@@ -187,7 +187,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
             if (channel != null)
             {
-                // TODO leave channel only if we've joined the channel
+                // TODO 仅在我们已加入频道时才离开
                 channel.Leave();
 
                 channel.MessageAdded -= Channel_MessageAdded;
@@ -225,7 +225,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
         }
 
         /// <summary>
-        /// Called when the local user has joined the game channel.
+        /// 当本地用户加入游戏频道时调用。
         /// </summary>
         public void OnJoined()
         {
@@ -425,7 +425,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
                 pInfo.Verified = true;
 
-                HandleCheaterNotification(hostName, sender); // This is kinda hacky
+                HandleCheaterNotification(hostName, sender); // 这有点取巧
             }
         }
 
@@ -449,7 +449,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
         }
 
         /// <summary>
-        /// Handles an options broadcast sent by the game host.
+        /// 处理游戏主持发送的选项广播。
         /// </summary>
         private void HandleOptionsMessage(string sender, string data)
         {
@@ -588,9 +588,9 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
         }
 
         /// <summary>
-        /// Changes the tunnel server used for the game.
+        /// 更改游戏使用的隧道服务器。
         /// </summary>
-        /// <param name="tunnel">The new tunnel server to use.</param>
+        /// <param name="tunnel">要使用的新隧道服务器。</param>
         private void HandleTunnelServerChange(CnCNetTunnel tunnel)
         {
             tunnelHandler.CurrentTunnel = tunnel;
@@ -677,10 +677,10 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
                 sb.Append("1");
             else
                 sb.Append("0");
-            sb.Append("0"); // IsCustomPassword
-            sb.Append("0"); // Closed
-            sb.Append("1"); // IsLoadedGame
-            sb.Append("0"); // IsLadder
+            sb.Append("0"); // 是否为自定义密码
+            sb.Append("0"); // 是否已关闭
+            sb.Append("1"); // 是否为已加载游戏
+            sb.Append("0"); // 是否为天梯比赛
             sb.Append(";");
             foreach (SavedGamePlayer sgPlayer in SGPlayers)
             {
@@ -696,10 +696,10 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             sb.Append(";");
             sb.Append(tunnelHandler.CurrentTunnel.Address + ":" + tunnelHandler.CurrentTunnel.Port);
             sb.Append(";");
-            sb.Append(0); // LoadedGameId
+            sb.Append(0); // 已加载游戏ID
 
             broadcastChannel.SendCTCPMessage(sb.ToString(), QueuedMessageType.SYSTEM_MESSAGE, 20);
-            //���������㲥
+            // 发送游戏广播
             Logger.Log($"/***************[CnCNetGameLoadingLobby]BroadcastGame:{sb}***************/");
         }
 
@@ -713,7 +713,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             PlayerInfo player = Players.Find(p => p.Name == ProgramConstants.PLAYERNAME);
             if (player == null)
                 return;
-            string currentState = ProgramConstants.IsInGame ? "In Game" : "In Lobby"; // not UI strings
+            string currentState = ProgramConstants.IsInGame ? "In Game" : "In Lobby"; // 非UI字符串
 
             discordHandler.UpdatePresence(
                 lblMapNameValue.Text, lblGameModeValue.Text, "Multiplayer",
